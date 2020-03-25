@@ -4,6 +4,7 @@ import de.deftk.lonet.api.model.User
 import de.deftk.lonet.api.request.ApiRequest
 import de.deftk.lonet.api.request.AuthRequest
 import de.deftk.lonet.api.response.ApiResponse
+import de.deftk.lonet.api.response.ResponseUtil
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -13,18 +14,18 @@ import javax.net.ssl.HttpsURLConnection
 
 object LoNet {
 
-    fun login(username: String, password: String, createTrust: Boolean): User {
+    fun login(username: String, password: String, createTrust: Boolean = false): User {
         val responsibleHost = getResponsibleHost(username)
         val request = AuthRequest(responsibleHost)
         request.addLoginPasswordRequest(username, password)
-        if (createTrust) {
+        if(createTrust) {
             request.addSetFocusRequest("trusts")
             request.addRegisterMasterRequest()
         }
         request.addGetInformationRequest()
         val response = performJsonApiRequest(request)
-        //TODO check success
-        return User(username, password, responsibleHost, response)
+        ResponseUtil.checkSuccess(response.toJson())
+        return User(username, if(createTrust) ResponseUtil.getSubResponseResultByMethod(response.toJson(), "register_master").get("trust").asJsonObject.get("token").asString else password, responsibleHost, response)
     }
 
     fun loginToken(username: String, token: String): User {
@@ -32,7 +33,8 @@ object LoNet {
         val nonceRequest = AuthRequest(responsibleHost)
         nonceRequest.addGetNonceRequest()
         val nonceResponse = performJsonApiRequest(nonceRequest)
-        val nonceJson = nonceResponse.toJson().asJsonArray.get(0).asJsonObject.get("result").asJsonObject.get("nonce").asJsonObject
+        val nonceJson =
+            nonceResponse.toJson().asJsonArray.get(0).asJsonObject.get("result").asJsonObject.get("nonce").asJsonObject
         val nonceId = nonceJson.get("id").asString
         val nonceKey = nonceJson.get("key").asString
 
@@ -40,6 +42,7 @@ object LoNet {
         authRequest.addLoginNonceRequest(username, token, nonceId, nonceKey)
         authRequest.addGetInformationRequest()
         val response = performJsonApiRequest(authRequest)
+        ResponseUtil.checkSuccess(response.toJson())
         return User(username, token, responsibleHost, response)
     }
 

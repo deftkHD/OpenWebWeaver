@@ -8,6 +8,7 @@ import de.deftk.lonet.api.request.ApiRequest
 import de.deftk.lonet.api.response.ApiResponse
 import de.deftk.lonet.api.response.ResponseUtil
 
+//TODO not sure if the complete response should be passed to the user
 class User(val username: String, val authKey: String, responsibleHost: String, response: ApiResponse) :
     Member(
         response.toJson().asJsonArray.get(0).asJsonObject.get("result").asJsonObject.get("user").asJsonObject,
@@ -19,10 +20,8 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
 
     init {
         val jsonResponse = response.toJson().asJsonArray
-        val loginResponse = jsonResponse.get(0).asJsonObject.get("result").asJsonObject
-        check(loginResponse.get("method").asString == "login")
-        val informationResponse = jsonResponse.get(1).asJsonObject.get("result").asJsonObject
-        check(informationResponse.get("method").asString == "get_information")
+        val loginResponse = ResponseUtil.getSubResponseResultByMethod(jsonResponse, "login")
+        val informationResponse = ResponseUtil.getSubResponseResultByMethod(jsonResponse, "get_information")
 
         sessionId = informationResponse.get("session_id").asString
         memberships = loginResponse.get("member").asJsonArray.map { Member(it.asJsonObject, responsibleHost) }
