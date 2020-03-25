@@ -32,7 +32,7 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
     }
 
     override fun getTasks(sessionId: String): List<Task> {
-        val tasks = getTasks(sessionId).toMutableList()
+        val tasks = super.getTasks(sessionId).toMutableList()
         memberships.forEach { membership ->
             tasks.addAll(membership.getTasks(sessionId))
         }
