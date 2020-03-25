@@ -38,7 +38,6 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
     fun testRequest() {
         val request = ApiRequest(responsibleHost!!)
         request.addSetSessionRequest(sessionId)
-        val demoGroup = "2023c-wipo-20200313170614@stg-se.sh.lo-net2.de"
         request.addSetFocusRequest("files")
         val json = JsonObject()
         json.addProperty("id", "242092")

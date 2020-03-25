@@ -17,22 +17,39 @@ open class Member(userObject: JsonObject, protected val responsibleHost: String?
     val login: String
     val name: String?
     val type: Int?
-    val permissions: List<String>
+    val permissions: List<Permission>
     val baseUser: Member?
     val fullName: String?
     val passwordMustChange: Boolean?
-    val memberPermissions: List<String>
+    val memberPermissions: List<Permission>
+    val reducedMemberPermissions: List<Permission>
 
     init {
         login = userObject.get("login").asString
         name = getOrNull(userObject, "name_hr")?.asString
         type = getOrNull(userObject, "type")?.asInt
-        permissions = getOrNull(userObject, "base_rights")?.asJsonArray?.map { it.asString } ?: emptyList()
-        baseUser =
-            if (userObject.has("base_user")) Member(userObject.get("base_user").asJsonObject, responsibleHost) else null
+        userObject.get("base_rights")?.asJsonArray?.add("self") // dirty hack
+        val permissions = mutableListOf<Permission>()
+        getOrNull(userObject, "base_rights")?.asJsonArray?.forEach { perm ->
+            permissions.addAll(Permission.getByName(perm.asString))
+        }
+        permissions.addAll(Permission.getByName("self"))
+        this.permissions = permissions
+        baseUser = if (userObject.has("base_user")) Member(userObject.get("base_user").asJsonObject, responsibleHost) else null
         fullName = getOrNull(userObject, "fullname")?.asString
         passwordMustChange = getOrNull(userObject, "password_must_change")?.asInt == 1
-        memberPermissions = getOrNull(userObject, "member_rights")?.asJsonArray?.map { it.asString } ?: emptyList()
+
+        val memberPermissions = mutableListOf<Permission>()
+        getOrNull(userObject, "member_rights")?.asJsonArray?.forEach { perm ->
+            memberPermissions.addAll(Permission.getByName(perm.asString))
+        }
+        this.memberPermissions = memberPermissions
+
+        val reducedMemberPermissions = mutableListOf<Permission>()
+        getOrNull(userObject, "reduced_rights")?.asJsonArray?.forEach { perm ->
+            reducedMemberPermissions.addAll(Permission.getByName(perm.asString))
+        }
+        this.reducedMemberPermissions = reducedMemberPermissions
     }
 
     open fun getTasks(sessionId: String): List<Task> {
