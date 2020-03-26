@@ -17,8 +17,8 @@ class Task(jsonObject: JsonObject) {
     val id: String = jsonObject.get("id").asString
     val title: String? = jsonObject.get("title")?.asString
     val description: String? = jsonObject.get("description")?.asString
-    val startDate: Date = Date(jsonObject.get("start_date").asLong)
-    val endDate: Date? = if (jsonObject.has("end_date")) Date(jsonObject.get("end_date").asLong) else null
+    val startDate: Date = Date(jsonObject.get("start_date").asLong * 1000)
+    val endDate: Date? = if (jsonObject.has("end_date")) Date(jsonObject.get("end_date").asLong * 1000) else null
     var completed: Boolean
         private set
     val creationDate: Date

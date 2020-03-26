@@ -20,7 +20,7 @@ class SystemNotification(jsonObject: JsonObject) {
 
     init {
         messageType = SystemNotificationType.getById(jsonObject.get("message").asString)
-        date = Date(jsonObject.get("date").asLong)
+        date = Date(jsonObject.get("date").asLong * 1000)
         message = jsonObject.get("message_hr").asString
         data = jsonObject.get("data").asString
         member = Member(jsonObject.get("from_user").asJsonObject, null)

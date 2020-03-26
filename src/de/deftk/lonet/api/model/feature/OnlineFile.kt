@@ -24,11 +24,11 @@ class OnlineFile(jsonObject: JsonObject) {
 
     init {
         val createdObject = jsonObject.get("created").asJsonObject
-        creationDate = Date(createdObject.get("date").asLong)
+        creationDate = Date(createdObject.get("date").asLong * 1000)
         creationMember = Member(createdObject.get("user").asJsonObject, null)
 
         val modifiedObject = jsonObject.get("modified").asJsonObject
-        modificationDate = Date(modifiedObject.get("date").asLong)
+        modificationDate = Date(modifiedObject.get("date").asLong * 1000)
         modificationMember = Member(modifiedObject.get("user").asJsonObject, null)
     }
 
