@@ -18,8 +18,8 @@ class Task(jsonObject: JsonObject) {
     val title: String? = jsonObject.get("title")?.asString
     val description: String? = jsonObject.get("description")?.asString
     val startDate: Date = Date(jsonObject.get("start_date").asLong * 1000)
-    val endDate: Date? = if (jsonObject.has("end_date")) Date(jsonObject.get("end_date").asLong * 1000) else null
-    var completed: Boolean
+    val endDate: Date? = if (jsonObject.has("due_date")) Date(jsonObject.get("due_date").asLong * 1000) else null
+    var completed: Boolean = jsonObject.get("completed").asInt == 1
         private set
     val creationDate: Date
     val creationMember: Member
@@ -27,8 +27,6 @@ class Task(jsonObject: JsonObject) {
     val modificationMember: Member
 
     init {
-        completed = jsonObject.get("completed").asInt == 1
-
         val createdObject = jsonObject.get("created").asJsonObject
         creationDate = Date(createdObject.get("date").asLong)
         creationMember = Member(createdObject.get("user").asJsonObject, null)
