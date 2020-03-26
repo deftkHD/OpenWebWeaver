@@ -60,7 +60,7 @@ open class Member(userObject: JsonObject, protected val responsibleHost: String?
         request.addRequest("get_entries", null)
         val response = LoNet.performJsonApiRequest(request)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
-        return subResponse.get("entries")?.asJsonArray?.map { Task(it.asJsonObject) } ?: emptyList()
+        return subResponse.get("entries")?.asJsonArray?.map { Task(it.asJsonObject, this) } ?: emptyList()
     }
 
     fun getMembers(sessionId: String): List<Member> {
