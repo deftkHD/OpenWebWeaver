@@ -39,18 +39,6 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
         return tasks
     }
 
-    fun testRequest() {
-        val request = ApiRequest(responsibleHost!!)
-        request.addSetSessionRequest(sessionId)
-        request.addSetFocusRequest("files")
-        val json = JsonObject()
-        json.addProperty("id", "242092")
-        json.addProperty("completed", 1)
-        request.addRequest("get_state", null)
-        val response = LoNet.performJsonApiRequest(request)
-        println()
-    }
-
     fun logout() {
         val request = ApiRequest(responsibleHost!!)
         request.addSetSessionRequest(sessionId)
