@@ -26,27 +26,27 @@ open class Member(userObject: JsonObject, protected val responsibleHost: String?
 
     init {
         login = userObject.get("login").asString
-        name = getOrNull(userObject, "name_hr")?.asString
-        type = getOrNull(userObject, "type")?.asInt
+        name = userObject.get("name_hr")?.asString
+        type = userObject.get("type")?.asInt
         userObject.get("base_rights")?.asJsonArray?.add("self") // dirty hack
         val permissions = mutableListOf<Permission>()
-        getOrNull(userObject, "base_rights")?.asJsonArray?.forEach { perm ->
+        userObject.get("base_rights")?.asJsonArray?.forEach { perm ->
             permissions.addAll(Permission.getByName(perm.asString))
         }
         permissions.addAll(Permission.getByName("self"))
         this.permissions = permissions
         baseUser = if (userObject.has("base_user")) Member(userObject.get("base_user").asJsonObject, responsibleHost) else null
-        fullName = getOrNull(userObject, "fullname")?.asString
-        passwordMustChange = getOrNull(userObject, "password_must_change")?.asInt == 1
+        fullName = userObject.get("fullname")?.asString
+        passwordMustChange = userObject.get("password_must_change")?.asInt == 1
 
         val memberPermissions = mutableListOf<Permission>()
-        getOrNull(userObject, "member_rights")?.asJsonArray?.forEach { perm ->
+        userObject.get("member_rights")?.asJsonArray?.forEach { perm ->
             memberPermissions.addAll(Permission.getByName(perm.asString))
         }
         this.memberPermissions = memberPermissions
 
         val reducedMemberPermissions = mutableListOf<Permission>()
-        getOrNull(userObject, "reduced_rights")?.asJsonArray?.forEach { perm ->
+        userObject.get("reduced_rights")?.asJsonArray?.forEach { perm ->
             reducedMemberPermissions.addAll(Permission.getByName(perm.asString))
         }
         this.reducedMemberPermissions = reducedMemberPermissions
@@ -124,10 +124,6 @@ open class Member(userObject: JsonObject, protected val responsibleHost: String?
         val response = LoNet.performJsonApiRequest(request)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         return Quota(subResponse.get("quota").asJsonObject)
-    }
-
-    private fun getOrNull(obj: JsonObject, name: String): JsonElement? {
-        return if (obj.has(name)) obj.get(name) else null
     }
 
     override fun toString(): String {
