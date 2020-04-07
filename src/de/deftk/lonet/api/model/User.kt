@@ -40,10 +40,15 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
         return tasks
     }
 
-    fun logout() {
+    fun logout(removeTrust: Boolean = true) {
         val request = ApiRequest(responsibleHost!!)
         request.addSetSessionRequest(sessionId)
         request.addRequest("logout", null)
+        if (removeTrust) {
+            // WHAT HAVE YOU DONE?!
+            val tmpUser = LoNet.loginToken(username, authKey, true)
+            tmpUser.logout(false)
+        }
         val response = LoNet.performJsonApiRequest(request)
         println(response.raw)
     }

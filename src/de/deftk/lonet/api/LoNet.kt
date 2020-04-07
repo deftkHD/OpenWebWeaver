@@ -16,14 +16,14 @@ object LoNet {
 
     fun login(username: String, password: String, createTrust: Boolean = false): User {
         val responsibleHost = getResponsibleHost(username)
-        val request = AuthRequest(responsibleHost)
-        request.addLoginPasswordRequest(username, password)
+        val authRequest = AuthRequest(responsibleHost)
+        authRequest.addLoginPasswordRequest(username, password)
         if (createTrust) {
-            request.addSetFocusRequest("trusts")
-            request.addRegisterMasterRequest()
+            authRequest.addSetFocusRequest("trusts")
+            authRequest.addRegisterMasterRequest()
         }
-        request.addGetInformationRequest()
-        val response = performJsonApiRequest(request)
+        authRequest.addGetInformationRequest()
+        val response = performJsonApiRequest(authRequest)
         ResponseUtil.checkSuccess(response.toJson())
         return User(
             username,
@@ -34,7 +34,7 @@ object LoNet {
         )
     }
 
-    fun loginToken(username: String, token: String): User {
+    fun loginToken(username: String, token: String, removeTrust: Boolean = false): User {
         val responsibleHost = getResponsibleHost(username)
         val nonceRequest = AuthRequest(responsibleHost)
         nonceRequest.addGetNonceRequest()
@@ -46,6 +46,10 @@ object LoNet {
 
         val authRequest = AuthRequest(responsibleHost)
         authRequest.addLoginNonceRequest(username, token, nonceId, nonceKey)
+        if (removeTrust) {
+            authRequest.addSetFocusRequest("trusts")
+            authRequest.addUnregisterMasterRequest()
+        }
         authRequest.addGetInformationRequest()
         val response = performJsonApiRequest(authRequest)
         ResponseUtil.checkSuccess(response.toJson())

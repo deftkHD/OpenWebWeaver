@@ -30,6 +30,10 @@ open class AuthRequest(serverUrl: String) : ApiRequest(serverUrl) {
         addRequest("register_master", obj)
     }
 
+    fun addUnregisterMasterRequest() {
+        addRequest("unregister_master", null)
+    }
+
     fun addGetUrlForAutologinRequest(targetUrlPath: String?) {
         val obj = JsonObject()
         obj.addProperty("enslave_session", true)
