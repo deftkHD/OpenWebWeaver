@@ -32,9 +32,9 @@ object ResponseUtil {
 
     fun checkSuccess(response: JsonElement) {
         response.asJsonArray.map { it.asJsonObject }.forEach { subResponse ->
-            val result = subResponse.get("return")?.asString
-            if (result != null && result != "OK") {
-                throw IllegalStateException("Server returned error: ")
+            val result = subResponse.get("result").asJsonObject
+            if (result.has("return") && result.get("return").asString != "OK") {
+                throw IllegalStateException("Server returned error: ${result.get("error").asString}")
             }
         }
     }
