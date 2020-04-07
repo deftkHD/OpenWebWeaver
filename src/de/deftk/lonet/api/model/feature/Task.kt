@@ -18,7 +18,7 @@ class Task(jsonObject: JsonObject, val group: Member) {
     val id: String = jsonObject.get("id").asString
     val title: String? = jsonObject.get("title")?.asString
     val description: String? = jsonObject.get("description")?.asString
-    val startDate: Date? = if(jsonObject.get("start_date").asInt != 0) Date(jsonObject.get("start_date").asLong * 1000) else null
+    val startDate: Date? = if (jsonObject.get("start_date").asInt != 0) Date(jsonObject.get("start_date").asLong * 1000) else null
     val endDate: Date? = if (jsonObject.get("due_date").asInt != 0) Date(jsonObject.get("due_date").asLong * 1000) else null
     var completed: Boolean = jsonObject.get("completed").asInt == 1
         private set

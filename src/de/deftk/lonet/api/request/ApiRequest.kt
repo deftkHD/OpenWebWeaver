@@ -32,10 +32,10 @@ open class ApiRequest(val serverUrl: String) {
 
     fun addSetFocusRequest(`object`: String?, login: String?) {
         val obj = JsonObject()
-        if(`object` != null) {
+        if (`object` != null) {
             obj.addProperty("object", `object`)
         }
-        if(login != null) {
+        if (login != null) {
             obj.addProperty("login", login)
         }
         addRequest("set_focus", obj)
@@ -50,7 +50,7 @@ open class ApiRequest(val serverUrl: String) {
     fun addExportSessionFileRequest(id: String, str2: String?) {
         val obj = JsonObject()
         obj.addProperty("id", id)
-        if(str2?.isNotEmpty() == true) {
+        if (str2?.isNotEmpty() == true) {
             obj.addProperty("", str2) // FontsContractCompat.Column
         }
         addRequest("export_session_file", obj)

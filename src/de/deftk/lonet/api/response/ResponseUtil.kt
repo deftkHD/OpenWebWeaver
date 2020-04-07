@@ -8,7 +8,7 @@ object ResponseUtil {
     fun getSubResponse(response: JsonElement, id: Int): JsonObject {
         check(response.isJsonArray)
         response.asJsonArray.map { it.asJsonObject }.forEach { subResponse ->
-            if(subResponse.get("id").asInt == id)
+            if (subResponse.get("id").asInt == id)
                 return subResponse
         }
         error("invalid response (expecting sub response with id $id): $response")
@@ -23,7 +23,7 @@ object ResponseUtil {
         var sub: JsonObject? = null
         response.asJsonArray.map { it.asJsonObject }.forEach { subResponse ->
             val result = subResponse.get("result").asJsonObject
-            if(result.get("method")?.asString == method) {
+            if (result.get("method")?.asString == method) {
                 sub = result
             }
         }
@@ -33,7 +33,7 @@ object ResponseUtil {
     fun checkSuccess(response: JsonElement) {
         response.asJsonArray.map { it.asJsonObject }.forEach { subResponse ->
             val result = subResponse.get("return")?.asString
-            if(result != null && result != "OK") {
+            if (result != null && result != "OK") {
                 throw IllegalStateException("Server returned error: ")
             }
         }

@@ -26,7 +26,7 @@ class SystemNotification(jsonObject: JsonObject) {
         member = Member(jsonObject.get("from_user").asJsonObject, null)
         group = Member(jsonObject.get("from_group").asJsonObject, null)
         val id = jsonObject.get("from_id")
-        fromId = if(id.isJsonNull) null else id.asString
+        fromId = if (id.isJsonNull) null else id.asString
         read = jsonObject.get("is_unread").asInt == 0
         obj = jsonObject.get("obj")?.asString
     }
@@ -70,7 +70,8 @@ class SystemNotification(jsonObject: JsonObject) {
         companion object {
             @JvmStatic
             fun getById(id: String): SystemNotificationType {
-                return values().firstOrNull { it.id == id } ?: UNKNOWN.apply { println("Unknown system notification $id") } //TODO print title
+                return values().firstOrNull { it.id == id }
+                    ?: UNKNOWN.apply { println("Unknown system notification $id") } //TODO print title
             }
         }
     }

@@ -1,5 +1,6 @@
 package de.deftk.lonet.api.model
 
+//TODO update
 enum class Feature(val supported: Boolean, val permissions: List<Permission>) {
     STATISTICS(false, listOf(Permission.STATISTICS)),
     ADMINISTRATION_GROUP(false, listOf(Permission.ADMINISTRATION_GROUP, Permission.ADMINISTRATION_GROUP_ADMIN)),

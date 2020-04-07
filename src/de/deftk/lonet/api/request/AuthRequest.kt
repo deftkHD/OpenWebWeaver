@@ -37,7 +37,7 @@ open class AuthRequest(serverUrl: String) : ApiRequest(serverUrl) {
         obj.addProperty("disable_logout", true)
         obj.addProperty("ping_master", 1)
         obj.addProperty("locale", Locale.getDefault().language)
-        if(targetUrlPath?.isNotEmpty() == true) {
+        if (targetUrlPath?.isNotEmpty() == true) {
             obj.addProperty("target_url_path", targetUrlPath)
         }
         addRequest("get_url_for_autologin", obj)
@@ -48,7 +48,7 @@ open class AuthRequest(serverUrl: String) : ApiRequest(serverUrl) {
         val random = Random()
         val salt = StringBuilder()
         val size = random.nextInt(5) + 8
-        for(i in 0 until size) {
+        for (i in 0 until size) {
             salt.append(chars[random.nextInt(62)])
         }
         val obj = JsonObject()

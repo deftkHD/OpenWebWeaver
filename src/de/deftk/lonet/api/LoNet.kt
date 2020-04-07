@@ -18,14 +18,20 @@ object LoNet {
         val responsibleHost = getResponsibleHost(username)
         val request = AuthRequest(responsibleHost)
         request.addLoginPasswordRequest(username, password)
-        if(createTrust) {
+        if (createTrust) {
             request.addSetFocusRequest("trusts")
             request.addRegisterMasterRequest()
         }
         request.addGetInformationRequest()
         val response = performJsonApiRequest(request)
         ResponseUtil.checkSuccess(response.toJson())
-        return User(username, if(createTrust) ResponseUtil.getSubResponseResultByMethod(response.toJson(), "register_master").get("trust").asJsonObject.get("token").asString else password, responsibleHost, response)
+        return User(
+            username,
+            if (createTrust) ResponseUtil.getSubResponseResultByMethod(response.toJson(), "register_master")
+                .get("trust").asJsonObject.get("token").asString else password,
+            responsibleHost,
+            response
+        )
     }
 
     fun loginToken(username: String, token: String): User {

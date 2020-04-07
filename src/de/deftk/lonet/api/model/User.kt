@@ -1,6 +1,5 @@
 package de.deftk.lonet.api.model
 
-import com.google.gson.JsonObject
 import de.deftk.lonet.api.LoNet
 import de.deftk.lonet.api.model.feature.SystemNotification
 import de.deftk.lonet.api.model.feature.Task
@@ -8,7 +7,6 @@ import de.deftk.lonet.api.request.ApiRequest
 import de.deftk.lonet.api.response.ApiResponse
 import de.deftk.lonet.api.response.ResponseUtil
 
-//TODO not sure if the complete response should be passed to the user
 class User(val username: String, val authKey: String, responsibleHost: String, response: ApiResponse) :
     Member(
         response.toJson().asJsonArray.get(0).asJsonObject.get("result").asJsonObject.get("user").asJsonObject,

@@ -41,5 +41,4 @@ class OnlineFile(jsonObject: JsonObject) {
     }
 
 
-
 }
