@@ -1,6 +1,5 @@
 package de.deftk.lonet.api.model
 
-import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import de.deftk.lonet.api.LoNet
 import de.deftk.lonet.api.model.feature.Notification

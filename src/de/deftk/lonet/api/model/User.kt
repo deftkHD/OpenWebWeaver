@@ -1,8 +1,11 @@
 package de.deftk.lonet.api.model
 
+import com.google.gson.JsonObject
 import de.deftk.lonet.api.LoNet
+import de.deftk.lonet.api.model.feature.Quota
 import de.deftk.lonet.api.model.feature.SystemNotification
 import de.deftk.lonet.api.model.feature.Task
+import de.deftk.lonet.api.model.feature.mailbox.EmailFolder
 import de.deftk.lonet.api.request.ApiRequest
 import de.deftk.lonet.api.response.ApiResponse
 import de.deftk.lonet.api.response.ResponseUtil
@@ -53,6 +56,54 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
         val response = LoNet.performJsonApiRequest(request)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         return subResponse.get("url").asString
+    }
+
+    fun getEmailStatus(): Pair<Quota, Int> {
+        val request = ApiRequest(responsibleHost!!)
+        request.addSetSessionRequest(sessionId)
+        request.addSetFocusRequest("mailbox", login)
+        request.addRequest("get_state", null)
+        val response = LoNet.performJsonApiRequest(request)
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
+        return Pair(Quota(subResponse.get("quota").asJsonObject), subResponse.get("unread_messages").asInt)
+    }
+
+    fun getEmailQuota(): Quota {
+        return getEmailStatus().first
+    }
+
+    fun getUnreadEmailCount(): Int {
+        return getEmailStatus().second
+    }
+
+    fun getEmailFolders(): List<EmailFolder> {
+        val request = ApiRequest(responsibleHost!!)
+        request.addSetSessionRequest(sessionId)
+        request.addSetFocusRequest("mailbox")
+        request.addRequest("get_folders", null)
+        val response = LoNet.performJsonApiRequest(request)
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
+        return subResponse.get("folders").asJsonArray.map { EmailFolder(it.asJsonObject, responsibleHost) }
+    }
+
+    //TODO attachments
+    fun sendEmail(to: String, subject: String, plainBody: String, text: String? = null, blindCopyTo: String? = null, copyTo: String? = null) {
+        val request = ApiRequest(responsibleHost!!)
+        request.addSetSessionRequest(sessionId)
+        request.addSetFocusRequest("mailbox")
+        val requestParams = JsonObject()
+        requestParams.addProperty("to", to)
+        requestParams.addProperty("subject", subject)
+        requestParams.addProperty("body_plain", plainBody)
+        if (text != null)
+            requestParams.addProperty("text", text)
+        if (blindCopyTo != null)
+            requestParams.addProperty("bcc", blindCopyTo)
+        if (copyTo != null)
+            requestParams.addProperty("cc", copyTo)
+        request.addRequest("send_mail", requestParams)
+        val response = LoNet.performJsonApiRequest(request)
+        ResponseUtil.checkSuccess(response.toJson())
     }
 
     fun getSystemNofications(): List<SystemNotification> {
