@@ -13,20 +13,18 @@ open class Member(userObject: JsonObject, protected val responsibleHost: String?
 
     //TODO check if request is successful
 
-    val login: String
-    val name: String?
-    val type: Int?
+    val login = userObject.get("login").asString
+    val name = userObject.get("name_hr")?.asString
+    val type = userObject.get("type")?.asInt
     val permissions: List<Permission>
-    val baseUser: Member?
-    val fullName: String?
-    val passwordMustChange: Boolean?
+    val baseUser = if (userObject.has("base_user")) Member(userObject.get("base_user").asJsonObject, responsibleHost) else null
+    val fullName = userObject.get("fullname")?.asString
+    val passwordMustChange = userObject.get("password_must_change")?.asInt == 1
     val memberPermissions: List<Permission>
     val reducedMemberPermissions: List<Permission>
+    val isOnline = userObject.get("is_online")?.asInt == 1
 
     init {
-        login = userObject.get("login").asString
-        name = userObject.get("name_hr")?.asString
-        type = userObject.get("type")?.asInt
         userObject.get("base_rights")?.asJsonArray?.add("self") // dirty hack
         val permissions = mutableListOf<Permission>()
         userObject.get("base_rights")?.asJsonArray?.forEach { perm ->
@@ -34,9 +32,6 @@ open class Member(userObject: JsonObject, protected val responsibleHost: String?
         }
         permissions.addAll(Permission.getByName("self"))
         this.permissions = permissions
-        baseUser = if (userObject.has("base_user")) Member(userObject.get("base_user").asJsonObject, responsibleHost) else null
-        fullName = userObject.get("fullname")?.asString
-        passwordMustChange = userObject.get("password_must_change")?.asInt == 1
 
         val memberPermissions = mutableListOf<Permission>()
         userObject.get("member_rights")?.asJsonArray?.forEach { perm ->
