@@ -2,14 +2,12 @@ package de.deftk.lonet.api.model
 
 import com.google.gson.JsonObject
 import de.deftk.lonet.api.LoNet
-import de.deftk.lonet.api.model.feature.Notification
-import de.deftk.lonet.api.model.feature.OnlineFile
-import de.deftk.lonet.api.model.feature.Quota
-import de.deftk.lonet.api.model.feature.Task
+import de.deftk.lonet.api.model.feature.*
+import de.deftk.lonet.api.model.feature.files.FileProvider
 import de.deftk.lonet.api.request.ApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
 
-open class Member(userObject: JsonObject, protected val responsibleHost: String?) {
+open class Member(userObject: JsonObject, protected val responsibleHost: String?): FileProvider("/", responsibleHost, userObject.get("login").asString) {
 
     //TODO check if request is successful
 
@@ -75,39 +73,6 @@ open class Member(userObject: JsonObject, protected val responsibleHost: String?
         val response = LoNet.performJsonApiRequest(request)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         return subResponse.get("entries")?.asJsonArray?.map { Notification(it.asJsonObject) } ?: emptyList()
-    }
-
-    fun getFiles(
-        sessionId: String,
-        folderId: String = "/",
-        getFileDownloadUrl: Boolean = true,
-        getFiles: Boolean = true,
-        getFolders: Boolean = false,
-        getRoot: Boolean = false,
-        limit: Int = 2,
-        offset: Int = 0,
-        recursive: Boolean = false,
-        searchOption: FileSearchOption = FileSearchOption.WORD_CONTAINS,
-        searchString: String = ""
-    ): List<OnlineFile> {
-        val request = ApiRequest(responsibleHost!!)
-        request.addSetSessionRequest(sessionId)
-        request.addSetFocusRequest("files", login)
-        val json = JsonObject()
-        json.addProperty("folder_id", folderId)
-        json.addProperty("get_file_download_url", if (getFileDownloadUrl) 1 else 0)
-        json.addProperty("get_files", if (getFiles) 1 else 0)
-        json.addProperty("get_folders", if (getFolders) 1 else 0)
-        json.addProperty("get_root", if (getRoot) 1 else 0)
-        json.addProperty("limit", limit)
-        json.addProperty("offset", offset)
-        json.addProperty("recursive", if (recursive) 1 else 0)
-        json.addProperty("search_option", searchOption.id)
-        json.addProperty("search_string", searchString)
-        request.addRequest("get_entries", json)
-        val response = LoNet.performJsonApiRequest(request)
-        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
-        return subResponse.get("entries")?.asJsonArray?.map { OnlineFile(it.asJsonObject) } ?: emptyList()
     }
 
     fun getFileQuota(sessionId: String): Quota {
