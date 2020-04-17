@@ -1,10 +1,12 @@
 package de.deftk.lonet.api
 
+import de.deftk.lonet.api.cache.DefaultCacheController
+import de.deftk.lonet.api.cache.ICacheController
 import de.deftk.lonet.api.model.User
 import de.deftk.lonet.api.request.ApiRequest
 import de.deftk.lonet.api.request.AuthRequest
-import de.deftk.lonet.api.request.DefaultRequestHandler
-import de.deftk.lonet.api.request.IRequestHandler
+import de.deftk.lonet.api.request.handler.DefaultRequestHandler
+import de.deftk.lonet.api.request.handler.IRequestHandler
 import de.deftk.lonet.api.response.ApiResponse
 import de.deftk.lonet.api.response.ResponseUtil
 import java.io.BufferedReader
@@ -17,6 +19,7 @@ import javax.net.ssl.HttpsURLConnection
 object LoNet {
 
     var requestHandler: IRequestHandler = DefaultRequestHandler()
+    var cacheController: ICacheController? = DefaultCacheController()
 
     fun login(username: String, password: String): User {
         val responsibleHost = getResponsibleHost(username)

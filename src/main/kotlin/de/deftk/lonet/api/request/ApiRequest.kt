@@ -60,4 +60,22 @@ open class ApiRequest(val serverUrl: String) {
         addRequest("get_information", 999, JsonObject())
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ApiRequest
+
+        if (serverUrl != other.serverUrl) return false
+        if (requests != other.requests) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = serverUrl.hashCode()
+        result = 31 * result + requests.hashCode()
+        return result
+    }
+
 }
