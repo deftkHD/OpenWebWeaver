@@ -18,7 +18,7 @@ abstract class FileProvider(private val directory: String, private val responsib
         json.addProperty("get_folders", 1)
         json.addProperty("recursive", 0)
         request.addRequest("get_entries", json)
-        val response = LoNet.performJsonApiRequest(request)
+        val response = LoNet.requestHandler.performRequest(request)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         return subResponse.get("entries")?.asJsonArray?.map { OnlineFile(it.asJsonObject, responsibleHost, login) } ?: emptyList()
     }

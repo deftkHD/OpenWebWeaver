@@ -3,6 +3,8 @@ package de.deftk.lonet.api
 import de.deftk.lonet.api.model.User
 import de.deftk.lonet.api.request.ApiRequest
 import de.deftk.lonet.api.request.AuthRequest
+import de.deftk.lonet.api.request.DefaultRequestHandler
+import de.deftk.lonet.api.request.IRequestHandler
 import de.deftk.lonet.api.response.ApiResponse
 import de.deftk.lonet.api.response.ResponseUtil
 import java.io.BufferedReader
@@ -14,12 +16,14 @@ import javax.net.ssl.HttpsURLConnection
 
 object LoNet {
 
+    var requestHandler: IRequestHandler = DefaultRequestHandler()
+
     fun login(username: String, password: String): User {
         val responsibleHost = getResponsibleHost(username)
         val authRequest = AuthRequest(responsibleHost)
         authRequest.addLoginPasswordRequest(username, password)
         authRequest.addGetInformationRequest()
-        val response = performJsonApiRequest(authRequest)
+        val response = requestHandler.performRequest(authRequest)
         ResponseUtil.checkSuccess(response.toJson())
         return User(username, password, responsibleHost, response)
     }
@@ -31,7 +35,7 @@ object LoNet {
         authRequest.addSetFocusRequest("trusts")
         authRequest.addRegisterMasterRequest(title, ident)
         authRequest.addGetInformationRequest()
-        val response = performJsonApiRequest(authRequest)
+        val response = requestHandler.performRequest(authRequest)
         ResponseUtil.checkSuccess(response.toJson())
         return User(
                 username,
@@ -46,7 +50,7 @@ object LoNet {
         val responsibleHost = getResponsibleHost(username)
         val nonceRequest = AuthRequest(responsibleHost)
         nonceRequest.addGetNonceRequest()
-        val nonceResponse = performJsonApiRequest(nonceRequest)
+        val nonceResponse = requestHandler.performRequest(nonceRequest)
         val nonceJson =
                 nonceResponse.toJson().asJsonArray.get(0).asJsonObject.get("result").asJsonObject.get("nonce").asJsonObject
         val nonceId = nonceJson.get("id").asString
@@ -59,11 +63,14 @@ object LoNet {
             authRequest.addUnregisterMasterRequest()
         }
         authRequest.addGetInformationRequest()
-        val response = performJsonApiRequest(authRequest)
+        val response = requestHandler.performRequest(authRequest)
         ResponseUtil.checkSuccess(response.toJson())
         return User(username, token, responsibleHost, response)
     }
 
+    /**
+     * Might be a bit confusing. If you are not writing your own RequestHandler, please use LoNet.requestHandler.performRequest instead of this
+     */
     fun performJsonApiRequest(request: ApiRequest): ApiResponse {
         val serverUrl = request.serverUrl
         val requestStr = request.requests.toString()

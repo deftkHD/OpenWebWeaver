@@ -4,6 +4,7 @@ import java.util.Formatter;
 
 public class JavaUtil {
 
+    //TODO rewrite in kotlin
     public static String byteToHex(byte[] bArr) {
         if (bArr == null) {
             return "";

@@ -24,7 +24,7 @@ class EmailFolder(jsonObject: JsonObject, private val responsibleHost: String) {
         val requestParams = JsonObject()
         requestParams.addProperty("folder_id", id)
         request.addRequest("get_messages", requestParams)
-        val response = LoNet.performJsonApiRequest(request)
+        val response = LoNet.requestHandler.performRequest(request)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         return subResponse.get("messages").asJsonArray.map { Email(it.asJsonObject, this, responsibleHost) }
     }

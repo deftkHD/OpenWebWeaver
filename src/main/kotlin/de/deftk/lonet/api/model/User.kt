@@ -49,7 +49,7 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
             val tmpUser = LoNet.loginToken(username, authKey, true)
             tmpUser.logout(false)
         }
-        val response = LoNet.performJsonApiRequest(request)
+        val response = LoNet.requestHandler.performRequest(request)
         println(response.raw)
     }
 
@@ -58,7 +58,7 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
         request.addSetSessionRequest(sessionId)
         request.addSetFocusRequest("trusts", login)
         request.addRequest("get_url_for_autologin", null)
-        val response = LoNet.performJsonApiRequest(request)
+        val response = LoNet.requestHandler.performRequest(request)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         return subResponse.get("url").asString
     }
@@ -68,7 +68,7 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
         request.addSetSessionRequest(sessionId)
         request.addSetFocusRequest("mailbox", login)
         request.addRequest("get_state", null)
-        val response = LoNet.performJsonApiRequest(request)
+        val response = LoNet.requestHandler.performRequest(request)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         return Pair(Quota(subResponse.get("quota").asJsonObject), subResponse.get("unread_messages").asInt)
     }
@@ -86,7 +86,7 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
         request.addSetSessionRequest(sessionId)
         request.addSetFocusRequest("mailbox")
         request.addRequest("get_folders", null)
-        val response = LoNet.performJsonApiRequest(request)
+        val response = LoNet.requestHandler.performRequest(request)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         return subResponse.get("folders").asJsonArray.map { EmailFolder(it.asJsonObject, responsibleHost) }
     }
@@ -107,7 +107,7 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
         if (copyTo != null)
             requestParams.addProperty("cc", copyTo)
         request.addRequest("send_mail", requestParams)
-        val response = LoNet.performJsonApiRequest(request)
+        val response = LoNet.requestHandler.performRequest(request)
         ResponseUtil.checkSuccess(response.toJson())
     }
 
@@ -116,7 +116,7 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
         request.addSetSessionRequest(sessionId)
         request.addSetFocusRequest("messages")
         request.addRequest("get_messages", null)
-        val response = LoNet.performJsonApiRequest(request)
+        val response = LoNet.requestHandler.performRequest(request)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         return subResponse.get("messages")?.asJsonArray?.map { SystemNotification(it.asJsonObject) } ?: emptyList()
     }

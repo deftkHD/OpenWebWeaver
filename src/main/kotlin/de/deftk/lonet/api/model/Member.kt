@@ -23,7 +23,7 @@ open class Member(userObject: JsonObject, protected val responsibleHost: String?
     val isOnline = userObject.get("is_online")?.asInt == 1
 
     init {
-        userObject.get("base_rights")?.asJsonArray?.add("self") // dirty hack
+        userObject.get("base_rights")?.asJsonArray?.add("self") // dirty hack, because too lazy to fix permissions ^^
         val permissions = mutableListOf<Permission>()
         userObject.get("base_rights")?.asJsonArray?.forEach { perm ->
             permissions.addAll(Permission.getByName(perm.asString))
@@ -50,7 +50,7 @@ open class Member(userObject: JsonObject, protected val responsibleHost: String?
         request.addSetSessionRequest(sessionId)
         request.addSetFocusRequest("tasks", login)
         request.addRequest("get_entries", null)
-        val response = LoNet.performJsonApiRequest(request)
+        val response = LoNet.requestHandler.performRequest(request)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         return subResponse.get("entries")?.asJsonArray?.map { Task(it.asJsonObject, this) } ?: emptyList()
     }
@@ -60,7 +60,7 @@ open class Member(userObject: JsonObject, protected val responsibleHost: String?
         request.addSetSessionRequest(sessionId)
         request.addSetFocusRequest("members", login)
         request.addRequest("get_users", null)
-        val response = LoNet.performJsonApiRequest(request)
+        val response = LoNet.requestHandler.performRequest(request)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         return subResponse.get("users")?.asJsonArray?.map { Member(it.asJsonObject, responsibleHost) } ?: emptyList()
     }
@@ -70,7 +70,7 @@ open class Member(userObject: JsonObject, protected val responsibleHost: String?
         request.addSetSessionRequest(sessionId)
         request.addSetFocusRequest("board", login)
         request.addRequest("get_entries", null)
-        val response = LoNet.performJsonApiRequest(request)
+        val response = LoNet.requestHandler.performRequest(request)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         return subResponse.get("entries")?.asJsonArray?.map { Notification(it.asJsonObject) } ?: emptyList()
     }
@@ -80,7 +80,7 @@ open class Member(userObject: JsonObject, protected val responsibleHost: String?
         request.addSetSessionRequest(sessionId)
         request.addSetFocusRequest("files", login)
         request.addRequest("get_state", null)
-        val response = LoNet.performJsonApiRequest(request)
+        val response = LoNet.requestHandler.performRequest(request)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         return Quota(subResponse.get("quota").asJsonObject)
     }
