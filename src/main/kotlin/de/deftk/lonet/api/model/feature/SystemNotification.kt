@@ -31,6 +31,7 @@ class SystemNotification(jsonObject: JsonObject) {
         obj = jsonObject.get("obj")?.asString
     }
 
+    //TODO this is not even correct implemented
     fun delete(sessionId: String, responsibleHost: String) {
         val request = ApiRequest(responsibleHost)
         request.addSetSessionRequest(sessionId)

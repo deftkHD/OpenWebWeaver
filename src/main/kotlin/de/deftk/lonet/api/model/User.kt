@@ -28,19 +28,19 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
         memberships = loginResponse.get("member").asJsonArray.map { Member(it.asJsonObject, responsibleHost) }
     }
 
-    fun getTasks(): List<Task> {
-        return getTasks(sessionId)
+    fun getTasks(overwriteCache: Boolean = false): List<Task> {
+        return getTasks(sessionId, overwriteCache)
     }
 
-    override fun getTasks(sessionId: String): List<Task> {
-        val tasks = super.getTasks(sessionId).toMutableList()
+    override fun getTasks(sessionId: String, overwriteCache: Boolean): List<Task> {
+        val tasks = super.getTasks(sessionId, overwriteCache).toMutableList()
         memberships.forEach { membership ->
-            tasks.addAll(membership.getTasks(sessionId))
+            tasks.addAll(membership.getTasks(sessionId, overwriteCache))
         }
         return tasks
     }
 
-    fun logout(removeTrust: Boolean = true) {
+    fun logout(removeTrust: Boolean = true, overwriteCache: Boolean = false) {
         val request = ApiRequest(responsibleHost!!)
         request.addSetSessionRequest(sessionId)
         request.addRequest("logout", null)
@@ -49,50 +49,50 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
             val tmpUser = LoNet.loginToken(username, authKey, true)
             tmpUser.logout(false)
         }
-        val response = LoNet.requestHandler.performRequest(request)
+        val response = LoNet.requestHandler.performRequest(request, !overwriteCache)
         println(response.raw)
     }
 
-    fun getAutoLoginUrl(): String {
+    fun getAutoLoginUrl(overwriteCache: Boolean = false): String {
         val request = ApiRequest(responsibleHost!!)
         request.addSetSessionRequest(sessionId)
         request.addSetFocusRequest("trusts", login)
         request.addRequest("get_url_for_autologin", null)
-        val response = LoNet.requestHandler.performRequest(request)
+        val response = LoNet.requestHandler.performRequest(request, !overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         return subResponse.get("url").asString
     }
 
-    fun getEmailStatus(): Pair<Quota, Int> {
+    fun getEmailStatus(overwriteCache: Boolean = false): Pair<Quota, Int> {
         val request = ApiRequest(responsibleHost!!)
         request.addSetSessionRequest(sessionId)
         request.addSetFocusRequest("mailbox", login)
         request.addRequest("get_state", null)
-        val response = LoNet.requestHandler.performRequest(request)
+        val response = LoNet.requestHandler.performRequest(request, !overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         return Pair(Quota(subResponse.get("quota").asJsonObject), subResponse.get("unread_messages").asInt)
     }
 
-    fun getEmailQuota(): Quota {
-        return getEmailStatus().first
+    fun getEmailQuota(overwriteCache: Boolean = false): Quota {
+        return getEmailStatus(overwriteCache).first
     }
 
-    fun getUnreadEmailCount(): Int {
-        return getEmailStatus().second
+    fun getUnreadEmailCount(overwriteCache: Boolean = false): Int {
+        return getEmailStatus(overwriteCache).second
     }
 
-    fun getEmailFolders(): List<EmailFolder> {
+    fun getEmailFolders(overwriteCache: Boolean = false): List<EmailFolder> {
         val request = ApiRequest(responsibleHost!!)
         request.addSetSessionRequest(sessionId)
         request.addSetFocusRequest("mailbox")
         request.addRequest("get_folders", null)
-        val response = LoNet.requestHandler.performRequest(request)
+        val response = LoNet.requestHandler.performRequest(request, !overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         return subResponse.get("folders").asJsonArray.map { EmailFolder(it.asJsonObject, responsibleHost) }
     }
 
     //TODO attachments
-    fun sendEmail(to: String, subject: String, plainBody: String, text: String? = null, blindCopyTo: String? = null, copyTo: String? = null) {
+    fun sendEmail(to: String, subject: String, plainBody: String, text: String? = null, blindCopyTo: String? = null, copyTo: String? = null, overwriteCache: Boolean = false) {
         val request = ApiRequest(responsibleHost!!)
         request.addSetSessionRequest(sessionId)
         request.addSetFocusRequest("mailbox")
@@ -107,16 +107,16 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
         if (copyTo != null)
             requestParams.addProperty("cc", copyTo)
         request.addRequest("send_mail", requestParams)
-        val response = LoNet.requestHandler.performRequest(request)
+        val response = LoNet.requestHandler.performRequest(request, !overwriteCache)
         ResponseUtil.checkSuccess(response.toJson())
     }
 
-    fun getSystemNofications(): List<SystemNotification> {
+    fun getSystemNofications(overwriteCache: Boolean = false): List<SystemNotification> {
         val request = ApiRequest(responsibleHost!!)
         request.addSetSessionRequest(sessionId)
         request.addSetFocusRequest("messages")
         request.addRequest("get_messages", null)
-        val response = LoNet.requestHandler.performRequest(request)
+        val response = LoNet.requestHandler.performRequest(request, !overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         return subResponse.get("messages")?.asJsonArray?.map { SystemNotification(it.asJsonObject) } ?: emptyList()
     }

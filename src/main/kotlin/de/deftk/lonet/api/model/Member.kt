@@ -44,43 +44,43 @@ open class Member(userObject: JsonObject, protected val responsibleHost: String?
         this.reducedMemberPermissions = reducedMemberPermissions
     }
 
-    open fun getTasks(sessionId: String): List<Task> {
+    open fun getTasks(sessionId: String, overwriteCache: Boolean = false): List<Task> {
         check(responsibleHost != null) { "Can't do API calls for this member" }
         val request = ApiRequest(responsibleHost)
         request.addSetSessionRequest(sessionId)
         request.addSetFocusRequest("tasks", login)
         request.addRequest("get_entries", null)
-        val response = LoNet.requestHandler.performRequest(request)
+        val response = LoNet.requestHandler.performRequest(request, !overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         return subResponse.get("entries")?.asJsonArray?.map { Task(it.asJsonObject, this) } ?: emptyList()
     }
 
-    fun getMembers(sessionId: String): List<Member> {
+    fun getMembers(sessionId: String, overwriteCache: Boolean = false): List<Member> {
         val request = ApiRequest(responsibleHost!!)
         request.addSetSessionRequest(sessionId)
         request.addSetFocusRequest("members", login)
         request.addRequest("get_users", null)
-        val response = LoNet.requestHandler.performRequest(request)
+        val response = LoNet.requestHandler.performRequest(request, !overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         return subResponse.get("users")?.asJsonArray?.map { Member(it.asJsonObject, responsibleHost) } ?: emptyList()
     }
 
-    fun getNotifications(sessionId: String): List<Notification> {
+    fun getNotifications(sessionId: String, overwriteCache: Boolean = false): List<Notification> {
         val request = ApiRequest(responsibleHost!!)
         request.addSetSessionRequest(sessionId)
         request.addSetFocusRequest("board", login)
         request.addRequest("get_entries", null)
-        val response = LoNet.requestHandler.performRequest(request)
+        val response = LoNet.requestHandler.performRequest(request, !overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         return subResponse.get("entries")?.asJsonArray?.map { Notification(it.asJsonObject) } ?: emptyList()
     }
 
-    fun getFileQuota(sessionId: String): Quota {
+    fun getFileQuota(sessionId: String, overwriteCache: Boolean = false): Quota {
         val request = ApiRequest(responsibleHost!!)
         request.addSetSessionRequest(sessionId)
         request.addSetFocusRequest("files", login)
         request.addRequest("get_state", null)
-        val response = LoNet.requestHandler.performRequest(request)
+        val response = LoNet.requestHandler.performRequest(request, !overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         return Quota(subResponse.get("quota").asJsonObject)
     }

@@ -18,7 +18,7 @@ class Email(jsonObject: JsonObject, val folder: EmailFolder, private val respons
     val size = jsonObject.get("size").asLong
     val from = jsonObject.get("from").asJsonArray.map { EmailAddress(it.asJsonObject) }
 
-    fun read(sessionId: String): EmailContent {
+    fun read(sessionId: String, overwriteCache: Boolean = false): EmailContent {
         val request = ApiRequest(responsibleHost)
         request.addSetSessionRequest(sessionId)
         request.addSetFocusRequest("mailbox")
@@ -26,7 +26,7 @@ class Email(jsonObject: JsonObject, val folder: EmailFolder, private val respons
         requestParams.addProperty("folder_id", folder.id)
         requestParams.addProperty("message_id", id)
         request.addRequest("read_message", requestParams)
-        val response = LoNet.requestHandler.performRequest(request)
+        val response = LoNet.requestHandler.performRequest(request, !overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         read = true
         return EmailContent(subResponse.get("message").asJsonObject)

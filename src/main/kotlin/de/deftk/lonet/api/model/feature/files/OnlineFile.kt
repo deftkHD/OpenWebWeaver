@@ -38,12 +38,12 @@ class OnlineFile(jsonObject: JsonObject, responsibleHost: String?, login: String
         modificationMember = Member(modifiedObject.get("user").asJsonObject, null)
     }
 
-    fun getTmpDownloadUrl(sessionId: String) {
+    fun getTmpDownloadUrl(sessionId: String, overwriteCache: Boolean = false) {
         //if (downloadUrl != null)
         TODO("not implemented yet")
     }
 
-    fun delete(sessionId: String) {
+    fun delete(sessionId: String, overwriteCache: Boolean = false) {
         TODO("not implemented yet")
     }
 
@@ -55,9 +55,9 @@ class OnlineFile(jsonObject: JsonObject, responsibleHost: String?, login: String
         return DecimalFormat("#,##0.#").format(size / 1024.0.pow(digitGroups.toDouble())) + " " + units[digitGroups]
     }
 
-    override fun getFiles(sessionId: String): List<OnlineFile> {
+    override fun getFiles(sessionId: String, overwriteCache: Boolean): List<OnlineFile> {
         check(type == FileType.FOLDER)
-        return super.getFiles(sessionId)
+        return super.getFiles(sessionId, overwriteCache)
     }
 
     override fun toString(): String {

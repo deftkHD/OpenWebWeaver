@@ -26,7 +26,7 @@ object LoNet {
         val authRequest = AuthRequest(responsibleHost)
         authRequest.addLoginPasswordRequest(username, password)
         authRequest.addGetInformationRequest()
-        val response = requestHandler.performRequest(authRequest)
+        val response = requestHandler.performRequest(authRequest, false)
         ResponseUtil.checkSuccess(response.toJson())
         return User(username, password, responsibleHost, response)
     }
@@ -38,7 +38,7 @@ object LoNet {
         authRequest.addSetFocusRequest("trusts")
         authRequest.addRegisterMasterRequest(title, ident)
         authRequest.addGetInformationRequest()
-        val response = requestHandler.performRequest(authRequest)
+        val response = requestHandler.performRequest(authRequest, false)
         ResponseUtil.checkSuccess(response.toJson())
         return User(
                 username,
@@ -53,7 +53,7 @@ object LoNet {
         val responsibleHost = getResponsibleHost(username)
         val nonceRequest = AuthRequest(responsibleHost)
         nonceRequest.addGetNonceRequest()
-        val nonceResponse = requestHandler.performRequest(nonceRequest)
+        val nonceResponse = requestHandler.performRequest(nonceRequest, false)
         val nonceJson =
                 nonceResponse.toJson().asJsonArray.get(0).asJsonObject.get("result").asJsonObject.get("nonce").asJsonObject
         val nonceId = nonceJson.get("id").asString
@@ -66,7 +66,7 @@ object LoNet {
             authRequest.addUnregisterMasterRequest()
         }
         authRequest.addGetInformationRequest()
-        val response = requestHandler.performRequest(authRequest)
+        val response = requestHandler.performRequest(authRequest, false)
         ResponseUtil.checkSuccess(response.toJson())
         return User(username, token, responsibleHost, response)
     }

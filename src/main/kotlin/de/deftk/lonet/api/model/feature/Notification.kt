@@ -16,7 +16,6 @@ class Notification(jsonObject: JsonObject) {
     val modificationMember: Member
 
     init {
-
         val createdObject = jsonObject.get("created").asJsonObject
         creationDate = Date(createdObject.get("date").asLong * 1000)
         creationMember = Member(createdObject.get("user").asJsonObject, null)
