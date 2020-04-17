@@ -1,7 +1,6 @@
 package de.deftk.lonet.api.request
 
 import com.google.gson.JsonObject
-import de.deftk.lonet.api.JavaUtil
 import java.security.MessageDigest
 import java.util.*
 
@@ -80,11 +79,21 @@ open class AuthRequest(serverUrl: String) : ApiRequest(serverUrl) {
             val digest = MessageDigest.getInstance("SHA-1")
             digest.reset()
             digest.update(str.toByteArray(Charsets.UTF_8))
-            return JavaUtil.byteToHex(digest.digest())
+            return byteToHex(digest.digest() ?: ByteArray(0))
         } catch (e: Exception) {
             e.printStackTrace()
             str
         }
+    }
+
+    private fun byteToHex(bytes: ByteArray): String {
+        val formatter = Formatter()
+        bytes.forEach { byte ->
+            formatter.format("%02x", byte)
+        }
+        val formatted = formatter.toString()
+        formatter.close()
+        return formatted
     }
 
 }
