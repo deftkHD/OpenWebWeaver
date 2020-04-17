@@ -14,23 +14,31 @@ import javax.net.ssl.HttpsURLConnection
 
 object LoNet {
 
-    fun login(username: String, password: String, createTrust: Boolean = false): User {
+    fun login(username: String, password: String): User {
         val responsibleHost = getResponsibleHost(username)
         val authRequest = AuthRequest(responsibleHost)
         authRequest.addLoginPasswordRequest(username, password)
-        if (createTrust) {
-            authRequest.addSetFocusRequest("trusts")
-            authRequest.addRegisterMasterRequest()
-        }
+        authRequest.addGetInformationRequest()
+        val response = performJsonApiRequest(authRequest)
+        ResponseUtil.checkSuccess(response.toJson())
+        return User(username, password, responsibleHost, response)
+    }
+
+    fun loginCreateTrust(username: String, password: String, title: String, ident: String): User {
+        val responsibleHost = getResponsibleHost(username)
+        val authRequest = AuthRequest(responsibleHost)
+        authRequest.addLoginPasswordRequest(username, password)
+        authRequest.addSetFocusRequest("trusts")
+        authRequest.addRegisterMasterRequest(title, ident)
         authRequest.addGetInformationRequest()
         val response = performJsonApiRequest(authRequest)
         ResponseUtil.checkSuccess(response.toJson())
         return User(
-            username,
-            if (createTrust) ResponseUtil.getSubResponseResultByMethod(response.toJson(), "register_master")
-                .get("trust").asJsonObject.get("token").asString else password,
-            responsibleHost,
-            response
+                username,
+                ResponseUtil.getSubResponseResultByMethod(response.toJson(), "register_master")
+                        .get("trust").asJsonObject.get("token").asString,
+                responsibleHost,
+                response
         )
     }
 
@@ -40,7 +48,7 @@ object LoNet {
         nonceRequest.addGetNonceRequest()
         val nonceResponse = performJsonApiRequest(nonceRequest)
         val nonceJson =
-            nonceResponse.toJson().asJsonArray.get(0).asJsonObject.get("result").asJsonObject.get("nonce").asJsonObject
+                nonceResponse.toJson().asJsonArray.get(0).asJsonObject.get("result").asJsonObject.get("nonce").asJsonObject
         val nonceId = nonceJson.get("id").asString
         val nonceKey = nonceJson.get("key").asString
 

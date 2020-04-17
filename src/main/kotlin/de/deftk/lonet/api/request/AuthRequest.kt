@@ -2,7 +2,6 @@ package de.deftk.lonet.api.request
 
 import com.google.gson.JsonObject
 import de.deftk.lonet.api.JavaUtil
-import java.net.InetAddress
 import java.security.MessageDigest
 import java.util.*
 
@@ -22,11 +21,11 @@ open class AuthRequest(serverUrl: String) : ApiRequest(serverUrl) {
         addRequest("login", obj)
     }
 
-    fun addRegisterMasterRequest() {
+    fun addRegisterMasterRequest(title: String, ident: String) {
         val obj = JsonObject()
         obj.addProperty("remote_application", "wwa")
-        obj.addProperty("remote_title", "LoNet² Client")
-        obj.addProperty("remote_ident", System.getProperty("user.name") + "@" + InetAddress.getLocalHost().hostName)
+        obj.addProperty("remote_title", title)
+        obj.addProperty("remote_ident", ident)
         addRequest("register_master", obj)
     }
 
