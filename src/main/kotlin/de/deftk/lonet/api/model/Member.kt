@@ -7,7 +7,7 @@ import de.deftk.lonet.api.model.feature.files.FileProvider
 import de.deftk.lonet.api.request.ApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
 
-open class Member(userObject: JsonObject, protected val responsibleHost: String?): FileProvider("/", responsibleHost, userObject.get("login").asString) {
+open class Member(userObject: JsonObject, val responsibleHost: String?): FileProvider("/", responsibleHost, userObject.get("login").asString) {
 
     //TODO check if request is successful
 
