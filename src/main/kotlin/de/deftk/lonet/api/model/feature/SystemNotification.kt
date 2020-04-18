@@ -28,7 +28,7 @@ class SystemNotification(jsonObject: JsonObject) {
         val id = jsonObject.get("from_id")
         fromId = if (id.isJsonNull) null else id.asString
         read = jsonObject.get("is_unread").asInt == 0
-        obj = jsonObject.get("obj")?.asString
+        obj = jsonObject.get("object")?.asString
     }
 
     //TODO this is not even correct implemented
