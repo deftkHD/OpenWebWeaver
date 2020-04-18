@@ -2,6 +2,7 @@ package de.deftk.lonet.api.model
 
 import com.google.gson.JsonObject
 import de.deftk.lonet.api.LoNet
+import de.deftk.lonet.api.model.feature.Notification
 import de.deftk.lonet.api.model.feature.Quota
 import de.deftk.lonet.api.model.feature.SystemNotification
 import de.deftk.lonet.api.model.feature.Task
@@ -39,6 +40,19 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
                 tasks.addAll(membership.getTasks(sessionId, overwriteCache))
         }
         return tasks
+    }
+
+    fun getNotifications(overwriteCache: Boolean = false): List<Notification> {
+        val notifications = super.getNotifications(sessionId, overwriteCache).toMutableList()
+        memberships.forEach { membership ->
+            if (membership.memberPermissions.contains(Permission.BOARD))
+                notifications.addAll(membership.getNotifications(sessionId, overwriteCache))
+        }
+        return notifications
+    }
+
+    override fun getNotifications(sessionId: String, overwriteCache: Boolean): List<Notification> {
+        return super.getNotifications(sessionId, overwriteCache)
     }
 
     fun getFileQuota(overwriteCache: Boolean = false): Quota {

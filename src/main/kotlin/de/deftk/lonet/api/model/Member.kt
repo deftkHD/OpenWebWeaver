@@ -55,7 +55,7 @@ open class Member(userObject: JsonObject, protected val responsibleHost: String?
         return subResponse.get("entries")?.asJsonArray?.map { Task(it.asJsonObject, this) } ?: emptyList()
     }
 
-    fun getMembers(sessionId: String, overwriteCache: Boolean = false): List<Member> {
+    open fun getMembers(sessionId: String, overwriteCache: Boolean = false): List<Member> {
         val request = ApiRequest(responsibleHost!!)
         request.addSetSessionRequest(sessionId)
         request.addSetFocusRequest("members", login)
@@ -65,7 +65,7 @@ open class Member(userObject: JsonObject, protected val responsibleHost: String?
         return subResponse.get("users")?.asJsonArray?.map { Member(it.asJsonObject, responsibleHost) } ?: emptyList()
     }
 
-    fun getNotifications(sessionId: String, overwriteCache: Boolean = false): List<Notification> {
+    open fun getNotifications(sessionId: String, overwriteCache: Boolean = false): List<Notification> {
         val request = ApiRequest(responsibleHost!!)
         request.addSetSessionRequest(sessionId)
         request.addSetFocusRequest("board", login)
