@@ -72,12 +72,12 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
         println(response.raw)
     }
 
-    fun getAutoLoginUrl(overwriteCache: Boolean = false): String {
+    fun getAutoLoginUrl(): String {
         val request = ApiRequest(responsibleHost!!)
         request.addSetSessionRequest(sessionId)
         request.addSetFocusRequest("trusts", login)
         request.addRequest("get_url_for_autologin", null)
-        val response = LoNet.requestHandler.performRequest(request, !overwriteCache)
+        val response = LoNet.requestHandler.performRequest(request, false)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         return subResponse.get("url").asString
     }
