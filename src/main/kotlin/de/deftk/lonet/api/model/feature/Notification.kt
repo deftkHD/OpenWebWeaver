@@ -9,7 +9,7 @@ class Notification(jsonObject: JsonObject) {
     val id: String = jsonObject.get("id").asString
     val title: String? = jsonObject.get("title")?.asString
     val text: String? = jsonObject.get("text")?.asString
-    val color: Int = jsonObject.get("color").asInt
+    val color = NotificationColor.getById(jsonObject.get("color").asInt)
     val creationDate: Date
     val creationMember: Member
     val modificationDate: Date
@@ -41,6 +41,19 @@ class Notification(jsonObject: JsonObject) {
 
     override fun hashCode(): Int {
         return id.hashCode()
+    }
+
+    enum class NotificationColor(val id: Int) {
+        BLUE(0),
+        GREEN(1),
+        RED(2),
+        YELLOW(3),
+        WHITE(4),
+        UNKNOWN(-1);
+
+        companion object {
+            fun getById(id: Int) = values().firstOrNull { it.id == id } ?: UNKNOWN
+        }
     }
 
 }
