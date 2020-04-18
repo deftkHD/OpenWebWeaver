@@ -34,9 +34,9 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
 
     override fun getTasks(sessionId: String, overwriteCache: Boolean): List<Task> {
         val tasks = super.getTasks(sessionId, overwriteCache).toMutableList()
-        //TODO make sure user has permission to view tasks (will also improve performance, because it reduces 401/403 responses)
         memberships.forEach { membership ->
-            tasks.addAll(membership.getTasks(sessionId, overwriteCache))
+            if (membership.memberPermissions.contains(Permission.TASKS))
+                tasks.addAll(membership.getTasks(sessionId, overwriteCache))
         }
         return tasks
     }
