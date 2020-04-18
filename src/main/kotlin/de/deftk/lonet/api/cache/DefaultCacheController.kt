@@ -5,6 +5,8 @@ import de.deftk.lonet.api.response.ApiResponse
 
 class DefaultCacheController: ICacheController {
 
+    //TODO make sure cache doesn't overflow
+
     private val requestCache = mutableMapOf<ApiRequest, ApiResponse>()
 
     override fun isCached(request: ApiRequest): Boolean {

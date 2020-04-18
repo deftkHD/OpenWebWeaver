@@ -47,6 +47,7 @@ class OnlineFile(jsonObject: JsonObject, responsibleHost: String?, login: String
         TODO("not implemented yet")
     }
 
+    @Deprecated("clients should handle this themselves")
     fun getFormattedSize(): String {
         if (type == FileType.FOLDER)
             return ""
