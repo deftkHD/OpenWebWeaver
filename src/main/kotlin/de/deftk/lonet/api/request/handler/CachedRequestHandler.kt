@@ -4,7 +4,7 @@ import de.deftk.lonet.api.LoNet
 import de.deftk.lonet.api.request.ApiRequest
 import de.deftk.lonet.api.response.ApiResponse
 
-class DefaultRequestHandler : IRequestHandler {
+class CachedRequestHandler: IRequestHandler {
 
     override fun performRequest(request: ApiRequest, allowCachedResponse: Boolean): ApiResponse {
         if (allowCachedResponse && LoNet.cacheController != null && LoNet.cacheController!!.isCached(request)) {
