@@ -15,7 +15,7 @@ enum class Feature(val supported: Boolean, val permissions: List<Permission>) {
     BOARD(false, listOf(Permission.BOARD, Permission.BOARD_WRITE, Permission.BOARD_PUPIL, Permission.BOARD_PUPIL_WRITE, Permission.BOARD_TEACHER, Permission.BOARD_TEACHER_WRITE)),
     TASKS(false, listOf(Permission.TASKS, Permission.TASKS_WRITE)),
     COURSELETS(false, listOf(Permission.COURSELETS, Permission.COURSELETS_WRITE)),
-    FORUM(false, listOf(Permission.FORUM, Permission.FORUM_WRITE)),
+    FORUM(false, listOf(Permission.FORUM, Permission.FORUM_WRITE, Permission.FORUM_ADMIN)),
     WIKI(false, listOf(Permission.WIKI)),
     RESOURCEMANAGEMENT(false, listOf(Permission.RESOURCEMANAGEMENT, Permission.RESOURCEMANAGEMENT_WRITE, Permission.RESOURCEMANAGEMENT_ADMIN)),
     FILES(false, listOf(Permission.FILES, Permission.FILES_WRITE, Permission.FILES_ADMIN)),

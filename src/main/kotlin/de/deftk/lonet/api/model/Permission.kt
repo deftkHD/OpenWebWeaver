@@ -46,6 +46,7 @@ enum class Permission(val supported: Boolean, val permission: String) {
     COURSELETS_ADMIN(false, "courselets_admin"),
     FORUM(false, "forum"),
     FORUM_WRITE(false, "forum_write"),
+    FORUM_ADMIN(false, "forum_admin"),
     WIKI(false, "wiki"),
     RESOURCEMANAGEMENT(false, "resourcemanagement"),
     RESOURCEMANAGEMENT_WRITE(false, "resourcemanagement_write"),
