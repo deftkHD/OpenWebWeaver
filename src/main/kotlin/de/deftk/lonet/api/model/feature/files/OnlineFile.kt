@@ -65,6 +65,8 @@ class OnlineFile(jsonObject: JsonObject, responsibleHost: String?, login: String
         return name
     }
 
+    //TODO equals() and hashCode() should consider including login and id, because id is not unique if same file is inside different file storages (whoever thought about this...)
+
     enum class FileType(val id: String) {
         FILE("file"),
         FOLDER("folder"),

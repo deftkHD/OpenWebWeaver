@@ -72,7 +72,7 @@ open class Member(userObject: JsonObject, val responsibleHost: String?): FilePro
         request.addRequest("get_entries", null)
         val response = LoNet.requestHandler.performRequest(request, !overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
-        return subResponse.get("entries")?.asJsonArray?.map { Notification(it.asJsonObject) } ?: emptyList()
+        return subResponse.get("entries")?.asJsonArray?.map { Notification(it.asJsonObject, this) } ?: emptyList()
     }
 
     fun getFileQuota(sessionId: String, overwriteCache: Boolean = false): Quota {

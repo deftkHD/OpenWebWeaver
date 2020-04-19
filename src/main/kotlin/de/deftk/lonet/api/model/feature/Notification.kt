@@ -4,7 +4,7 @@ import com.google.gson.JsonObject
 import de.deftk.lonet.api.model.Member
 import java.util.*
 
-class Notification(jsonObject: JsonObject) {
+class Notification(jsonObject: JsonObject, val group: Member) {
 
     val id: String = jsonObject.get("id").asString
     val title: String? = jsonObject.get("title")?.asString
