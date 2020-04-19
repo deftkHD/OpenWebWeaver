@@ -10,13 +10,13 @@ class Email(jsonObject: JsonObject, val folder: EmailFolder, private val respons
 
     val id = jsonObject.get("id").asInt
     val subject = jsonObject.get("subject").asString
-    var read = !jsonObject.get("is_unread").asBoolean
+    var read = jsonObject.get("is_unread").asInt == 0
         private set
-    val flagged = jsonObject.get("is_flagged").asBoolean
-    val answered = jsonObject.get("is_answered").asBoolean
+    val flagged = jsonObject.get("is_flagged").asInt == 1
+    val answered = jsonObject.get("is_answered").asInt == 1
     val date = Date(jsonObject.get("date").asLong * 1000)
     val size = jsonObject.get("size").asLong
-    val from = jsonObject.get("from").asJsonArray.map { EmailAddress(it.asJsonObject) }
+    val from = jsonObject.get("from")?.asJsonArray?.map { EmailAddress(it.asJsonObject) }
 
     fun read(sessionId: String, overwriteCache: Boolean = false): EmailContent {
         val request = ApiRequest(responsibleHost)
