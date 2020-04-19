@@ -4,6 +4,8 @@ import com.google.gson.JsonObject
 import de.deftk.lonet.api.LoNet
 import de.deftk.lonet.api.model.feature.*
 import de.deftk.lonet.api.model.feature.files.FileProvider
+import de.deftk.lonet.api.model.feature.forum.ForumMessage
+import de.deftk.lonet.api.model.feature.forum.ForumSettings
 import de.deftk.lonet.api.request.ApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
 
@@ -83,6 +85,29 @@ open class Member(userObject: JsonObject, val responsibleHost: String?): FilePro
         val response = LoNet.requestHandler.performRequest(request, !overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         return Quota(subResponse.get("quota").asJsonObject)
+    }
+
+    fun getForumState(sessionId: String, overwriteCache: Boolean = false): Pair<Quota, ForumSettings> {
+        val request = ApiRequest(responsibleHost!!)
+        request.addSetSessionRequest(sessionId)
+        request.addSetFocusRequest("forum", login)
+        request.addRequest("get_state", null)
+        val response = LoNet.requestHandler.performRequest(request, !overwriteCache)
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
+        return Pair(Quota(subResponse.get("quota").asJsonObject), ForumSettings(subResponse.get("settings").asJsonObject))
+    }
+
+    fun getForumEntries(sessionId: String, parentId: String? = null, overwriteCache: Boolean = false): List<ForumMessage> {
+        val request = ApiRequest(responsibleHost!!)
+        request.addSetSessionRequest(sessionId)
+        request.addSetFocusRequest("forum", login)
+        val requestData = JsonObject()
+        if (parentId != null)
+            requestData.addProperty("parent_id", parentId)
+        request.addRequest("get_entries", requestData)
+        val response = LoNet.requestHandler.performRequest(request, !overwriteCache)
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
+        return subResponse.get("entries").asJsonArray.map { ForumMessage(it.asJsonObject) }
     }
 
     override fun toString(): String {
