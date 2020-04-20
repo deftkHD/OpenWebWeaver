@@ -34,7 +34,9 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
     }
 
     override fun getTasks(sessionId: String, overwriteCache: Boolean): List<Task> {
-        val tasks = super.getTasks(sessionId, overwriteCache).toMutableList()
+        val tasks = if (Feature.TASKS.isAvailable(permissions))
+            super.getTasks(sessionId, overwriteCache).toMutableList()
+        else mutableListOf()
         memberships.forEach { membership ->
             if (membership.memberPermissions.contains(Permission.TASKS))
                 tasks.addAll(membership.getTasks(sessionId, overwriteCache))
@@ -43,7 +45,9 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
     }
 
     fun getNotifications(overwriteCache: Boolean = false): List<Notification> {
-        val notifications = super.getNotifications(sessionId, overwriteCache).toMutableList()
+        val notifications = if (Feature.BOARD.isAvailable(permissions))
+            super.getNotifications(sessionId, overwriteCache).toMutableList()
+        else mutableListOf()
         memberships.forEach { membership ->
             if (membership.memberPermissions.contains(Permission.BOARD))
                 notifications.addAll(membership.getNotifications(sessionId, overwriteCache))
