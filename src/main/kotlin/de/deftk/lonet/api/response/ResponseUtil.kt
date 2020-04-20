@@ -6,7 +6,7 @@ import com.google.gson.JsonObject
 object ResponseUtil {
 
     fun getSubResponse(response: JsonElement, id: Int): JsonObject {
-        check(response.isJsonArray)
+        checkSuccess(response)
         response.asJsonArray.map { it.asJsonObject }.forEach { subResponse ->
             if (subResponse.get("id").asInt == id)
                 return subResponse
@@ -19,7 +19,7 @@ object ResponseUtil {
     }
 
     fun getSubResponseResultByMethod(response: JsonElement, method: String): JsonObject {
-        check(response.isJsonArray)
+        checkSuccess(response)
         var sub: JsonObject? = null
         response.asJsonArray.map { it.asJsonObject }.forEach { subResponse ->
             val result = subResponse.get("result").asJsonObject
