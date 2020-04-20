@@ -28,6 +28,14 @@ enum class Feature(val supported: Boolean, val permissions: List<Permission>) {
     TRUSTS(false, listOf(Permission.TRUSTS)),
     PASSWORD(false, listOf(Permission.PASSWORD));
 
+    fun isAvailable(permissions: List<Permission>): Boolean {
+        this.permissions.forEach { permission ->
+            if (permissions.contains(permission))
+                return true
+        }
+        return false
+    }
+
     companion object {
         @JvmStatic
         fun getAvailableFeatures(permission: Permission): List<Feature> {
