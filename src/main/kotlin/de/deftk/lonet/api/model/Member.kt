@@ -4,11 +4,12 @@ import com.google.gson.JsonObject
 import de.deftk.lonet.api.LoNet
 import de.deftk.lonet.api.model.feature.*
 import de.deftk.lonet.api.model.feature.files.FileProvider
-import de.deftk.lonet.api.model.feature.forum.ForumMessage
+import de.deftk.lonet.api.model.feature.forum.ForumPost
 import de.deftk.lonet.api.model.feature.forum.ForumSettings
 import de.deftk.lonet.api.request.ApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
 
+//TODO interfaces for each feature (IForum, IMailbox, ...)
 open class Member(userObject: JsonObject, val responsibleHost: String?): FileProvider("/", responsibleHost, userObject.get("login").asString) {
 
     //TODO check if request is successful
@@ -97,7 +98,7 @@ open class Member(userObject: JsonObject, val responsibleHost: String?): FilePro
         return Pair(Quota(subResponse.get("quota").asJsonObject), ForumSettings(subResponse.get("settings").asJsonObject))
     }
 
-    fun getForumEntries(sessionId: String, parentId: String? = null, overwriteCache: Boolean = false): List<ForumMessage> {
+    fun getForumPosts(sessionId: String, parentId: String? = null, overwriteCache: Boolean = false): List<ForumPost> {
         val request = ApiRequest(responsibleHost!!)
         request.addSetSessionRequest(sessionId)
         request.addSetFocusRequest("forum", login)
@@ -107,7 +108,7 @@ open class Member(userObject: JsonObject, val responsibleHost: String?): FilePro
         request.addRequest("get_entries", requestData)
         val response = LoNet.requestHandler.performRequest(request, !overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
-        return subResponse.get("entries").asJsonArray.map { ForumMessage(it.asJsonObject) }
+        return subResponse.get("entries").asJsonArray.map { ForumPost(it.asJsonObject) }
     }
 
     override fun toString(): String {

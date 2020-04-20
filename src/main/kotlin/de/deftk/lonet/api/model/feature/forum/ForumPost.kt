@@ -4,7 +4,7 @@ import com.google.gson.JsonObject
 import de.deftk.lonet.api.model.Member
 import java.util.*
 
-class ForumMessage(json: JsonObject) {
+class ForumPost(json: JsonObject) {
 
     val id = json.get("id").asString
     val parentId = json.get("parent_id").asString
