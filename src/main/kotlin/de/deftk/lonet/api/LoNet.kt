@@ -116,7 +116,7 @@ object LoNet {
             response.toJson().asJsonArray.map { json ->
                 // remap id
                 val obj = json.asJsonObject
-                val newId = index * ApiRequest.SUB_REQUESTS_PER_REQUEST + obj.get("id").asInt
+                val newId = index * (ApiRequest.SUB_REQUESTS_PER_REQUEST + 1) + obj.get("id").asInt
                 obj.remove("id")
                 obj.addProperty("id", newId)
                 json

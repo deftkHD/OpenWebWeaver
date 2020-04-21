@@ -23,7 +23,7 @@ open class ApiRequest(val serverUrl: String): Serializable {
         obj.addProperty("id", id)
         obj.add("params", request)
         currentRequest().add(obj)
-        return (requests.size - 1) * SUB_REQUESTS_PER_REQUEST + id
+        return (requests.size - 1) * (SUB_REQUESTS_PER_REQUEST + 1) + id
     }
 
     fun addRequest(requestName: String, request: JsonObject?): Int {
