@@ -103,7 +103,9 @@ open class Member(userObject: JsonObject, val responsibleHost: String?): FilePro
         val id = request.addGetForumPostsRequest(parentId = parentId)[1]
         val response = request.fireRequest(user, overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return subResponse.get("entries").asJsonArray.map { ForumPost(it.asJsonObject) }
+        val allPosts = subResponse.get("entries").asJsonArray.map { ForumPost(it.asJsonObject) }
+        //TODO build tree
+        return allPosts
     }
 
     override fun toString(): String {

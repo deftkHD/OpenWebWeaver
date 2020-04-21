@@ -13,14 +13,14 @@ class ForumPost(json: JsonObject): Serializable {
     val text = json.get("text").asString
     val icon = ForumMessageIcon.getById(json.get("icon").asInt)
     val level = json.get("level").asInt
-    //val children = json.get("children").asJsonObject //TODO do
+    val children = json.get("children").asJsonObject.get("count").asInt
     //val files = json.get("files").asJsonArray //TODO do
     val creationDate: Date
     val creationMember: Member
     val modificationDate: Date
     val modificationMember: Member
-    val pinned = json.get("pinned").asInt == 1
-    val locked = json.get("locked").asInt == 1
+    val pinned = json.get("pinned")?.asInt == 1
+    val locked = json.get("locked")?.asInt == 1
 
     init {
         val creationObject = json.get("created").asJsonObject
@@ -33,11 +33,11 @@ class ForumPost(json: JsonObject): Serializable {
 
     enum class ForumMessageIcon(val id: Int): Serializable {
         INFORMATION(0),
-        UNKNOWN_1(1),
-        UNKNOWN_2(2),
-        UNKNOWN_3(3),
-        UNKNOWN_4(4),
-        UNKNOWN_5(5),
+        HUMOR(1),
+        QUESTION(2),
+        ANSWER(3),
+        UP_VOTE(4),
+        DOWN_VOTE(5),
         UNKNOWN(-1);
 
         companion object {
