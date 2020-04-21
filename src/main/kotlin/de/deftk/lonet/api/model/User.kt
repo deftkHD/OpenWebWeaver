@@ -58,24 +58,42 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
         check(responsibleHost != null) { "Can't do API calls for user $login" }
         val request = UserApiRequest(responsibleHost, this)
         val taskIds = request.addGetAllTasksRequest()
-        val response = request.fireRequest(overwriteCache).toJson()
-        return taskIds.map { taskResponseId ->
-            ResponseUtil.getSubResponseResult(response, taskResponseId).get("entries")?.asJsonArray?.map { taskEntry ->
-                Task(taskEntry.asJsonObject, this)
-            } ?: emptyList()
-        }.flatten()
+        val response = request.fireRequest(overwriteCache).toJson().asJsonArray
+        val tasks = mutableListOf<Task>()
+        val responses = response.filter { taskIds.contains(it.asJsonObject.get("id").asInt) }.map { it.asJsonObject }
+        responses.withIndex().forEach { (index, subResponse) ->
+            if (index % 2 == 1) {
+                val focus = responses[index - 1].get("result").asJsonObject
+                check(focus.get("method").asString == "set_focus")
+                val memberLogin = focus.get("user").asJsonObject.get("login").asString
+                val member = if (memberLogin == this.login) this else memberships.first { it.login == memberLogin }
+                subResponse.get("result").asJsonObject.get("entries").asJsonArray.forEach { taskResponse ->
+                    tasks.add(Task(taskResponse.asJsonObject, member))
+                }
+            }
+        }
+        return tasks
     }
 
     fun getAllNotifications(overwriteCache: Boolean = false): List<Notification> {
         check(responsibleHost != null) { "Can't do API calls for user $login" }
         val request = UserApiRequest(responsibleHost, this)
         val notificationIds = request.addGetAllNotificationsRequest()
-        val response = request.fireRequest(overwriteCache).toJson()
-        return notificationIds.map { notificationResponseId ->
-            ResponseUtil.getSubResponseResult(response, notificationResponseId).get("entries")?.asJsonArray?.map { notificationEntry ->
-                Notification(notificationEntry.asJsonObject, this)
-            } ?: emptyList()
-        }.flatten()
+        val response = request.fireRequest(overwriteCache).toJson().asJsonArray
+        val notifications = mutableListOf<Notification>()
+        val responses = response.filter { notificationIds.contains(it.asJsonObject.get("id").asInt) }.map { it.asJsonObject }
+        responses.withIndex().forEach { (index, subResponse) ->
+            if (index % 2 == 1) {
+                val focus = responses[index - 1].get("result").asJsonObject
+                check(focus.get("method").asString == "set_focus")
+                val memberLogin = focus.get("user").asJsonObject.get("login").asString
+                val member = if (memberLogin == this.login) this else memberships.first { it.login == memberLogin }
+                subResponse.get("result").asJsonObject.get("entries").asJsonArray.forEach { taskResponse ->
+                    notifications.add(Notification(taskResponse.asJsonObject, member))
+                }
+            }
+        }
+        return notifications
     }
 
     override fun logout(removeTrust: Boolean) {
