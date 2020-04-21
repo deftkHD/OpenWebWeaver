@@ -2,9 +2,10 @@ package de.deftk.lonet.api.model.feature.forum
 
 import com.google.gson.JsonObject
 import de.deftk.lonet.api.model.Member
+import java.io.Serializable
 import java.util.*
 
-class ForumPost(json: JsonObject) {
+class ForumPost(json: JsonObject): Serializable {
 
     val id = json.get("id").asString
     val parentId = json.get("parent_id").asString
@@ -12,8 +13,8 @@ class ForumPost(json: JsonObject) {
     val text = json.get("text").asString
     val icon = ForumMessageIcon.getById(json.get("icon").asInt)
     val level = json.get("level").asInt
-    val children = json.get("children").asJsonObject //TODO do
-    val files = json.get("files").asJsonArray //TODO do
+    //val children = json.get("children").asJsonObject //TODO do
+    //val files = json.get("files").asJsonArray //TODO do
     val creationDate: Date
     val creationMember: Member
     val modificationDate: Date
@@ -30,7 +31,7 @@ class ForumPost(json: JsonObject) {
         modificationMember = Member(modificationObject.get("user").asJsonObject, null)
     }
 
-    enum class ForumMessageIcon(val id: Int) {
+    enum class ForumMessageIcon(val id: Int): Serializable {
         INFORMATION(0),
         UNKNOWN_1(1),
         UNKNOWN_2(2),

@@ -1,12 +1,11 @@
 package de.deftk.lonet.api.cache
 
-import de.deftk.lonet.api.request.ApiRequest
-import de.deftk.lonet.api.response.ApiResponse
+import com.google.gson.JsonObject
 
 interface ICacheController {
 
-    fun isCached(request: ApiRequest): Boolean
-    fun getCachedResponse(request: ApiRequest): ApiResponse
-    fun getCachedResponseOrNull(request: ApiRequest): ApiResponse?
-    fun cacheResponse(request: ApiRequest, response: ApiResponse)
+    fun isCached(request: JsonObject): Boolean
+    fun getCachedResponse(request: JsonObject): JsonObject
+    fun getCachedResponseOrNull(request: JsonObject): JsonObject?
+    fun cacheResponse(request: JsonObject, response: JsonObject)
 }

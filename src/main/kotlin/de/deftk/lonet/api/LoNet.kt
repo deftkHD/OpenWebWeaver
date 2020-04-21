@@ -1,12 +1,12 @@
 package de.deftk.lonet.api
 
+import com.google.gson.JsonArray
 import de.deftk.lonet.api.cache.DefaultCacheController
 import de.deftk.lonet.api.cache.ICacheController
 import de.deftk.lonet.api.model.User
 import de.deftk.lonet.api.request.ApiRequest
 import de.deftk.lonet.api.request.AuthRequest
 import de.deftk.lonet.api.request.handler.CachedRequestHandler
-import de.deftk.lonet.api.request.handler.SimpleRequestHandler
 import de.deftk.lonet.api.request.handler.IRequestHandler
 import de.deftk.lonet.api.response.ApiResponse
 import de.deftk.lonet.api.response.ResponseUtil
@@ -20,14 +20,14 @@ import javax.net.ssl.HttpsURLConnection
 object LoNet {
 
     var requestHandler: IRequestHandler = CachedRequestHandler()
-    var cacheController: ICacheController? = DefaultCacheController()
+    var cacheController: ICacheController = DefaultCacheController()
 
     fun login(username: String, password: String): User {
         val responsibleHost = getResponsibleHost(username)
         val authRequest = AuthRequest(responsibleHost)
         authRequest.addLoginPasswordRequest(username, password)
         authRequest.addGetInformationRequest()
-        val response = requestHandler.performRequest(authRequest, false)
+        val response = authRequest.fireRequest(null, true)
         ResponseUtil.checkSuccess(response.toJson())
         return User(username, password, responsibleHost, response)
     }
@@ -36,10 +36,10 @@ object LoNet {
         val responsibleHost = getResponsibleHost(username)
         val authRequest = AuthRequest(responsibleHost)
         authRequest.addLoginPasswordRequest(username, password)
-        authRequest.addSetFocusRequest("trusts")
+        authRequest.addSetFocusRequest("trusts", null)
         authRequest.addRegisterMasterRequest(title, ident)
         authRequest.addGetInformationRequest()
-        val response = requestHandler.performRequest(authRequest, false)
+        val response = authRequest.fireRequest(null, true)
         ResponseUtil.checkSuccess(response.toJson())
         return User(
                 username,
@@ -54,7 +54,7 @@ object LoNet {
         val responsibleHost = getResponsibleHost(username)
         val nonceRequest = AuthRequest(responsibleHost)
         nonceRequest.addGetNonceRequest()
-        val nonceResponse = requestHandler.performRequest(nonceRequest, false)
+        val nonceResponse = nonceRequest.fireRequest(null, true)
         val nonceJson =
                 nonceResponse.toJson().asJsonArray.get(0).asJsonObject.get("result").asJsonObject.get("nonce").asJsonObject
         val nonceId = nonceJson.get("id").asString
@@ -63,11 +63,11 @@ object LoNet {
         val authRequest = AuthRequest(responsibleHost)
         authRequest.addLoginNonceRequest(username, token, nonceId, nonceKey)
         if (removeTrust) {
-            authRequest.addSetFocusRequest("trusts")
+            authRequest.addSetFocusRequest("trusts", null)
             authRequest.addUnregisterMasterRequest()
         }
         authRequest.addGetInformationRequest()
-        val response = requestHandler.performRequest(authRequest, false)
+        val response = authRequest.fireRequest(null, true)
         ResponseUtil.checkSuccess(response.toJson())
         return User(username, token, responsibleHost, response)
     }
@@ -75,40 +75,62 @@ object LoNet {
     /**
      * Might be a bit confusing. If you are not writing your own RequestHandler, please use LoNet.requestHandler.performRequest instead of this
      */
-    fun performJsonApiRequest(request: ApiRequest): ApiResponse {
-        val serverUrl = request.serverUrl
-        val requestStr = request.requests.toString()
-        val url = URL(serverUrl)
-        val connection = url.openConnection() as HttpURLConnection
-        connection.connectTimeout = 15000
-        connection.readTimeout = 15000
-        connection.requestMethod = "POST"
-        connection.addRequestProperty("Content-Type", "application/json")
-        connection.doOutput = true
-        val outputStream = connection.outputStream
-        val requestData = requestStr.toByteArray(Charsets.UTF_8)
+    fun performJsonApiRequestIntern(request: ApiRequest): ApiResponse {
+        val responses = mutableListOf<ApiResponse>()
+        request.requests.forEach { requestBlock ->
+            val serverUrl = request.serverUrl
+            val requestStr = requestBlock.toString()
+            val url = URL(serverUrl)
+            val connection = url.openConnection() as HttpURLConnection
+            connection.connectTimeout = 15000
+            connection.readTimeout = 15000
+            connection.requestMethod = "POST"
+            connection.addRequestProperty("Content-Type", "application/json")
+            connection.doOutput = true
+            val outputStream = connection.outputStream
+            val requestData = requestStr.toByteArray(Charsets.UTF_8)
 
-        var offset = 0
-        while (true) {
-            if (offset >= requestData.size) break
-            if (requestData.size - offset < 1024) {
-                outputStream.write(requestData, offset, requestData.size - offset)
-            } else {
-                outputStream.write(requestData, offset, 1024)
+            var offset = 0
+            while (true) {
+                if (offset >= requestData.size) break
+                if (requestData.size - offset < 1024) {
+                    outputStream.write(requestData, offset, requestData.size - offset)
+                } else {
+                    outputStream.write(requestData, offset, 1024)
+                }
+                offset += 1024
             }
-            offset += 1024
-        }
-        outputStream.close()
-        outputStream.flush() // doesn't make sense tf?
+            outputStream.flush()
+            outputStream.close()
 
-        val sb = StringBuilder()
-        val responseCode = connection.responseCode
-        val br = BufferedReader(InputStreamReader(connection.inputStream, "UTF-8"))
-        while (true) {
-            val ln = br.readLine() ?: break
-            sb.append(ln)
+            val sb = StringBuilder()
+            val responseCode = connection.responseCode
+            val br = BufferedReader(InputStreamReader(connection.inputStream, "UTF-8"))
+            while (true) {
+                val ln = br.readLine() ?: break
+                sb.append(ln)
+            }
+            responses.add(ApiResponse(sb.toString(), responseCode))
         }
-        return ApiResponse(sb.toString(), responseCode)
+        val remappedResponses = responses.withIndex().map { (index, response) ->
+            response.toJson().asJsonArray.map { json ->
+                // remap id
+                val obj = json.asJsonObject
+                val newId = index * ApiRequest.SUB_REQUESTS_PER_REQUEST + obj.get("id").asInt
+                obj.remove("id")
+                obj.addProperty("id", newId)
+                json
+            }
+        }.flatten()
+        val dstResponse = JsonArray()
+        remappedResponses.forEach { response ->
+            dstResponse.add(response)
+        }
+        /*val dstResponse = JsonArray()
+        responses.forEach { response ->
+            dstResponse.addAll(response.toJson().asJsonArray)
+        }*/
+        return ApiResponse(dstResponse.toString(), responses.last().code)
     }
 
     private fun getResponsibleHost(address: String): String {

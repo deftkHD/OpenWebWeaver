@@ -2,10 +2,12 @@ package de.deftk.lonet.api.model.feature
 
 import com.google.gson.JsonObject
 import de.deftk.lonet.api.model.Member
+import de.deftk.lonet.api.model.User
 import de.deftk.lonet.api.request.ApiRequest
+import java.io.Serializable
 import java.util.*
 
-class SystemNotification(jsonObject: JsonObject) {
+class SystemNotification(jsonObject: JsonObject): Serializable {
 
     val id: String = jsonObject.get("id").asString
     val messageType: SystemNotificationType
@@ -32,10 +34,9 @@ class SystemNotification(jsonObject: JsonObject) {
     }
 
     //TODO this is not even correct implemented
-    fun delete(sessionId: String, responsibleHost: String) {
+    fun delete(user: User, responsibleHost: String) {
         val request = ApiRequest(responsibleHost)
-        request.addSetSessionRequest(sessionId)
-        request.addSetFocusRequest("messages")
+        request.addSetFocusRequest("messages", user.login)
         val json = JsonObject()
         json.addProperty("id", id)
         request.addRequest("delete_message", json)
@@ -60,7 +61,7 @@ class SystemNotification(jsonObject: JsonObject) {
         return id.hashCode()
     }
 
-    enum class SystemNotificationType(val id: String) {
+    enum class SystemNotificationType(val id: String): Serializable {
         FILE_UPLOAD("7"),
         FILE_DOWNLOAD("8"),
         NEW_NOTIFICATION("29"),

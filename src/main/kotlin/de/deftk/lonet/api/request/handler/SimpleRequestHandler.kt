@@ -7,6 +7,6 @@ import de.deftk.lonet.api.response.ApiResponse
 class SimpleRequestHandler : IRequestHandler {
 
     override fun performRequest(request: ApiRequest, allowCachedResponse: Boolean): ApiResponse {
-        return LoNet.performJsonApiRequest(request)
+        return LoNet.performJsonApiRequestIntern(request)
     }
 }

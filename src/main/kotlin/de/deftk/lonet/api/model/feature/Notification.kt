@@ -2,9 +2,10 @@ package de.deftk.lonet.api.model.feature
 
 import com.google.gson.JsonObject
 import de.deftk.lonet.api.model.Member
+import java.io.Serializable
 import java.util.*
 
-class Notification(jsonObject: JsonObject, val group: Member) {
+class Notification(jsonObject: JsonObject, val group: Member): Serializable {
 
     val id: String = jsonObject.get("id").asString
     val title: String? = jsonObject.get("title")?.asString
@@ -43,7 +44,7 @@ class Notification(jsonObject: JsonObject, val group: Member) {
         return id.hashCode()
     }
 
-    enum class NotificationColor(val id: Int) {
+    enum class NotificationColor(val id: Int): Serializable {
         BLUE(0),
         GREEN(1),
         RED(2),

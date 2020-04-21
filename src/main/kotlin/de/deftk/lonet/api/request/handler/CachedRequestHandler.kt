@@ -6,12 +6,11 @@ import de.deftk.lonet.api.response.ApiResponse
 
 class CachedRequestHandler: IRequestHandler {
 
-    override fun performRequest(request: ApiRequest, allowCachedResponse: Boolean): ApiResponse {
-        if (allowCachedResponse && LoNet.cacheController != null && LoNet.cacheController!!.isCached(request)) {
-            return LoNet.cacheController!!.getCachedResponse(request)
+    override fun performRequest(apiRequest: ApiRequest, allowCachedResponse: Boolean): ApiResponse {
+        if (allowCachedResponse) {
+            //TODO caching
         }
-        val response = LoNet.performJsonApiRequest(request)
-        LoNet.cacheController?.cacheResponse(request, response)
-        return response
+
+        return LoNet.performJsonApiRequestIntern(apiRequest)
     }
 }

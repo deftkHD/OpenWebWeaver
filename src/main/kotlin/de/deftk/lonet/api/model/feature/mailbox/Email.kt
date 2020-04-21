@@ -2,11 +2,13 @@ package de.deftk.lonet.api.model.feature.mailbox
 
 import com.google.gson.JsonObject
 import de.deftk.lonet.api.LoNet
+import de.deftk.lonet.api.model.User
 import de.deftk.lonet.api.request.ApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
+import java.io.Serializable
 import java.util.*
 
-class Email(jsonObject: JsonObject, val folder: EmailFolder, private val responsibleHost: String) {
+class Email(jsonObject: JsonObject, val folder: EmailFolder, private val responsibleHost: String): Serializable {
 
     val id = jsonObject.get("id").asInt
     val subject = jsonObject.get("subject").asString
@@ -18,15 +20,14 @@ class Email(jsonObject: JsonObject, val folder: EmailFolder, private val respons
     val size = jsonObject.get("size").asLong
     val from = jsonObject.get("from")?.asJsonArray?.map { EmailAddress(it.asJsonObject) }
 
-    fun read(sessionId: String, overwriteCache: Boolean = false): EmailContent {
+    fun read(user: User, overwriteCache: Boolean = false): EmailContent {
         val request = ApiRequest(responsibleHost)
-        request.addSetSessionRequest(sessionId)
-        request.addSetFocusRequest("mailbox")
+        request.addSetFocusRequest("mailbox", user.login)
         val requestParams = JsonObject()
         requestParams.addProperty("folder_id", folder.id)
         requestParams.addProperty("message_id", id)
         request.addRequest("read_message", requestParams)
-        val response = LoNet.requestHandler.performRequest(request, !overwriteCache)
+        val response = request.fireRequest(user, overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         read = true
         return EmailContent(subResponse.get("message").asJsonObject)
@@ -38,7 +39,7 @@ class Email(jsonObject: JsonObject, val folder: EmailFolder, private val respons
         return subject
     }
 
-    class EmailContent(jsonObject: JsonObject) {
+    class EmailContent(jsonObject: JsonObject): Serializable {
 
         val plainBody = jsonObject.get("body_plain").asString
         val text = jsonObject.get("text")?.asString // not sure if this is needed, but it also appears inside the send_mail request

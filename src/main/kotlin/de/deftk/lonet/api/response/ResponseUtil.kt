@@ -20,14 +20,13 @@ object ResponseUtil {
 
     fun getSubResponseResultByMethod(response: JsonElement, method: String): JsonObject {
         checkSuccess(response)
-        var sub: JsonObject? = null
         response.asJsonArray.map { it.asJsonObject }.forEach { subResponse ->
             val result = subResponse.get("result").asJsonObject
             if (result.get("method")?.asString == method) {
-                sub = result
+                return result
             }
         }
-        return sub ?: error("invalid response (expecting sub response with method $method): $response")
+        error("invalid response (expecting sub response with method $method): $response")
     }
 
     fun checkSuccess(response: JsonElement) {

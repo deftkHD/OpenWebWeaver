@@ -1,27 +1,32 @@
 package de.deftk.lonet.api.cache
 
-import de.deftk.lonet.api.request.ApiRequest
-import de.deftk.lonet.api.response.ApiResponse
+import com.google.gson.JsonObject
+import kotlin.random.Random
 
 class DefaultCacheController: ICacheController {
 
-    //TODO make sure cache doesn't overflow
+    companion object {
+        private const val MAX_CACHE_SIZE = 200
+    }
 
-    private val requestCache = mutableMapOf<ApiRequest, ApiResponse>()
+    private val requestCache = mutableMapOf<JsonObject, JsonObject>()
 
-    override fun isCached(request: ApiRequest): Boolean {
+    override fun isCached(request: JsonObject): Boolean {
         return requestCache.containsKey(request)
     }
 
-    override fun getCachedResponse(request: ApiRequest): ApiResponse {
+    override fun getCachedResponse(request: JsonObject): JsonObject {
         return requestCache[request]!!
     }
 
-    override fun getCachedResponseOrNull(request: ApiRequest): ApiResponse? {
+    override fun getCachedResponseOrNull(request: JsonObject): JsonObject? {
         return requestCache[request]
     }
 
-    override fun cacheResponse(request: ApiRequest, response: ApiResponse) {
+    override fun cacheResponse(request: JsonObject, response: JsonObject) {
+        if (requestCache.size >= MAX_CACHE_SIZE) {
+            requestCache.remove(requestCache.keys.toList()[Random.nextInt(requestCache.size)]) //TODO more efficient cache cleaning
+        }
         requestCache[request] = response
     }
 }

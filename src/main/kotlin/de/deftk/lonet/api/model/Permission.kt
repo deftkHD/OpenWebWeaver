@@ -1,6 +1,8 @@
 package de.deftk.lonet.api.model
 
-enum class Permission(val supported: Boolean, val permission: String) {
+import java.io.Serializable
+
+enum class Permission(val supported: Boolean, val permission: String): Serializable {
     STATISTICS(false, "sysadmin"),
     ADMINISTRATION_GROUP(false, "admin"),
     ADMINISTRATION_GROUP_ADMIN(false, "admin_admin"),

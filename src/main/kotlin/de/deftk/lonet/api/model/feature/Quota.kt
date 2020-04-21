@@ -1,8 +1,9 @@
 package de.deftk.lonet.api.model.feature
 
 import com.google.gson.JsonObject
+import java.io.Serializable
 
-class Quota(jsonObject: JsonObject) {
+class Quota(jsonObject: JsonObject): Serializable {
 
     val usage = jsonObject.get("usage").asLong
     val free = jsonObject.get("free").asLong

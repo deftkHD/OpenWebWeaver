@@ -2,62 +2,79 @@ package de.deftk.lonet.api.request
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import de.deftk.lonet.api.LoNet
+import de.deftk.lonet.api.model.User
+import de.deftk.lonet.api.response.ApiResponse
+import java.io.Serializable
 
-open class ApiRequest(val serverUrl: String) {
+open class ApiRequest(val serverUrl: String): Serializable {
 
-    val requests = JsonArray()
+    companion object {
+        const val SUB_REQUESTS_PER_REQUEST = 30
+    }
 
-    fun addRequest(requestName: String, id: Int, request: JsonObject) {
+    var requests = mutableListOf(JsonArray())
+
+    private fun addRequest(requestName: String, id: Int, request: JsonObject): Int {
+        //TODO try to avoid double setFocus, setSession, ... requests
         val obj = JsonObject()
         obj.addProperty("jsonrpc", "2.0")
-        obj.addProperty("method", requestName) // Param.METHOD from firebase
+        obj.addProperty("method", requestName)
         obj.addProperty("id", id)
         obj.add("params", request)
-        requests.add(obj)
+        currentRequest().add(obj)
+        return (requests.size - 1) * SUB_REQUESTS_PER_REQUEST + id
     }
 
-    fun addRequest(requestName: String, request: JsonObject?) {
-        addRequest(requestName, requests.size() + 1, request ?: JsonObject())
+    fun addRequest(requestName: String, request: JsonObject?): Int {
+        return addRequest(requestName, currentRequest().size() + 2 /* place holder for setSession request */, request ?: JsonObject())
     }
 
-    fun addSetSessionRequest(sessionId: String) {
+    private fun addSetSessionRequest(sessionId: String): Int {
         val obj = JsonObject()
         obj.addProperty("session_id", sessionId)
-        addRequest("set_session", obj)
+        return addRequest("set_session", currentRequest().size() + 1, obj)
     }
 
-    fun addSetFocusRequest(str: String?) {
-        addSetFocusRequest(str, null)
-    }
-
-    fun addSetFocusRequest(`object`: String?, login: String?) {
+    fun addSetFocusRequest(requestParams: String?, login: String?): Int {
         val obj = JsonObject()
-        if (`object` != null) {
-            obj.addProperty("object", `object`)
-        }
-        if (login != null) {
+        if (requestParams != null)
+            obj.addProperty("object", requestParams)
+        if (login != null)
             obj.addProperty("login", login)
-        }
-        addRequest("set_focus", obj)
+        return addRequest("set_focus", obj)
     }
 
-    fun addIdRequest(id: String, requestName: String) {
+    fun addIdRequest(id: String, requestName: String): Int {
         val obj = JsonObject()
         obj.addProperty("id", id)
-        addRequest(requestName, obj)
+        return addRequest(requestName, obj)
     }
 
-    fun addExportSessionFileRequest(id: String, str2: String?) {
+    fun addExportSessionFileRequest(id: String, str2: String?): Int {
         val obj = JsonObject()
         obj.addProperty("id", id)
         if (str2?.isNotEmpty() == true) {
             obj.addProperty("", str2) // FontsContractCompat.Column
         }
-        addRequest("export_session_file", obj)
+        return addRequest("export_session_file", obj)
     }
 
-    fun addGetInformationRequest() {
-        addRequest("get_information", 999, JsonObject())
+    fun addGetInformationRequest(): Int {
+        return addRequest("get_information", 999, JsonObject())
+    }
+
+    fun fireRequest(user: User?, overwriteCache: Boolean = false): ApiResponse {
+        if (user != null) {
+            val requests = this.requests
+            this.requests = mutableListOf()
+            requests.withIndex().forEach { (index, request) ->
+                this.requests.add(JsonArray())
+                addSetSessionRequest(user.sessionId)
+                currentRequest().addAll(request)
+            }
+        }
+        return LoNet.requestHandler.performRequest(this, !overwriteCache)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -70,6 +87,16 @@ open class ApiRequest(val serverUrl: String) {
         if (requests != other.requests) return false
 
         return true
+    }
+
+    private fun currentRequest(): JsonArray  {
+        return requests.last()
+    }
+
+    protected fun ensureCapacity(size: Int) {
+        if (currentRequest().size() + size > SUB_REQUESTS_PER_REQUEST) {
+            requests.add(JsonArray())
+        }
     }
 
     override fun hashCode(): Int {

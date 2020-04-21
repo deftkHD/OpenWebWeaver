@@ -1,10 +1,11 @@
 package de.deftk.lonet.api.request
 
 import com.google.gson.JsonObject
+import java.io.Serializable
 import java.security.MessageDigest
 import java.util.*
 
-open class AuthRequest(serverUrl: String) : ApiRequest(serverUrl) {
+open class AuthRequest(serverUrl: String) : ApiRequest(serverUrl), Serializable {
 
     fun addChangePasswordRequest(str: String) {
         val obj = JsonObject()

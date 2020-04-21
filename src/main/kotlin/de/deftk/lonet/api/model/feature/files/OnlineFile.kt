@@ -2,6 +2,8 @@ package de.deftk.lonet.api.model.feature.files
 
 import com.google.gson.JsonObject
 import de.deftk.lonet.api.model.Member
+import de.deftk.lonet.api.model.User
+import java.io.Serializable
 import java.text.DecimalFormat
 import java.util.*
 import kotlin.math.log10
@@ -9,7 +11,7 @@ import kotlin.math.pow
 
 
 class OnlineFile(jsonObject: JsonObject, responsibleHost: String?, login: String) :
-    FileProvider(jsonObject.get("id").asString, responsibleHost, login) {
+    FileProvider(jsonObject.get("id").asString, responsibleHost, login), Serializable {
 
     val id = jsonObject.get("id").asString
     val parentId = jsonObject.get("parent_id").asString
@@ -47,18 +49,9 @@ class OnlineFile(jsonObject: JsonObject, responsibleHost: String?, login: String
         TODO("not implemented yet")
     }
 
-    @Deprecated("clients should handle this themselves")
-    fun getFormattedSize(): String {
-        if (type == FileType.FOLDER)
-            return ""
-        val units = arrayOf("B", "kB", "MB", "GB", "T")
-        val digitGroups = (log10(size.toDouble()) / log10(1024.0)).toInt()
-        return DecimalFormat("#,##0.#").format(size / 1024.0.pow(digitGroups.toDouble())) + " " + units[digitGroups]
-    }
-
-    override fun getFiles(sessionId: String, overwriteCache: Boolean): List<OnlineFile> {
+    override fun getFileStorageFiles(user: User, overwriteCache: Boolean): List<OnlineFile> {
         check(type == FileType.FOLDER)
-        return super.getFiles(sessionId, overwriteCache)
+        return super.getFileStorageFiles(user, overwriteCache)
     }
 
     override fun toString(): String {
@@ -67,7 +60,7 @@ class OnlineFile(jsonObject: JsonObject, responsibleHost: String?, login: String
 
     //TODO equals() and hashCode() should consider including login and id, because id is not unique if same file is inside different file storages (whoever thought about this...)
 
-    enum class FileType(val id: String) {
+    enum class FileType(val id: String): Serializable {
         FILE("file"),
         FOLDER("folder"),
         UNKNOWN("");

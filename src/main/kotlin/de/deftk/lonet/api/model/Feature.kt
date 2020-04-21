@@ -1,7 +1,9 @@
 package de.deftk.lonet.api.model
 
+import java.io.Serializable
+
 //TODO update
-enum class Feature(val supported: Boolean, val permissions: List<Permission>) {
+enum class Feature(val supported: Boolean, val permissions: List<Permission>): Serializable {
     STATISTICS(false, listOf(Permission.STATISTICS)),
     ADMINISTRATION_GROUP(false, listOf(Permission.ADMINISTRATION_GROUP, Permission.ADMINISTRATION_GROUP_ADMIN)),
     ADMINISTRATION_USER(false, listOf(Permission.ADMINISTRATION_USER, Permission.ADMINISTRATION_USER_ADMIN)),
