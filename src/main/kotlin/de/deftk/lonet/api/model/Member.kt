@@ -1,14 +1,12 @@
 package de.deftk.lonet.api.model
 
 import com.google.gson.JsonObject
-import de.deftk.lonet.api.LoNet
 import de.deftk.lonet.api.model.feature.Notification
 import de.deftk.lonet.api.model.feature.Quota
 import de.deftk.lonet.api.model.feature.Task
 import de.deftk.lonet.api.model.feature.abstract.*
 import de.deftk.lonet.api.model.feature.files.FileProvider
 import de.deftk.lonet.api.model.feature.files.FileStorageSettings
-import de.deftk.lonet.api.model.feature.files.OnlineFile
 import de.deftk.lonet.api.model.feature.forum.ForumPost
 import de.deftk.lonet.api.model.feature.forum.ForumSettings
 import de.deftk.lonet.api.request.MemberApiRequest
@@ -23,7 +21,7 @@ open class Member(userObject: JsonObject, val responsibleHost: String?): FilePro
     val name = userObject.get("name_hr")?.asString
     val type = userObject.get("type")?.asInt
     val permissions: List<Permission>
-    val baseUser = if (userObject.has("base_user")) Member(userObject.get("base_user").asJsonObject, responsibleHost) else null
+    val baseUser = if (userObject.has("base_user")) Member(userObject.get("base_user").asJsonObject, null) else null
     val fullName = userObject.get("fullname")?.asString
     val passwordMustChange = userObject.get("password_must_change")?.asInt == 1
     val memberPermissions: List<Permission>
@@ -67,7 +65,7 @@ open class Member(userObject: JsonObject, val responsibleHost: String?): FilePro
         val id = request.addGetMembersRequest()[1]
         val response = request.fireRequest(user, overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return subResponse.get("users")?.asJsonArray?.map { Member(it.asJsonObject, responsibleHost) } ?: emptyList()
+        return subResponse.get("users")?.asJsonArray?.map { Member(it.asJsonObject, null) } ?: emptyList()
     }
 
     override fun getNotifications(user: User, overwriteCache: Boolean): List<Notification> {
@@ -106,6 +104,10 @@ open class Member(userObject: JsonObject, val responsibleHost: String?): FilePro
         val allPosts = subResponse.get("entries").asJsonArray.map { ForumPost(it.asJsonObject) }
         //TODO build tree
         return allPosts
+    }
+
+    fun isRemote(): Boolean {
+        return responsibleHost == null
     }
 
     override fun toString(): String {
