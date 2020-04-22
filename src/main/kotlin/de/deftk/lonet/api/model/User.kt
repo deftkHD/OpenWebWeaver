@@ -162,4 +162,9 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
         return subResponse.get("messages")?.asJsonArray?.map { SystemNotification(it.asJsonObject) } ?: emptyList()
     }
 
+    fun findMember(login: String): Member? {
+        if (login == this.login) return this
+        return memberships.firstOrNull { it.login == login }
+    }
+
 }

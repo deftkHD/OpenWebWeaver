@@ -5,7 +5,7 @@ import de.deftk.lonet.api.model.feature.Notification
 import de.deftk.lonet.api.model.feature.Quota
 import de.deftk.lonet.api.model.feature.Task
 import de.deftk.lonet.api.model.feature.abstract.*
-import de.deftk.lonet.api.model.feature.files.FileProvider
+import de.deftk.lonet.api.model.feature.files.PrimitiveFileImpl
 import de.deftk.lonet.api.model.feature.files.FileStorageSettings
 import de.deftk.lonet.api.model.feature.forum.ForumPost
 import de.deftk.lonet.api.model.feature.forum.ForumSettings
@@ -13,7 +13,7 @@ import de.deftk.lonet.api.request.MemberApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
 import java.io.Serializable
 
-open class Member(userObject: JsonObject, val responsibleHost: String?): FileProvider("/", responsibleHost, userObject.get("login").asString), IForum, IFileStorage, INotificator, IMemberList, ITaskList, Serializable {
+open class Member(userObject: JsonObject, val responsibleHost: String?): IForum, IFileStorage, IFilePrimitive by PrimitiveFileImpl("/", responsibleHost, userObject.get("login").asString), INotificator, IMemberList, ITaskList, Serializable {
 
     //TODO check if request is successful
 
@@ -102,7 +102,7 @@ open class Member(userObject: JsonObject, val responsibleHost: String?): FilePro
         val response = request.fireRequest(user, overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         val allPosts = subResponse.get("entries").asJsonArray.map { ForumPost(it.asJsonObject) }
-        //TODO build tree
+        //TODO build comment tree
         return allPosts
     }
 
@@ -126,14 +126,6 @@ open class Member(userObject: JsonObject, val responsibleHost: String?): FilePro
 
     override fun hashCode(): Int {
         return login.hashCode()
-    }
-
-    @Deprecated("not a nice place here")
-    enum class FileSearchOption(val id: String): Serializable {
-        WORD_EQUALS("word_equals"),
-        WORD_STARTS_WITH("word_starts_with"),
-        WORD_CONTAINS("word_contains"),
-        PHRASE("phrase");
     }
 
 }

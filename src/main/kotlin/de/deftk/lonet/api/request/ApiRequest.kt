@@ -77,6 +77,10 @@ open class ApiRequest(val serverUrl: String): Serializable {
         return LoNet.requestHandler.performRequest(this, !overwriteCache)
     }
 
+    protected fun asApiBoolean(boolean: Boolean): Int {
+        return if (boolean) 1 else 0
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
