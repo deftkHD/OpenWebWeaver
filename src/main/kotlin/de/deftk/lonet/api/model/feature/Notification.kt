@@ -5,24 +5,24 @@ import de.deftk.lonet.api.model.Member
 import java.io.Serializable
 import java.util.*
 
-class Notification(jsonObject: JsonObject, val group: Member): Serializable {
+class Notification(val id: String, val title: String?, val text: String?, val color: NotificationColor, val creationDate: Date, val creationMember: Member, val modificationDate: Date, val modificationMember: Member, val group: Member) : Serializable {
 
-    val id: String = jsonObject.get("id").asString
-    val title: String? = jsonObject.get("title")?.asString
-    val text: String? = jsonObject.get("text")?.asString
-    val color = NotificationColor.getById(jsonObject.get("color").asInt)
-    val creationDate: Date
-    val creationMember: Member
-    val modificationDate: Date
-    val modificationMember: Member
-
-    init {
-        val createdObject = jsonObject.get("created").asJsonObject
-        creationDate = Date(createdObject.get("date").asLong * 1000)
-        creationMember = Member(createdObject.get("user").asJsonObject, null)
-        val modifiedObject = jsonObject.get("modified").asJsonObject
-        modificationDate = Date(modifiedObject.get("date").asLong * 1000)
-        modificationMember = Member(modifiedObject.get("user").asJsonObject, null)
+    companion object {
+        fun fromJson(jsonObject: JsonObject, member: Member): Notification {
+            val createdObject = jsonObject.get("created").asJsonObject
+            val modifiedObject = jsonObject.get("modified").asJsonObject
+            return Notification(
+                    jsonObject.get("id").asString,
+                    jsonObject.get("title")?.asString,
+                    jsonObject.get("text")?.asString,
+                    NotificationColor.getById(jsonObject.get("color").asInt),
+                    Date(createdObject.get("date").asLong * 1000),
+                    Member.fromJson(createdObject.get("user").asJsonObject, null),
+                    Date(modifiedObject.get("date").asLong * 1000),
+                    Member.fromJson(modifiedObject.get("user").asJsonObject, null),
+                    member
+            )
+        }
     }
 
     override fun toString(): String {
@@ -44,7 +44,7 @@ class Notification(jsonObject: JsonObject, val group: Member): Serializable {
         return id.hashCode()
     }
 
-    enum class NotificationColor(val id: Int): Serializable {
+    enum class NotificationColor(val id: Int) : Serializable {
         BLUE(0),
         GREEN(1),
         RED(2),

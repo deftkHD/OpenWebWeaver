@@ -1,28 +1,39 @@
 package de.deftk.lonet.api.model.feature.mailbox
 
 import com.google.gson.JsonObject
-import de.deftk.lonet.api.LoNet
+import de.deftk.lonet.api.model.Member
 import de.deftk.lonet.api.model.User
 import de.deftk.lonet.api.request.ApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
 import java.io.Serializable
 import java.util.*
 
-class Email(jsonObject: JsonObject, val folder: EmailFolder, private val responsibleHost: String): Serializable {
+class Email(val id: Int, val subject: String, read: Boolean, val flagged: Boolean, val answered: Boolean, val date: Date, val size: Long, val from: List<EmailAddress>?, val folder: EmailFolder, val member: Member) : Serializable {
 
-    val id = jsonObject.get("id").asInt
-    val subject = jsonObject.get("subject").asString
-    var read = jsonObject.get("is_unread").asInt == 0
+    companion object {
+        fun fromJson(jsonObject: JsonObject, folder: EmailFolder, member: Member): Email {
+            return Email(
+                    jsonObject.get("id").asInt,
+                    jsonObject.get("subject").asString,
+                    jsonObject.get("is_unread").asInt == 0,
+                    jsonObject.get("is_flagged").asInt == 1,
+                    jsonObject.get("is_answered").asInt == 1,
+                    Date(jsonObject.get("date").asLong * 1000),
+                    jsonObject.get("size").asLong,
+                    jsonObject.get("from")?.asJsonArray?.map { EmailAddress.fromJson(it.asJsonObject) },
+                    folder,
+                    member
+            )
+        }
+    }
+
+    var read = read
         private set
-    val flagged = jsonObject.get("is_flagged").asInt == 1
-    val answered = jsonObject.get("is_answered").asInt == 1
-    val date = Date(jsonObject.get("date").asLong * 1000)
-    val size = jsonObject.get("size").asLong
-    val from = jsonObject.get("from")?.asJsonArray?.map { EmailAddress(it.asJsonObject) }
 
     fun read(user: User, overwriteCache: Boolean = false): EmailContent {
-        val request = ApiRequest(responsibleHost)
-        request.addSetFocusRequest("mailbox", user.login)
+        check(member.responsibleHost != null) { "Can't do API calls for member $member" }
+        val request = ApiRequest(member.responsibleHost)
+        request.addSetFocusRequest("mailbox", member.login)
         val requestParams = JsonObject()
         requestParams.addProperty("folder_id", folder.id)
         requestParams.addProperty("message_id", id)
@@ -30,7 +41,7 @@ class Email(jsonObject: JsonObject, val folder: EmailFolder, private val respons
         val response = request.fireRequest(user, overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         read = true
-        return EmailContent(subResponse.get("message").asJsonObject)
+        return EmailContent.fromJson(subResponse.get("message").asJsonObject)
     }
 
     //TODO attachments
@@ -39,16 +50,17 @@ class Email(jsonObject: JsonObject, val folder: EmailFolder, private val respons
         return subject
     }
 
-    class EmailContent(jsonObject: JsonObject): Serializable {
+    data class EmailContent(val plainBody: String, val text: String?, val to: List<EmailAddress>) : Serializable {
 
-        val plainBody = jsonObject.get("body_plain").asString
-        val text = jsonObject.get("text")?.asString // not sure if this is needed, but it also appears inside the send_mail request
-        val to = jsonObject.get("to").asJsonArray.map { EmailAddress(it.asJsonObject) }
-
-        override fun toString(): String {
-            return plainBody
+        companion object {
+            fun fromJson(jsonObject: JsonObject): EmailContent {
+                return EmailContent(
+                        jsonObject.get("body_plain").asString,
+                        jsonObject.get("text")?.asString,
+                        jsonObject.get("to").asJsonArray.map { EmailAddress.fromJson(it.asJsonObject) }
+                )
+            }
         }
-
     }
 
 }

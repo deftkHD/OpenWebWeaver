@@ -5,6 +5,7 @@ import de.deftk.lonet.api.model.feature.mailbox.EmailFolder
 
 interface IEmailController {
 
+    //TODO groups are also able to do some of this stuff
     fun getEmailStatus(overwriteCache: Boolean = false): Pair<Quota, Int>
     fun getEmailQuota(overwriteCache: Boolean = false): Quota
     fun getUnreadEmailCount(overwriteCache: Boolean = false): Int

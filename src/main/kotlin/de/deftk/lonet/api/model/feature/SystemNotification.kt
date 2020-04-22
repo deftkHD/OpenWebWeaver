@@ -7,33 +7,27 @@ import de.deftk.lonet.api.request.ApiRequest
 import java.io.Serializable
 import java.util.*
 
-class SystemNotification(jsonObject: JsonObject): Serializable {
+class SystemNotification(val id: String, val messageType: SystemNotificationType, val date: Date, val message: String, val data: String, val member: Member, val group: Member, val fromId: Any?, val read: Boolean, val obj: String?) : Serializable {
 
-    val id: String = jsonObject.get("id").asString
-    val messageType: SystemNotificationType
-    val date: Date
-    val message: String
-    val data: String
-    val member: Member
-    val group: Member
-    val fromId: Any?
-    val read: Boolean
-    val obj: String?
-
-    init {
-        messageType = SystemNotificationType.getById(jsonObject.get("message").asString)
-        date = Date(jsonObject.get("date").asLong * 1000)
-        message = jsonObject.get("message_hr").asString
-        data = jsonObject.get("data").asString
-        member = Member(jsonObject.get("from_user").asJsonObject, null)
-        group = Member(jsonObject.get("from_group").asJsonObject, null)
-        val id = jsonObject.get("from_id")
-        fromId = if (id.isJsonNull) null else id.asString
-        read = jsonObject.get("is_unread").asInt == 0
-        obj = jsonObject.get("object")?.asString
+    companion object {
+        fun fromJson(jsonObject: JsonObject): SystemNotification {
+            val fromId = jsonObject.get("from_id")
+            return SystemNotification(
+                    jsonObject.get("id").asString,
+                    SystemNotificationType.getById(jsonObject.get("message").asString),
+                    Date(jsonObject.get("date").asLong * 1000),
+                    jsonObject.get("message_hr").asString,
+                    jsonObject.get("data").asString,
+                    Member.fromJson(jsonObject.get("from_user").asJsonObject, null),
+                    Member.fromJson(jsonObject.get("from_group").asJsonObject, null),
+                    if (fromId.isJsonNull) null else fromId.asString,
+                    jsonObject.get("is_unread").asInt == 0,
+                    jsonObject.get("object")?.asString
+            )
+        }
     }
 
-    //TODO this is not even correct implemented
+    //FIXME this is not even correct implemented
     fun delete(user: User, responsibleHost: String) {
         val request = ApiRequest(responsibleHost)
         request.addSetFocusRequest("messages", user.login)
@@ -43,7 +37,7 @@ class SystemNotification(jsonObject: JsonObject): Serializable {
     }
 
     override fun toString(): String {
-        return messageType.toString() ?: id
+        return messageType.toString()
     }
 
     override fun equals(other: Any?): Boolean {
@@ -61,7 +55,7 @@ class SystemNotification(jsonObject: JsonObject): Serializable {
         return id.hashCode()
     }
 
-    enum class SystemNotificationType(val id: String): Serializable {
+    enum class SystemNotificationType(val id: String) : Serializable {
         FILE_UPLOAD("7"),
         FILE_DOWNLOAD("8"),
         NEW_NOTIFICATION("29"),
@@ -73,7 +67,7 @@ class SystemNotification(jsonObject: JsonObject): Serializable {
             @JvmStatic
             fun getById(id: String): SystemNotificationType {
                 return values().firstOrNull { it.id == id }
-                    ?: UNKNOWN.apply { println("Unknown system notification $id") } //TODO print title
+                        ?: UNKNOWN.apply { println("Unknown system notification $id") } //TODO print title
             }
         }
     }

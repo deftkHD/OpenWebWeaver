@@ -3,9 +3,15 @@ package de.deftk.lonet.api.model.feature.forum
 import com.google.gson.JsonObject
 import java.io.Serializable
 
-class ForumSettings(json: JsonObject): Serializable {
+data class ForumSettings(val createThreads: String, val alternateView: Int) : Serializable {
 
-    val createThreads = json.get("create_threads").asString
-    val alternateView = json.get("alternate_view").asInt
+    companion object {
+        fun fromJson(jsonObject: JsonObject): ForumSettings {
+            return ForumSettings(
+                    jsonObject.get("create_threads").asString,
+                    jsonObject.get("alternate_view").asInt
+            )
+        }
+    }
 
 }

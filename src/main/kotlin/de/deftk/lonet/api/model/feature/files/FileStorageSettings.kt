@@ -3,8 +3,12 @@ package de.deftk.lonet.api.model.feature.files
 import com.google.gson.JsonObject
 import java.io.Serializable
 
-class FileStorageSettings(json: JsonObject): Serializable {
+@Deprecated("name is not good")
+data class FileStorageSettings(val hideOldVersions: Boolean) : Serializable {
 
-    val hideOldVersions = json.get("hide_old_versions").asInt == 1
-
+    companion object {
+        fun fromJson(jsonObject: JsonObject): FileStorageSettings {
+            return FileStorageSettings(jsonObject.get("hide_old_versions").asInt == 1)
+        }
+    }
 }

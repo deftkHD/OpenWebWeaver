@@ -29,7 +29,7 @@ object LoNet {
         authRequest.addGetInformationRequest()
         val response = authRequest.fireRequest(null, true)
         ResponseUtil.checkSuccess(response.toJson())
-        return User(username, password, responsibleHost, response)
+        return User.fromResponse(response, responsibleHost, password)
     }
 
     fun loginCreateTrust(username: String, password: String, title: String, ident: String): User {
@@ -41,12 +41,11 @@ object LoNet {
         authRequest.addGetInformationRequest()
         val response = authRequest.fireRequest(null, true)
         ResponseUtil.checkSuccess(response.toJson())
-        return User(
-                username,
-                ResponseUtil.getSubResponseResultByMethod(response.toJson(), "register_master")
-                        .get("trust").asJsonObject.get("token").asString,
+        return User.fromResponse(
+                response,
                 responsibleHost,
-                response
+                ResponseUtil.getSubResponseResultByMethod(response.toJson(), "register_master")
+                        .get("trust").asJsonObject.get("token").asString
         )
     }
 
@@ -69,7 +68,7 @@ object LoNet {
         authRequest.addGetInformationRequest()
         val response = authRequest.fireRequest(null, true)
         ResponseUtil.checkSuccess(response.toJson())
-        return User(username, token, responsibleHost, response)
+        return User.fromResponse(response, responsibleHost, token)
     }
 
     /**

@@ -3,10 +3,16 @@ package de.deftk.lonet.api.model.feature.files
 import com.google.gson.JsonObject
 import java.io.Serializable
 
-class FileDownload(json: JsonObject): Serializable {
+data class FileDownload(val name: String, val size: Long, val downloadUrl: String) : Serializable {
 
-    val name = json.get("name").asString
-    val size = json.get("size").asLong
-    val downloadUrl = json.get("download_url").asString
+    companion object {
+        fun fromJson(jsonObject: JsonObject): FileDownload {
+            return FileDownload(
+                    jsonObject.get("name").asString,
+                    jsonObject.get("size").asLong,
+                    jsonObject.get("download_url").asString
+            )
+        }
+    }
 
 }

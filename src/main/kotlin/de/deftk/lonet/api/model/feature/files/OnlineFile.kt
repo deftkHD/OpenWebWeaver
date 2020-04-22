@@ -10,42 +10,65 @@ import java.io.Serializable
 import java.util.*
 
 
-class OnlineFile(jsonObject: JsonObject, val member: Member) : IFilePrimitive, Serializable {
+class OnlineFile(id: String, parentId: String, ordinal: Int, name: String, description: String, type: FileType, size: Long, readable: Boolean, writable: Boolean, sparse: Boolean, mine: Boolean, creationDate: Date, creationMember: Member, modificationDate: Date, modificationMember: Member, val member: Member) : IFilePrimitive, Serializable {
 
-    lateinit var id: String
-        private set
-    lateinit var parentId: String
-        private set
-    var ordinal: Int = 0
-        private set
-    lateinit var name: String
-        private set
-    lateinit var description: String
-        private set
-    lateinit var type: FileType
-        private set
-    var size: Long = 0L
-        private set
-    var readable = false
-        private set
-    var writable = false
-        private set
-    var sparse = false
-        private set
-    var mine = false
-        private set
-    lateinit var creationDate: Date
-        private set
-    lateinit var creationMember: Member
-        private set
-    lateinit var modificationDate: Date
-        private set
-    lateinit var modificationMember: Member
-        private set
+    companion object {
+        fun fromJson(jsonObject: JsonObject, member: Member): OnlineFile {
+            //TODO parse "download_notifications" element & implement into api (has "users" array of member & "me" integer)
 
-    init {
-        setFrom(jsonObject)
+            val createdObject = jsonObject.get("created").asJsonObject
+            val modifiedObject = jsonObject.get("modified").asJsonObject
+            return OnlineFile(
+                    jsonObject.get("id").asString,
+                    jsonObject.get("parent_id").asString,
+                    jsonObject.get("ordinal").asInt,
+                    jsonObject.get("name").asString,
+                    jsonObject.get("description").asString,
+                    FileType.getById(jsonObject.get("type").asString),
+                    jsonObject.get("size").asLong,
+                    jsonObject.get("readable").asInt == 1,
+                    jsonObject.get("writable").asInt == 1,
+                    jsonObject.get("sparse").asInt == 1,
+                    jsonObject.get("mine").asInt == 1,
+                    Date(createdObject.get("date").asLong * 1000),
+                    Member.fromJson(createdObject.get("user").asJsonObject, null),
+                    Date(modifiedObject.get("date").asLong * 1000),
+                    Member.fromJson(modifiedObject.get("user").asJsonObject, null),
+                    member
+            )
+        }
     }
+
+    var id = id
+        private set
+    var parentId = parentId
+        private set
+    var ordinal = ordinal
+        private set
+    var name = name
+        private set
+    var description = description
+        private set
+    var type = type
+        private set
+    var size = size
+        private set
+    var readable = readable
+        private set
+    var writable = writable
+        private set
+    var sparse = sparse
+        private set
+    var mine = mine
+        private set
+    var creationDate = creationDate
+        private set
+    var creationMember = creationMember
+        private set
+    var modificationDate = modificationDate
+        private set
+    var modificationMember = modificationMember
+        private set
 
     fun getTmpDownloadUrl(user: User, overwriteCache: Boolean = false): FileDownload {
         check(member.responsibleHost != null) { "Can't do API calls for member $member" }
@@ -54,7 +77,7 @@ class OnlineFile(jsonObject: JsonObject, val member: Member) : IFilePrimitive, S
         val id = request.addGetFileDownloadUrl(id)[1]
         val response = request.fireRequest(user, overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return FileDownload(subResponse.get("file").asJsonObject)
+        return FileDownload.fromJson(subResponse.get("file").asJsonObject)
     }
 
     fun setName(name: String, user: User) {
@@ -67,7 +90,7 @@ class OnlineFile(jsonObject: JsonObject, val member: Member) : IFilePrimitive, S
         }
         val response = request.fireRequest(user, true)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        setFrom(subResponse.get("file").asJsonObject)
+        updateFrom(subResponse.get("file").asJsonObject)
     }
 
     fun setDescription(description: String, user: User) {
@@ -80,7 +103,7 @@ class OnlineFile(jsonObject: JsonObject, val member: Member) : IFilePrimitive, S
         }
         val response = request.fireRequest(user, true)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        setFrom(subResponse.get("file").asJsonObject)
+        updateFrom(subResponse.get("file").asJsonObject)
     }
 
     fun setReceiveDownloadNotification(receive: Boolean, user: User) {
@@ -93,7 +116,7 @@ class OnlineFile(jsonObject: JsonObject, val member: Member) : IFilePrimitive, S
         }
         val response = request.fireRequest(user, true)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        setFrom(subResponse.get("file").asJsonObject)
+        updateFrom(subResponse.get("file").asJsonObject)
     }
 
     fun setReceiveUploadNotification(receive: Boolean, user: User) {
@@ -106,7 +129,7 @@ class OnlineFile(jsonObject: JsonObject, val member: Member) : IFilePrimitive, S
         }
         val response = request.fireRequest(user, true)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        setFrom(subResponse.get("file").asJsonObject)
+        updateFrom(subResponse.get("file").asJsonObject)
     }
 
     fun setReadable(readable: Boolean, user: User) {
@@ -119,7 +142,7 @@ class OnlineFile(jsonObject: JsonObject, val member: Member) : IFilePrimitive, S
         }
         val response = request.fireRequest(user, true)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        setFrom(subResponse.get("file").asJsonObject)
+        updateFrom(subResponse.get("file").asJsonObject)
     }
 
     fun setWritable(writable: Boolean, user: User) {
@@ -132,13 +155,13 @@ class OnlineFile(jsonObject: JsonObject, val member: Member) : IFilePrimitive, S
         }
         val response = request.fireRequest(user, true)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        setFrom(subResponse.get("file").asJsonObject)
+        updateFrom(subResponse.get("file").asJsonObject)
     }
 
     fun delete(user: User) {
         check(member.responsibleHost != null) { "Can't do API calls for member $member" }
         val request = MemberApiRequest(member.responsibleHost, member.login)
-        when(type) {
+        when (type) {
             FileType.FILE -> request.addDeleteFileRequest(id)[1]
             FileType.FOLDER -> request.addDeleteFolderRequest(id)[1]
             else -> error("Can't delete object")
@@ -154,7 +177,7 @@ class OnlineFile(jsonObject: JsonObject, val member: Member) : IFilePrimitive, S
         val id = request.addAddFolderRequest(id, name, description)[1]
         val response = request.fireRequest(user, true)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return OnlineFile(subResponse.get("folder").asJsonObject, member)
+        return fromJson(subResponse.get("folder").asJsonObject, member)
     }
 
     //TODO use PrimitiveFileImpl
@@ -165,10 +188,10 @@ class OnlineFile(jsonObject: JsonObject, val member: Member) : IFilePrimitive, S
         val id = request.addGetFileStorageFilesRequest(id, recursive = false, getFiles = true, getFolders = true)[1]
         val response = request.fireRequest(user, overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return subResponse.get("entries")?.asJsonArray?.map { OnlineFile(it.asJsonObject, member) } ?: emptyList()
+        return subResponse.get("entries")?.asJsonArray?.map { fromJson(it.asJsonObject, member) } ?: emptyList()
     }
 
-    private fun setFrom(jsonObject: JsonObject) {
+    private fun updateFrom(jsonObject: JsonObject) {
         id = jsonObject.get("id").asString
         parentId = jsonObject.get("parent_id").asString
         ordinal = jsonObject.get("ordinal").asInt
@@ -183,11 +206,11 @@ class OnlineFile(jsonObject: JsonObject, val member: Member) : IFilePrimitive, S
 
         val createdObject = jsonObject.get("created").asJsonObject
         creationDate = Date(createdObject.get("date").asLong * 1000)
-        creationMember = Member(createdObject.get("user").asJsonObject, null)
+        creationMember = Member.fromJson(createdObject.get("user").asJsonObject, null)
 
         val modifiedObject = jsonObject.get("modified").asJsonObject
         modificationDate = Date(modifiedObject.get("date").asLong * 1000)
-        modificationMember = Member(modifiedObject.get("user").asJsonObject, null)
+        modificationMember = Member.fromJson(modifiedObject.get("user").asJsonObject, null)
 
         //TODO parse "download_notifications" element & implement into api (has "users" array of member & "me" integer)
     }

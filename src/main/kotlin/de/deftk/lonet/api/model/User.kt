@@ -18,22 +18,48 @@ import de.deftk.lonet.api.response.ApiResponse
 import de.deftk.lonet.api.response.ResponseUtil
 import java.io.Serializable
 
-class User(val username: String, val authKey: String, responsibleHost: String, response: ApiResponse) :
-        Member(
-                response.toJson().asJsonArray.get(0).asJsonObject.get("result").asJsonObject.get("user").asJsonObject,
-                responsibleHost
-        ), IEmailController, ISystemNotificationList, IUserController, Serializable {
+class User(login: String, name: String?, type: Int?, baseUser: Member?, fullName: String?, passwordMustChange: Boolean, isOnline: Boolean?, permissions: List<Permission>, memberPermissions: List<Permission>, reducedPermissions: List<Permission>, responsibleHost: String?, val authKey: String, val sessionId: String, val memberships: List<Member>) : Member(login, name, type, baseUser, fullName, passwordMustChange, isOnline, permissions, memberPermissions, reducedPermissions, responsibleHost), IEmailController, ISystemNotificationList, IUserController, Serializable {
 
-    val sessionId: String
-    val memberships: List<Member>
+    companion object {
+        fun fromResponse(response: ApiResponse, responsibleHost: String, authKey: String): User {
+            val jsonResponse = response.toJson().asJsonArray
+            val loginResponse = ResponseUtil.getSubResponseResultByMethod(jsonResponse, "login")
+            val informationResponse = ResponseUtil.getSubResponseResultByMethod(jsonResponse, "get_information")
 
-    init {
-        val jsonResponse = response.toJson().asJsonArray
-        val loginResponse = ResponseUtil.getSubResponseResultByMethod(jsonResponse, "login")
-        val informationResponse = ResponseUtil.getSubResponseResultByMethod(jsonResponse, "get_information")
+            val jsonObject = loginResponse.get("user").asJsonObject
 
-        sessionId = informationResponse.get("session_id").asString
-        memberships = loginResponse.get("member").asJsonArray.map { Member(it.asJsonObject, responsibleHost) }
+            jsonObject.get("base_rights")?.asJsonArray?.add("self") // dirty hack, because too lazy to fix permissions ^^
+            val permissions = mutableListOf<Permission>()
+            jsonObject.get("base_rights")?.asJsonArray?.forEach { perm ->
+                permissions.addAll(Permission.getByName(perm.asString))
+            }
+            permissions.addAll(Permission.getByName("self"))
+            val memberPermissions = mutableListOf<Permission>()
+            jsonObject.get("member_rights")?.asJsonArray?.forEach { perm ->
+                memberPermissions.addAll(Permission.getByName(perm.asString))
+            }
+            val reducedMemberPermissions = mutableListOf<Permission>()
+            jsonObject.get("reduced_rights")?.asJsonArray?.forEach { perm ->
+                reducedMemberPermissions.addAll(Permission.getByName(perm.asString))
+            }
+
+            return User(
+                    jsonObject.get("login").asString,
+                    jsonObject.get("name_hr")?.asString,
+                    jsonObject.get("type")?.asInt,
+                    if (jsonObject.has("base_user")) Member.fromJson(jsonObject.get("base_user").asJsonObject, null) else null,
+                    jsonObject.get("fullname")?.asString,
+                    jsonObject.get("password_must_change")?.asInt == 1,
+                    jsonObject.get("is_online")?.asInt == 1,
+                    permissions,
+                    memberPermissions,
+                    reducedMemberPermissions,
+                    responsibleHost,
+                    authKey,
+                    informationResponse.get("session_id").asString,
+                    loginResponse.get("member").asJsonArray.map { Member.fromJson(it.asJsonObject, responsibleHost) }
+            )
+        }
     }
 
     //TODO shadow methods from member
@@ -68,7 +94,7 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
                 val memberLogin = focus.get("user").asJsonObject.get("login").asString
                 val member = if (memberLogin == this.login) this else memberships.first { it.login == memberLogin }
                 subResponse.get("result").asJsonObject.get("entries").asJsonArray.forEach { taskResponse ->
-                    tasks.add(Task(taskResponse.asJsonObject, member))
+                    tasks.add(Task.fromJson(taskResponse.asJsonObject, member))
                 }
             }
         }
@@ -89,7 +115,7 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
                 val memberLogin = focus.get("user").asJsonObject.get("login").asString
                 val member = if (memberLogin == this.login) this else memberships.first { it.login == memberLogin }
                 subResponse.get("result").asJsonObject.get("entries").asJsonArray.forEach { taskResponse ->
-                    notifications.add(Notification(taskResponse.asJsonObject, member))
+                    notifications.add(Notification.fromJson(taskResponse.asJsonObject, member))
                 }
             }
         }
@@ -102,7 +128,7 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
         request.addRequest("logout", null)
         if (removeTrust) {
             // WHAT HAVE YOU DONE?!
-            val tmpUser = LoNet.loginToken(username, authKey, true)
+            val tmpUser = LoNet.loginToken(login, authKey, true)
             tmpUser.logout(false)
         }
         val response = request.fireRequest(this, true)
@@ -124,7 +150,7 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
         val id = request.addGetEmailStateRequest()[1]
         val response = request.fireRequest(overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Pair(Quota(subResponse.get("quota").asJsonObject), subResponse.get("unread_messages").asInt)
+        return Pair(Quota.fromJson(subResponse.get("quota").asJsonObject), subResponse.get("unread_messages").asInt)
     }
 
     override fun getEmailQuota(overwriteCache: Boolean): Quota {
@@ -141,7 +167,7 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
         val id = request.addGetEmailFoldersRequest()[1]
         val response = request.fireRequest(overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return subResponse.get("folders").asJsonArray.map { EmailFolder(it.asJsonObject, responsibleHost) }
+        return subResponse.get("folders").asJsonArray.map { EmailFolder.fromJson(it.asJsonObject, this) }
     }
 
     //TODO attachments
@@ -159,7 +185,7 @@ class User(val username: String, val authKey: String, responsibleHost: String, r
         val id = request.addGetSystemNotificationsRequest()[1]
         val response = request.fireRequest(overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return subResponse.get("messages")?.asJsonArray?.map { SystemNotification(it.asJsonObject) } ?: emptyList()
+        return subResponse.get("messages")?.asJsonArray?.map { SystemNotification.fromJson(it.asJsonObject) } ?: emptyList()
     }
 
     fun findMember(login: String): Member? {
