@@ -1,36 +1,13 @@
 package de.deftk.lonet.api.request
 
 import com.google.gson.JsonObject
+import de.deftk.lonet.api.model.abstract.AbstractOperator
 import de.deftk.lonet.api.model.feature.files.FileSearchOption
-import java.io.Serializable
+import de.deftk.lonet.api.response.ApiResponse
 
-open class MemberApiRequest(serverUrl: String, private val login: String) : ApiRequest(serverUrl), Serializable {
+open class OperatorApiRequest(val operator: AbstractOperator) : ApiRequest() {
 
-    fun addGetTasksRequest(login: String = this.login): List<Int> {
-        ensureCapacity(2)
-        return listOf(
-                addSetFocusRequest("tasks", login),
-                addRequest("get_entries", null)
-        )
-    }
-
-    fun addGetMembersRequest(login: String = this.login): List<Int> {
-        ensureCapacity(2)
-        return listOf(
-                addSetFocusRequest("members", login),
-                addRequest("get_users", null)
-        )
-    }
-
-    fun addGetNotificationsRequest(login: String = this.login): List<Int> {
-        ensureCapacity(2)
-        return listOf(
-                addSetFocusRequest("board", login),
-                addRequest("get_entries", null)
-        )
-    }
-
-    fun addGetFileStorageStateRequest(login: String = this.login): List<Int> {
+    fun addGetFileStorageStateRequest(login: String = operator.getLogin()): List<Int> {
         ensureCapacity(2)
         return listOf(
                 addSetFocusRequest("files", login),
@@ -39,7 +16,7 @@ open class MemberApiRequest(serverUrl: String, private val login: String) : ApiR
     }
 
     //TODO implement
-    fun addGetFileStorageSettingsRequest(login: String = this.login): List<Int> {
+    fun addGetFileStorageSettingsRequest(login: String = operator.getLogin()): List<Int> {
         ensureCapacity(2)
         return listOf(
                 addSetFocusRequest("files", login),
@@ -48,7 +25,7 @@ open class MemberApiRequest(serverUrl: String, private val login: String) : ApiR
     }
 
     //TODO implement
-    fun addSetFileStorageSettingsRequest(selfUploadNotification: Boolean? = null, login: String = this.login): List<Int> {
+    fun addSetFileStorageSettingsRequest(selfUploadNotification: Boolean? = null, login: String = operator.getLogin()): List<Int> {
         ensureCapacity(2)
         val requestProperties = JsonObject()
         if (selfUploadNotification != null) requestProperties.addProperty("upload_notification_me", asApiBoolean(selfUploadNotification))
@@ -58,7 +35,7 @@ open class MemberApiRequest(serverUrl: String, private val login: String) : ApiR
         )
     }
 
-    fun addGetFileStorageFilesRequest(folderId: String? = null, getFiles: Boolean? = null, getFolders: Boolean? = null, getRoot: Boolean? = null, limit: Int? = null, offset: Int? = null, recursive: Boolean? = null, searchOption: FileSearchOption? = null, searchString: String? = null, login: String = this.login): List<Int> {
+    fun addGetFileStorageFilesRequest(folderId: String? = null, getFiles: Boolean? = null, getFolders: Boolean? = null, getRoot: Boolean? = null, limit: Int? = null, offset: Int? = null, recursive: Boolean? = null, searchOption: FileSearchOption? = null, searchString: String? = null, login: String = operator.getLogin()): List<Int> {
         ensureCapacity(2)
         val requestProperties = JsonObject()
         if (folderId != null) requestProperties.addProperty("folder_id", folderId)
@@ -77,7 +54,7 @@ open class MemberApiRequest(serverUrl: String, private val login: String) : ApiR
         )
     }
 
-    fun addGetFileDownloadUrl(fileId: String, login: String = this.login): List<Int> {
+    fun addGetFileDownloadUrl(fileId: String, login: String = operator.getLogin()): List<Int> {
         ensureCapacity(2)
         val requestProperties = JsonObject()
         requestProperties.addProperty("id", fileId)
@@ -87,7 +64,7 @@ open class MemberApiRequest(serverUrl: String, private val login: String) : ApiR
         )
     }
 
-    fun addUpdateFileRequest(fileId: String, description: String? = null, name: String? = null, parentId: String? = null, selfDownloadNotification: Boolean? = null, login: String = this.login): List<Int> {
+    fun addUpdateFileRequest(fileId: String, description: String? = null, name: String? = null, parentId: String? = null, selfDownloadNotification: Boolean? = null, login: String = operator.getLogin()): List<Int> {
         ensureCapacity(2)
         val requestProperties = JsonObject()
         requestProperties.addProperty("id", fileId)
@@ -101,7 +78,7 @@ open class MemberApiRequest(serverUrl: String, private val login: String) : ApiR
         )
     }
 
-    fun addDeleteFileRequest(fileId: String, login: String = this.login): List<Int> {
+    fun addDeleteFileRequest(fileId: String, login: String = operator.getLogin()): List<Int> {
         ensureCapacity(2)
         val requestProperties = JsonObject()
         requestProperties.addProperty("id", fileId)
@@ -111,7 +88,7 @@ open class MemberApiRequest(serverUrl: String, private val login: String) : ApiR
         )
     }
 
-    fun addAddFolderRequest(parentId: String, name: String, description: String? = null, login: String = this.login): List<Int> {
+    fun addAddFolderRequest(parentId: String, name: String, description: String? = null, login: String = operator.getLogin()): List<Int> {
         ensureCapacity(2)
         val requestProperties = JsonObject()
         requestProperties.addProperty("folder_id", parentId)
@@ -123,7 +100,7 @@ open class MemberApiRequest(serverUrl: String, private val login: String) : ApiR
         )
     }
 
-    fun addUpdateFolderRequest(folderId: String, description: String? = null, name: String? = null, readable: Boolean? = null, writable: Boolean? = null, selfUploadNotification: Boolean? = null, login: String = this.login): List<Int> {
+    fun addUpdateFolderRequest(folderId: String, description: String? = null, name: String? = null, readable: Boolean? = null, writable: Boolean? = null, selfUploadNotification: Boolean? = null, login: String = operator.getLogin()): List<Int> {
         ensureCapacity(2)
         val requestProperties = JsonObject()
         requestProperties.addProperty("id", folderId)
@@ -138,7 +115,7 @@ open class MemberApiRequest(serverUrl: String, private val login: String) : ApiR
         )
     }
 
-    fun addDeleteFolderRequest(folderId: String, login: String = this.login): List<Int> {
+    fun addDeleteFolderRequest(folderId: String, login: String = operator.getLogin()): List<Int> {
         ensureCapacity(2)
         val requestProperties = JsonObject()
         requestProperties.addProperty("id", folderId)
@@ -148,23 +125,58 @@ open class MemberApiRequest(serverUrl: String, private val login: String) : ApiR
         )
     }
 
-    fun addGetForumStateRequest(login: String = this.login): List<Int> {
+    fun addGetEmailStateRequest(login: String = operator.getLogin()): List<Int> {
         ensureCapacity(2)
         return listOf(
-                addSetFocusRequest("forum", login),
+                addSetFocusRequest("mailbox", login),
                 addRequest("get_state", null)
         )
     }
 
-    fun addGetForumPostsRequest(login: String = this.login, parentId: String? = null): List<Int> {
+    fun addGetEmailFoldersRequest(login: String = operator.getLogin()): List<Int> {
         ensureCapacity(2)
-        val requestProperties = JsonObject()
-        if (parentId != null)
-            requestProperties.addProperty("parent_id", parentId)
         return listOf(
-                addSetFocusRequest("forum", login),
-                addRequest("get_entries", requestProperties)
+                addSetFocusRequest("mailbox", login),
+                addRequest("get_folders", null)
         )
+    }
+
+    fun addSendEmailRequest(to: String, subject: String, plainBody: String, text: String?, bcc: String?, cc: String?, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("to", to)
+        requestParams.addProperty("subject", subject)
+        requestParams.addProperty("body_plain", plainBody)
+        if (text != null)
+            requestParams.addProperty("text", text)
+        if (bcc != null)
+            requestParams.addProperty("bcc", bcc)
+        if (cc != null)
+            requestParams.addProperty("cc", cc)
+        return listOf(
+                addSetFocusRequest("mailbox", login),
+                addRequest("send_mail", requestParams)
+        )
+    }
+
+    fun addGetTasksRequest(login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        return listOf(
+                addSetFocusRequest("tasks", login),
+                addRequest("get_entries", null)
+        )
+    }
+
+    fun addGetNotificationsRequest(login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        return listOf(
+                addSetFocusRequest("board", login),
+                addRequest("get_entries", null)
+        )
+    }
+
+    fun fireRequest(overwriteCache: Boolean = false): ApiResponse {
+        return fireRequest(operator.getContext(), overwriteCache)
     }
 
 }

@@ -3,11 +3,11 @@ package de.deftk.lonet.api.request
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import de.deftk.lonet.api.LoNet
-import de.deftk.lonet.api.model.User
+import de.deftk.lonet.api.model.abstract.IContext
 import de.deftk.lonet.api.response.ApiResponse
 import java.io.Serializable
 
-open class ApiRequest(val serverUrl: String): Serializable {
+open class ApiRequest(): Serializable {
 
     companion object {
         const val SUB_REQUESTS_PER_REQUEST = 30
@@ -64,17 +64,17 @@ open class ApiRequest(val serverUrl: String): Serializable {
         return addRequest("get_information", 999, JsonObject())
     }
 
-    fun fireRequest(user: User?, overwriteCache: Boolean = false): ApiResponse {
-        if (user != null) {
+    open fun fireRequest(context: IContext, overwriteCache: Boolean = false): ApiResponse {
+        if (context !is AuthRequest.AuthContext) {
             val requests = this.requests
             this.requests = mutableListOf()
-            requests.withIndex().forEach { (index, request) ->
+            requests.forEach { request ->
                 this.requests.add(JsonArray())
-                addSetSessionRequest(user.sessionId)
+                addSetSessionRequest(context.getSessionId())
                 currentRequest().addAll(request)
             }
         }
-        return LoNet.requestHandler.performRequest(this, !overwriteCache)
+        return LoNet.requestHandler.performRequest(this, context, !overwriteCache)
     }
 
     protected fun asApiBoolean(boolean: Boolean): Int {
@@ -87,7 +87,6 @@ open class ApiRequest(val serverUrl: String): Serializable {
 
         other as ApiRequest
 
-        if (serverUrl != other.serverUrl) return false
         if (requests != other.requests) return false
 
         return true
@@ -104,9 +103,8 @@ open class ApiRequest(val serverUrl: String): Serializable {
     }
 
     override fun hashCode(): Int {
-        var result = serverUrl.hashCode()
-        result = 31 * result + requests.hashCode()
-        return result
+        return requests.hashCode()
     }
+
 
 }

@@ -1,14 +1,15 @@
 package de.deftk.lonet.api.model.feature
 
 import com.google.gson.JsonObject
-import de.deftk.lonet.api.model.Member
+import de.deftk.lonet.api.model.Group
+import de.deftk.lonet.api.model.abstract.AbstractOperator
 import java.io.Serializable
 import java.util.*
 
-class Task(val id: String, val title: String?, val description: String?, val startDate: Date?, val endDate: Date?, val completed: Boolean, val creationDate: Date, val creationMember: Member, val modificationDate: Date, val modificationMember: Member, val member: Member) : Serializable {
+class Task(val id: String, val title: String?, val description: String?, val startDate: Date?, val endDate: Date?, val completed: Boolean, val creationDate: Date, val creationMember: Group, val modificationDate: Date, val modificationMember: Group, val operator: AbstractOperator) : Serializable {
 
     companion object {
-        fun fromJson(jsonObject: JsonObject, member: Member): Task {
+        fun fromJson(jsonObject: JsonObject, operator: AbstractOperator): Task {
             val createdObject = jsonObject.get("created").asJsonObject
             val modifiedObject = jsonObject.get("modified").asJsonObject
             return Task(
@@ -19,14 +20,13 @@ class Task(val id: String, val title: String?, val description: String?, val sta
                     if (jsonObject.get("due_date").asInt != 0) Date(jsonObject.get("due_date").asLong * 1000) else null,
                     jsonObject.get("completed").asInt == 1,
                     Date(createdObject.get("date").asLong * 1000),
-                    Member.fromJson(createdObject.get("user").asJsonObject, null),
+                    Group.fromJson(createdObject.get("user").asJsonObject, operator.getContext()),
                     Date(modifiedObject.get("date").asLong * 1000),
-                    Member.fromJson(modifiedObject.get("user").asJsonObject, null),
-                    member
+                    Group.fromJson(modifiedObject.get("user").asJsonObject, operator.getContext()),
+                    operator
             )
         }
     }
-
 
     override fun toString(): String {
         return title ?: id

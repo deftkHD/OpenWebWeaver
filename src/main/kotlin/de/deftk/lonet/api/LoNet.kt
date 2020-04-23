@@ -4,6 +4,7 @@ import com.google.gson.JsonArray
 import de.deftk.lonet.api.cache.DefaultCacheController
 import de.deftk.lonet.api.cache.ICacheController
 import de.deftk.lonet.api.model.User
+import de.deftk.lonet.api.model.abstract.IContext
 import de.deftk.lonet.api.request.ApiRequest
 import de.deftk.lonet.api.request.AuthRequest
 import de.deftk.lonet.api.request.handler.CachedRequestHandler
@@ -27,7 +28,7 @@ object LoNet {
         val authRequest = AuthRequest(responsibleHost)
         authRequest.addLoginPasswordRequest(username, password)
         authRequest.addGetInformationRequest()
-        val response = authRequest.fireRequest(null, true)
+        val response = authRequest.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
         return User.fromResponse(response, responsibleHost, password)
     }
@@ -39,7 +40,7 @@ object LoNet {
         authRequest.addSetFocusRequest("trusts", null)
         authRequest.addRegisterMasterRequest(title, ident)
         authRequest.addGetInformationRequest()
-        val response = authRequest.fireRequest(null, true)
+        val response = authRequest.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
         return User.fromResponse(
                 response,
@@ -53,7 +54,7 @@ object LoNet {
         val responsibleHost = getResponsibleHost(username)
         val nonceRequest = AuthRequest(responsibleHost)
         nonceRequest.addGetNonceRequest()
-        val nonceResponse = nonceRequest.fireRequest(null, true)
+        val nonceResponse = nonceRequest.fireRequest()
         val nonceJson =
                 nonceResponse.toJson().asJsonArray.get(0).asJsonObject.get("result").asJsonObject.get("nonce").asJsonObject
         val nonceId = nonceJson.get("id").asString
@@ -66,7 +67,7 @@ object LoNet {
             authRequest.addUnregisterMasterRequest()
         }
         authRequest.addGetInformationRequest()
-        val response = authRequest.fireRequest(null, true)
+        val response = authRequest.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
         return User.fromResponse(response, responsibleHost, token)
     }
@@ -74,10 +75,10 @@ object LoNet {
     /**
      * Might be a bit confusing. If you are not writing your own RequestHandler, please use LoNet.requestHandler.performRequest instead of this
      */
-    fun performJsonApiRequestIntern(request: ApiRequest): ApiResponse {
+    fun performJsonApiRequestIntern(request: ApiRequest, context: IContext): ApiResponse {
         val responses = mutableListOf<ApiResponse>()
         request.requests.forEach { requestBlock ->
-            val serverUrl = request.serverUrl
+            val serverUrl = context.getRequestUrl()
             val requestStr = requestBlock.toString()
             val url = URL(serverUrl)
             val connection = url.openConnection() as HttpURLConnection
@@ -134,7 +135,7 @@ object LoNet {
 
     private fun getResponsibleHost(address: String): String {
         val request = AuthRequest("https://fork.webweaver.de/service/get_responsible_host.php")
-        val url = URL(request.serverUrl)
+        val url = URL(request.requestUrl)
         val connection = url.openConnection() as HttpsURLConnection
         connection.connectTimeout = 15000
         connection.requestMethod = "POST"

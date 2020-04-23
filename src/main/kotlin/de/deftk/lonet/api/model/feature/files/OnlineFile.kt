@@ -1,19 +1,20 @@
 package de.deftk.lonet.api.model.feature.files
 
 import com.google.gson.JsonObject
-import de.deftk.lonet.api.model.Member
-import de.deftk.lonet.api.model.User
+import de.deftk.lonet.api.model.RemoteManageable
+import de.deftk.lonet.api.model.abstract.AbstractOperator
+import de.deftk.lonet.api.model.abstract.IManageable
 import de.deftk.lonet.api.model.feature.abstract.IFilePrimitive
-import de.deftk.lonet.api.request.MemberApiRequest
+import de.deftk.lonet.api.request.OperatorApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
 import java.io.Serializable
 import java.util.*
 
 
-class OnlineFile(id: String, parentId: String, ordinal: Int, name: String, description: String, type: FileType, size: Long, readable: Boolean, writable: Boolean, sparse: Boolean, mine: Boolean, creationDate: Date, creationMember: Member, modificationDate: Date, modificationMember: Member, val member: Member) : IFilePrimitive, Serializable {
+class OnlineFile(id: String, parentId: String, ordinal: Int, name: String, description: String, type: FileType, size: Long, readable: Boolean, writable: Boolean, sparse: Boolean, mine: Boolean, creationDate: Date, creationMember: IManageable, modificationDate: Date, modificationMember: IManageable, val operator: AbstractOperator) : IFilePrimitive, Serializable {
 
     companion object {
-        fun fromJson(jsonObject: JsonObject, member: Member): OnlineFile {
+        fun fromJson(jsonObject: JsonObject, operator: AbstractOperator): OnlineFile {
             //TODO parse "download_notifications" element & implement into api (has "users" array of member & "me" integer)
 
             val createdObject = jsonObject.get("created").asJsonObject
@@ -31,10 +32,10 @@ class OnlineFile(id: String, parentId: String, ordinal: Int, name: String, descr
                     jsonObject.get("sparse").asInt == 1,
                     jsonObject.get("mine").asInt == 1,
                     Date(createdObject.get("date").asLong * 1000),
-                    Member.fromJson(createdObject.get("user").asJsonObject, null),
+                    operator.getContext().getOrCreateManageable(createdObject.get("user").asJsonObject),
                     Date(modifiedObject.get("date").asLong * 1000),
-                    Member.fromJson(modifiedObject.get("user").asJsonObject, null),
-                    member
+                    operator.getContext().getOrCreateManageable(modifiedObject.get("user").asJsonObject),
+                    operator
             )
         }
     }
@@ -70,125 +71,113 @@ class OnlineFile(id: String, parentId: String, ordinal: Int, name: String, descr
     var modificationMember = modificationMember
         private set
 
-    fun getTmpDownloadUrl(user: User, overwriteCache: Boolean = false): FileDownload {
-        check(member.responsibleHost != null) { "Can't do API calls for member $member" }
+    fun getTmpDownloadUrl(overwriteCache: Boolean = false): FileDownload {
         check(type == FileType.FILE) { "Download urls are only available for files" }
-        val request = MemberApiRequest(member.responsibleHost, member.login)
+        val request = OperatorApiRequest(operator)
         val id = request.addGetFileDownloadUrl(id)[1]
-        val response = request.fireRequest(user, overwriteCache)
+        val response = request.fireRequest(overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return FileDownload.fromJson(subResponse.get("file").asJsonObject)
     }
 
-    fun setName(name: String, user: User) {
-        check(member.responsibleHost != null) { "Can't do API calls for member $member" }
-        val request = MemberApiRequest(member.responsibleHost, member.login)
+    fun setName(name: String) {
+        val request = OperatorApiRequest(operator)
         val id = when (type) {
             FileType.FILE -> request.addUpdateFileRequest(id, name = name)[1]
             FileType.FOLDER -> request.addUpdateFolderRequest(id, name = name)[1]
             else -> error("Can't update name")
         }
-        val response = request.fireRequest(user, true)
+        val response = request.fireRequest(true)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         updateFrom(subResponse.get("file").asJsonObject)
     }
 
-    fun setDescription(description: String, user: User) {
-        check(member.responsibleHost != null) { "Can't do API calls for member $member" }
-        val request = MemberApiRequest(member.responsibleHost, member.login)
+    fun setDescription(description: String) {
+        val request = OperatorApiRequest(operator)
         val id = when (type) {
             FileType.FILE -> request.addUpdateFileRequest(id, description = description)[1]
             FileType.FOLDER -> request.addUpdateFolderRequest(id, description = description)[1]
             else -> error("Can't update description")
         }
-        val response = request.fireRequest(user, true)
+        val response = request.fireRequest( true)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         updateFrom(subResponse.get("file").asJsonObject)
     }
 
-    fun setReceiveDownloadNotification(receive: Boolean, user: User) {
-        check(member.responsibleHost != null) { "Can't do API calls for member $member" }
+    fun setReceiveDownloadNotification(receive: Boolean) {
         check(type == FileType.FILE) { "Function only available for files" }
-        val request = MemberApiRequest(member.responsibleHost, member.login)
+        val request = OperatorApiRequest(operator)
         val id = when (type) {
             FileType.FILE -> request.addUpdateFileRequest(id, selfDownloadNotification = receive)[1]
             else -> error("Can't update receive update notification state")
         }
-        val response = request.fireRequest(user, true)
+        val response = request.fireRequest( true)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         updateFrom(subResponse.get("file").asJsonObject)
     }
 
-    fun setReceiveUploadNotification(receive: Boolean, user: User) {
-        check(member.responsibleHost != null) { "Can't do API calls for member $member" }
+    fun setReceiveUploadNotification(receive: Boolean) {
         check(type == FileType.FOLDER) { "Function only available for folders" }
-        val request = MemberApiRequest(member.responsibleHost, member.login)
+        val request = OperatorApiRequest(operator)
         val id = when (type) {
             FileType.FILE -> request.addUpdateFolderRequest(id, selfUploadNotification = receive)[1]
             else -> error("Can't update receive update notification state")
         }
-        val response = request.fireRequest(user, true)
+        val response = request.fireRequest(true)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         updateFrom(subResponse.get("file").asJsonObject)
     }
 
-    fun setReadable(readable: Boolean, user: User) {
-        check(member.responsibleHost != null) { "Can't do API calls for member $member" }
+    fun setReadable(readable: Boolean) {
         check(type == FileType.FOLDER) { "Function only available for folders" }
-        val request = MemberApiRequest(member.responsibleHost, member.login)
+        val request = OperatorApiRequest(operator)
         val id = when (type) {
             FileType.FILE -> request.addUpdateFolderRequest(id, readable = readable)[1]
             else -> error("Can't update readable state")
         }
-        val response = request.fireRequest(user, true)
+        val response = request.fireRequest(true)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         updateFrom(subResponse.get("file").asJsonObject)
     }
 
-    fun setWritable(writable: Boolean, user: User) {
-        check(member.responsibleHost != null) { "Can't do API calls for member $member" }
+    fun setWritable(writable: Boolean) {
         check(type == FileType.FOLDER) { "Function only available for folders" }
-        val request = MemberApiRequest(member.responsibleHost, member.login)
+        val request = OperatorApiRequest(operator)
         val id = when (type) {
             FileType.FILE -> request.addUpdateFolderRequest(id, writable = writable)[1]
             else -> error("Can't update writable state")
         }
-        val response = request.fireRequest(user, true)
+        val response = request.fireRequest(true)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         updateFrom(subResponse.get("file").asJsonObject)
     }
 
-    fun delete(user: User) {
-        check(member.responsibleHost != null) { "Can't do API calls for member $member" }
-        val request = MemberApiRequest(member.responsibleHost, member.login)
+    fun delete() {
+        val request = OperatorApiRequest(operator)
         when (type) {
             FileType.FILE -> request.addDeleteFileRequest(id)[1]
             FileType.FOLDER -> request.addDeleteFolderRequest(id)[1]
             else -> error("Can't delete object")
         }
-        val response = request.fireRequest(user, true)
+        val response = request.fireRequest(true)
         ResponseUtil.checkSuccess(response.toJson())
     }
 
-    //TODO use PrimitiveFileImpl
-    override fun createFolder(name: String, description: String?, user: User): OnlineFile {
-        check(member.responsibleHost != null) { "Can't do API calls for member $member" }
-        val request = MemberApiRequest(member.responsibleHost, member.login)
+    override fun createFolder(name: String, description: String?): OnlineFile {
+        val request = OperatorApiRequest(operator)
         val id = request.addAddFolderRequest(id, name, description)[1]
-        val response = request.fireRequest(user, true)
+        val response = request.fireRequest(true)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return fromJson(subResponse.get("folder").asJsonObject, member)
+        return fromJson(subResponse.get("folder").asJsonObject, operator)
     }
 
-    //TODO use PrimitiveFileImpl
-    override fun getFileStorageFiles(user: User, overwriteCache: Boolean): List<OnlineFile> {
-        check(member.responsibleHost != null) { "Can't do API calls for member $member" }
+    override fun getFileStorageFiles(overwriteCache: Boolean): List<OnlineFile> {
         check(type == FileType.FOLDER) { "File can't have children!" }
-        val request = MemberApiRequest(member.responsibleHost, member.login)
+        val request = OperatorApiRequest(operator)
         val id = request.addGetFileStorageFilesRequest(id, recursive = false, getFiles = true, getFolders = true)[1]
-        val response = request.fireRequest(user, overwriteCache)
+        val response = request.fireRequest(overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return subResponse.get("entries")?.asJsonArray?.map { fromJson(it.asJsonObject, member) } ?: emptyList()
+        return subResponse.get("entries")?.asJsonArray?.map { fromJson(it.asJsonObject, operator) } ?: emptyList()
     }
 
     private fun updateFrom(jsonObject: JsonObject) {
@@ -206,11 +195,11 @@ class OnlineFile(id: String, parentId: String, ordinal: Int, name: String, descr
 
         val createdObject = jsonObject.get("created").asJsonObject
         creationDate = Date(createdObject.get("date").asLong * 1000)
-        creationMember = Member.fromJson(createdObject.get("user").asJsonObject, null)
+        creationMember = RemoteManageable.fromJson(createdObject.get("user").asJsonObject)
 
         val modifiedObject = jsonObject.get("modified").asJsonObject
         modificationDate = Date(modifiedObject.get("date").asLong * 1000)
-        modificationMember = Member.fromJson(modifiedObject.get("user").asJsonObject, null)
+        modificationMember = RemoteManageable.fromJson(modifiedObject.get("user").asJsonObject)
 
         //TODO parse "download_notifications" element & implement into api (has "users" array of member & "me" integer)
     }
@@ -225,7 +214,7 @@ class OnlineFile(id: String, parentId: String, ordinal: Int, name: String, descr
 
         other as OnlineFile
 
-        if (member != other.member) return false
+        if (operator != other.operator) return false
         if (id != other.id) return false
         if (parentId != other.parentId) return false
 
@@ -233,7 +222,7 @@ class OnlineFile(id: String, parentId: String, ordinal: Int, name: String, descr
     }
 
     override fun hashCode(): Int {
-        var result = member.hashCode()
+        var result = operator.hashCode()
         result = 31 * result + id.hashCode()
         result = 31 * result + parentId.hashCode()
         return result

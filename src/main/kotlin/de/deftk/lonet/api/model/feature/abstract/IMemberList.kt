@@ -1,10 +1,9 @@
 package de.deftk.lonet.api.model.feature.abstract
 
-import de.deftk.lonet.api.model.Member
-import de.deftk.lonet.api.model.User
+import de.deftk.lonet.api.model.abstract.IManageable
 
 interface IMemberList {
 
-    fun getMembers(user: User, overwriteCache: Boolean = false): List<Member>
+    fun getMembers(overwriteCache: Boolean = false): List<IManageable>
 
 }

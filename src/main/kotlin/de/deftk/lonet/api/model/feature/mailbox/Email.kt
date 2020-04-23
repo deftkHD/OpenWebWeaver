@@ -1,17 +1,16 @@
 package de.deftk.lonet.api.model.feature.mailbox
 
 import com.google.gson.JsonObject
-import de.deftk.lonet.api.model.Member
-import de.deftk.lonet.api.model.User
+import de.deftk.lonet.api.model.abstract.AbstractOperator
 import de.deftk.lonet.api.request.ApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
 import java.io.Serializable
 import java.util.*
 
-class Email(val id: Int, val subject: String, read: Boolean, val flagged: Boolean, val answered: Boolean, val date: Date, val size: Long, val from: List<EmailAddress>?, val folder: EmailFolder, val member: Member) : Serializable {
+class Email(val id: Int, val subject: String, read: Boolean, val flagged: Boolean, val answered: Boolean, val date: Date, val size: Long, val from: List<EmailAddress>?, val folder: EmailFolder, val operator: AbstractOperator) : Serializable {
 
     companion object {
-        fun fromJson(jsonObject: JsonObject, folder: EmailFolder, member: Member): Email {
+        fun fromJson(jsonObject: JsonObject, folder: EmailFolder, operator: AbstractOperator): Email {
             return Email(
                     jsonObject.get("id").asInt,
                     jsonObject.get("subject").asString,
@@ -22,7 +21,7 @@ class Email(val id: Int, val subject: String, read: Boolean, val flagged: Boolea
                     jsonObject.get("size").asLong,
                     jsonObject.get("from")?.asJsonArray?.map { EmailAddress.fromJson(it.asJsonObject) },
                     folder,
-                    member
+                    operator
             )
         }
     }
@@ -30,15 +29,15 @@ class Email(val id: Int, val subject: String, read: Boolean, val flagged: Boolea
     var read = read
         private set
 
-    fun read(user: User, overwriteCache: Boolean = false): EmailContent {
-        check(member.responsibleHost != null) { "Can't do API calls for member $member" }
-        val request = ApiRequest(member.responsibleHost)
-        request.addSetFocusRequest("mailbox", member.login)
+    fun read(overwriteCache: Boolean = false): EmailContent {
+        //TODO put into request class
+        val request = ApiRequest()
+        request.addSetFocusRequest("mailbox", operator.getLogin())
         val requestParams = JsonObject()
         requestParams.addProperty("folder_id", folder.id)
         requestParams.addProperty("message_id", id)
         request.addRequest("read_message", requestParams)
-        val response = request.fireRequest(user, overwriteCache)
+        val response = request.fireRequest(operator.getContext(), overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         read = true
         return EmailContent.fromJson(subResponse.get("message").asJsonObject)

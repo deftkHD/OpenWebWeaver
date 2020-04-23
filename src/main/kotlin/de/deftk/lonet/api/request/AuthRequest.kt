@@ -1,11 +1,17 @@
 package de.deftk.lonet.api.request
 
 import com.google.gson.JsonObject
+import de.deftk.lonet.api.model.Group
+import de.deftk.lonet.api.model.User
+import de.deftk.lonet.api.model.abstract.AbstractOperator
+import de.deftk.lonet.api.model.abstract.IContext
+import de.deftk.lonet.api.model.abstract.IManageable
+import de.deftk.lonet.api.response.ApiResponse
 import java.io.Serializable
 import java.security.MessageDigest
 import java.util.*
 
-open class AuthRequest(serverUrl: String) : ApiRequest(serverUrl), Serializable {
+open class AuthRequest(val requestUrl: String) : ApiRequest(), Serializable {
 
     fun addChangePasswordRequest(str: String) {
         val obj = JsonObject()
@@ -75,6 +81,14 @@ open class AuthRequest(serverUrl: String) : ApiRequest(serverUrl), Serializable 
         addRequest("get_profile", obj)
     }
 
+    override fun fireRequest(context: IContext, overwriteCache: Boolean): ApiResponse {
+        error("Operation not supported!")
+    }
+
+    fun fireRequest(): ApiResponse {
+        return super.fireRequest(AuthContext(requestUrl), true)
+    }
+
     private fun sha1Hash(str: String): String {
         return try {
             val digest = MessageDigest.getInstance("SHA-1")
@@ -95,6 +109,37 @@ open class AuthRequest(serverUrl: String) : ApiRequest(serverUrl), Serializable 
         val formatted = formatter.toString()
         formatter.close()
         return formatted
+    }
+
+    class AuthContext(private val apiUrl: String) : IContext {
+
+        override fun getSessionId(): String {
+            error("Operation not supported!")
+        }
+
+        override fun setSessionId(sessionId: String) {
+            error("Operation not supported!")
+        }
+
+        override fun getUser(): User {
+            error("Operation not supported!")
+        }
+
+        override fun getGroups(): List<Group> {
+            error("Operation not supported!")
+        }
+
+        override fun getOperator(login: String): AbstractOperator {
+            error("Operation not supported!")
+        }
+
+        override fun getOrCreateManageable(jsonObject: JsonObject): IManageable {
+            error("Operation not supported!")
+        }
+
+        override fun getRequestUrl(): String {
+            return apiUrl
+        }
     }
 
 }

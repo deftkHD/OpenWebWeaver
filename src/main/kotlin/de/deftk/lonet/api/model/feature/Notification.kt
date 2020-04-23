@@ -1,14 +1,15 @@
 package de.deftk.lonet.api.model.feature
 
 import com.google.gson.JsonObject
-import de.deftk.lonet.api.model.Member
+import de.deftk.lonet.api.model.abstract.AbstractOperator
+import de.deftk.lonet.api.model.abstract.IManageable
 import java.io.Serializable
 import java.util.*
 
-class Notification(val id: String, val title: String?, val text: String?, val color: NotificationColor, val creationDate: Date, val creationMember: Member, val modificationDate: Date, val modificationMember: Member, val group: Member) : Serializable {
+class Notification(val id: String, val title: String?, val text: String?, val color: NotificationColor, val creationDate: Date, val creationMember: IManageable, val modificationDate: Date, val modificationMember: IManageable, val operator: AbstractOperator) : Serializable {
 
     companion object {
-        fun fromJson(jsonObject: JsonObject, member: Member): Notification {
+        fun fromJson(jsonObject: JsonObject, operator: AbstractOperator): Notification {
             val createdObject = jsonObject.get("created").asJsonObject
             val modifiedObject = jsonObject.get("modified").asJsonObject
             return Notification(
@@ -17,10 +18,10 @@ class Notification(val id: String, val title: String?, val text: String?, val co
                     jsonObject.get("text")?.asString,
                     NotificationColor.getById(jsonObject.get("color").asInt),
                     Date(createdObject.get("date").asLong * 1000),
-                    Member.fromJson(createdObject.get("user").asJsonObject, null),
+                    operator.getContext().getOrCreateManageable(createdObject.get("user").asJsonObject),
                     Date(modifiedObject.get("date").asLong * 1000),
-                    Member.fromJson(modifiedObject.get("user").asJsonObject, null),
-                    member
+                    operator.getContext().getOrCreateManageable(modifiedObject.get("user").asJsonObject),
+                    operator
             )
         }
     }

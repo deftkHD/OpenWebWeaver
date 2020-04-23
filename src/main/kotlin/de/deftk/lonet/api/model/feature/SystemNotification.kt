@@ -1,16 +1,17 @@
 package de.deftk.lonet.api.model.feature
 
 import com.google.gson.JsonObject
-import de.deftk.lonet.api.model.Member
+import de.deftk.lonet.api.model.RemoteManageable
 import de.deftk.lonet.api.model.User
-import de.deftk.lonet.api.request.ApiRequest
+import de.deftk.lonet.api.model.abstract.IManageable
+import de.deftk.lonet.api.request.UserApiRequest
 import java.io.Serializable
 import java.util.*
 
-class SystemNotification(val id: String, val messageType: SystemNotificationType, val date: Date, val message: String, val data: String, val member: Member, val group: Member, val fromId: Any?, val read: Boolean, val obj: String?) : Serializable {
+class SystemNotification(val id: String, val messageType: SystemNotificationType, val date: Date, val message: String, val data: String, val member: IManageable, val group: IManageable, val fromId: Any?, val read: Boolean, val obj: String?, val user: User) : Serializable {
 
     companion object {
-        fun fromJson(jsonObject: JsonObject): SystemNotification {
+        fun fromJson(jsonObject: JsonObject, user: User): SystemNotification {
             val fromId = jsonObject.get("from_id")
             return SystemNotification(
                     jsonObject.get("id").asString,
@@ -18,19 +19,21 @@ class SystemNotification(val id: String, val messageType: SystemNotificationType
                     Date(jsonObject.get("date").asLong * 1000),
                     jsonObject.get("message_hr").asString,
                     jsonObject.get("data").asString,
-                    Member.fromJson(jsonObject.get("from_user").asJsonObject, null),
-                    Member.fromJson(jsonObject.get("from_group").asJsonObject, null),
+                    RemoteManageable.fromJson(jsonObject.get("from_user").asJsonObject),
+                    RemoteManageable.fromJson(jsonObject.get("from_group").asJsonObject),
                     if (fromId.isJsonNull) null else fromId.asString,
                     jsonObject.get("is_unread").asInt == 0,
-                    jsonObject.get("object")?.asString
+                    jsonObject.get("object")?.asString,
+                    user
             )
         }
     }
 
     //FIXME this is not even correct implemented
-    fun delete(user: User, responsibleHost: String) {
-        val request = ApiRequest(responsibleHost)
-        request.addSetFocusRequest("messages", user.login)
+    fun delete() {
+        //TODO pack inside user api request class
+        val request = UserApiRequest(user)
+        request.addSetFocusRequest("messages", user.getLogin())
         val json = JsonObject()
         json.addProperty("id", id)
         request.addRequest("delete_message", json)
