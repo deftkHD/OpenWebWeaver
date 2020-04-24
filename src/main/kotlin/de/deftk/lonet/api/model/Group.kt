@@ -86,8 +86,18 @@ open class Group(login: String, name: String, type: Int, val baseUser: IManageab
         val response = request.fireRequest(overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         val allPosts = subResponse.get("entries").asJsonArray.map { ForumPost.fromJson(it.asJsonObject, this) }
-        //TODO build comment tree
-        return allPosts
+        val rootPosts = mutableListOf<ForumPost>()
+        val tmpPosts = mutableMapOf<String, ForumPost>()
+        allPosts.forEach { post -> tmpPosts[post.id] = post }
+        allPosts.forEach { post ->
+            if (post.parentId != "0") {
+                val parent = tmpPosts[post.parentId] ?: error("Comment has invalid parent!")
+                parent.comments.add(post)
+            } else {
+                rootPosts.add(post)
+            }
+        }
+        return rootPosts
     }
 
     override fun getContext(): IContext {

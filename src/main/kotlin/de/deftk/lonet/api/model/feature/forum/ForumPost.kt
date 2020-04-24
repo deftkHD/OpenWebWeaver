@@ -6,7 +6,9 @@ import de.deftk.lonet.api.model.abstract.IManageable
 import java.io.Serializable
 import java.util.*
 
-class ForumPost(val id: String, val parentId: String, val title: String, val text: String, val icon: ForumMessageIcon, val level: Int, val children: Int, val creationDate: Date, val creationMember: IManageable, val modificationDate: Date, val modificationMember: IManageable, val pinned: Boolean, val locked: Boolean, val member: Group) : Serializable {
+class ForumPost(val id: String, val parentId: String, val title: String, val text: String, val icon: ForumMessageIcon, val level: Int, val commentCount: Int, val creationDate: Date, val creationMember: IManageable, val modificationDate: Date, val modificationMember: IManageable, val pinned: Boolean, val locked: Boolean, val member: Group) : Serializable {
+
+    val comments = mutableListOf<ForumPost>()
 
     companion object {
         fun fromJson(jsonObject: JsonObject, group: Group): ForumPost {
@@ -20,7 +22,7 @@ class ForumPost(val id: String, val parentId: String, val title: String, val tex
                     ForumMessageIcon.getById(jsonObject.get("icon").asInt),
                     jsonObject.get("level").asInt,
                     jsonObject.get("children").asJsonObject.get("count").asInt,
-                    //val files = json.get("files").asJsonArray //TODO do
+                    //jsonObject.get("files").asJsonArray //seems to be unused (always empty)
                     Date(creationObject.get("date").asInt * 1000L),
                     group.getContext().getOrCreateManageable(creationObject.get("user").asJsonObject),
                     Date(modificationObject.get("date").asInt * 1000L),
