@@ -107,7 +107,7 @@ class User(login: String, name: String, type: Int, val baseUser: IManageable?, v
             tmpUser.logout(false)
         }
         val response = request.fireRequest(getContext(), true)
-        println(response.raw)
+        ResponseUtil.checkSuccess(response.toJson())
     }
 
     override fun getAutoLoginUrl(): String {
@@ -127,6 +127,12 @@ class User(login: String, name: String, type: Int, val baseUser: IManageable?, v
                 ?: emptyList()
     }
 
+    override fun checkSession(): Boolean {
+        val request = UserApiRequest(this)
+        val response = request.fireRequest(true)
+        return runCatching { ResponseUtil.checkSuccess(response.toJson()) }.isSuccess
+    }
+
     override fun getContext(): IContext {
         return context
     }
@@ -134,7 +140,7 @@ class User(login: String, name: String, type: Int, val baseUser: IManageable?, v
     class UserContext(private var sessionId: String, private val requestUrl: String): IContext {
 
         internal lateinit var user: User
-        internal lateinit var groups: List<Group>
+        internal lateinit var groups: List<Group> //TODO should be inside user
 
         override fun getSessionId(): String {
             return sessionId

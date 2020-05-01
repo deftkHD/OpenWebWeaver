@@ -8,6 +8,7 @@ interface IUser: ISystemNotificationList {
 
     fun getAutoLoginUrl(): String
     fun logout(removeTrust: Boolean = true)
+    fun checkSession(): Boolean
 
     fun getAllTasks(overwriteCache: Boolean = false): List<Task>
     fun getAllNotifications(overwriteCache: Boolean = false): List<Notification>
