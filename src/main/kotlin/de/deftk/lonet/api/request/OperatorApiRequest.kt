@@ -2,6 +2,7 @@ package de.deftk.lonet.api.request
 
 import com.google.gson.JsonObject
 import de.deftk.lonet.api.model.abstract.AbstractOperator
+import de.deftk.lonet.api.model.feature.contact.Gender
 import de.deftk.lonet.api.model.feature.files.SearchMode
 import de.deftk.lonet.api.response.ApiResponse
 
@@ -172,6 +173,91 @@ open class OperatorApiRequest(val operator: AbstractOperator) : ApiRequest() {
         return listOf(
                 addSetFocusRequest("board", login),
                 addRequest("get_entries", null)
+        )
+    }
+
+    fun addGetContactsRequest(login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        return listOf(
+                addSetFocusRequest("addresses", login),
+                addRequest("get_entries", null)
+        )
+    }
+
+    fun addAddContactRequest(categories: String? = null, firstName: String? = null, lastName: String? = null, homeStreet: String? = null, homeStreet2: String? = null, homePostalCode: String? = null, homeCity: String? = null, homeState: String? = null, homeCountry: String? = null, homeCoords: String? = null, homePhone: String? = null, homeFax: String? = null, mobilePhone: String? = null, birthday: String? = null, email: String? = null, gender: Gender? = null, hobby: String? = null, notes: String? = null, website: String? = null, company: String? = null, companyType: String? = null, jobTitle: String? = null, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestProperties = JsonObject()
+        if (categories != null) requestProperties.addProperty("categories", categories)
+        if (firstName != null) requestProperties.addProperty("firstname", firstName)
+        if (lastName != null) requestProperties.addProperty("lastname", lastName)
+        if (homeStreet != null) requestProperties.addProperty("homestreet", homeStreet)
+        if (homeStreet2 != null) requestProperties.addProperty("homestreet2", homeStreet2)
+        if (homePostalCode != null) requestProperties.addProperty("homepostalcode", homePostalCode)
+        if (homeCity != null) requestProperties.addProperty("homecity", homeCity)
+        if (homeState != null) requestProperties.addProperty("homestate", homeState)
+        if (homeCountry != null) requestProperties.addProperty("homecountry", homeCountry)
+        if (homeCoords != null) requestProperties.addProperty("homecoords", homeCoords)
+        if (homePhone != null) requestProperties.addProperty("homephone", homePhone)
+        if (homeFax != null) requestProperties.addProperty("homefax", homeFax)
+        if (mobilePhone != null) requestProperties.addProperty("mobilephone", mobilePhone)
+        if (birthday != null) requestProperties.addProperty("birthday", birthday)
+        if (email != null) requestProperties.addProperty("emailaddress", email)
+        if (gender != null) requestProperties.addProperty("gender", gender.id)
+        if (hobby != null) requestProperties.addProperty("hobby", hobby)
+        if (notes != null) requestProperties.addProperty("notes", notes)
+        if (website != null) requestProperties.addProperty("webpage", website)
+        if (company != null) requestProperties.addProperty("company", company)
+        if (companyType != null) requestProperties.addProperty("companytype", companyType)
+        if (jobTitle != null) requestProperties.addProperty("jobtitle", jobTitle)
+
+        return listOf(
+                addSetFocusRequest("addresses", login),
+                addRequest("add_entry", requestProperties)
+        )
+    }
+
+    //TODO not sure allowing to change the uid
+    //TODO seems like there are more properties?
+    fun addSetContactRequest(id: String, categories: String? = null, firstName: String? = null, lastName: String? = null, homeStreet: String? = null, homeStreet2: String? = null, homePostalCode: String? = null, homeCity: String? = null, homeState: String? = null, homeCountry: String? = null, homeCoords: String? = null, homePhone: String? = null, homeFax: String? = null, mobilePhone: String? = null, birthday: String? = null, email: String? = null, gender: Gender? = null, hobby: String? = null, notes: String? = null, website: String? = null, company: String? = null, companyType: String? = null, jobTitle: String? = null, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestProperties = JsonObject()
+        requestProperties.addProperty("id", id)
+        if (categories != null) requestProperties.addProperty("categories", categories)
+        if (firstName != null) requestProperties.addProperty("firstname", firstName)
+        if (lastName != null) requestProperties.addProperty("lastname", lastName)
+        if (homeStreet != null) requestProperties.addProperty("homestreet", homeStreet)
+        if (homeStreet2 != null) requestProperties.addProperty("homestreet2", homeStreet2)
+        if (homePostalCode != null) requestProperties.addProperty("homepostalcode", homePostalCode)
+        if (homeCity != null) requestProperties.addProperty("homecity", homeCity)
+        if (homeState != null) requestProperties.addProperty("homestate", homeState)
+        if (homeCountry != null) requestProperties.addProperty("homecountry", homeCountry)
+        if (homeCoords != null) requestProperties.addProperty("homecoords", homeCoords)
+        if (homePhone != null) requestProperties.addProperty("homephone", homePhone)
+        if (homeFax != null) requestProperties.addProperty("homefax", homeFax)
+        if (mobilePhone != null) requestProperties.addProperty("mobilephone", mobilePhone)
+        if (birthday != null) requestProperties.addProperty("birthday", birthday)
+        if (email != null) requestProperties.addProperty("emailaddress", email)
+        if (gender != null) requestProperties.addProperty("gender", gender.id)
+        if (hobby != null) requestProperties.addProperty("hobby", hobby)
+        if (notes != null) requestProperties.addProperty("notes", notes)
+        if (website != null) requestProperties.addProperty("webpage", website)
+        if (company != null) requestProperties.addProperty("company", company)
+        if (companyType != null) requestProperties.addProperty("companytype", companyType)
+        if (jobTitle != null) requestProperties.addProperty("jobtitle", jobTitle)
+
+        return listOf(
+                addSetFocusRequest("addresses", login),
+                addRequest("set_entry", requestProperties)
+        )
+    }
+
+    fun addDeleteContactRequest(id: String, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestProperties = JsonObject()
+        requestProperties.addProperty("id", id)
+        return listOf(
+                addSetFocusRequest("addresses", login),
+                addRequest("delete_entry", requestProperties)
         )
     }
 
