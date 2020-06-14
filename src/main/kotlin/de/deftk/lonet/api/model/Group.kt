@@ -1,10 +1,7 @@
 package de.deftk.lonet.api.model
 
 import com.google.gson.JsonObject
-import de.deftk.lonet.api.model.abstract.AbstractOperator
-import de.deftk.lonet.api.model.abstract.IContext
-import de.deftk.lonet.api.model.abstract.IGroup
-import de.deftk.lonet.api.model.abstract.IManageable
+import de.deftk.lonet.api.model.abstract.*
 import de.deftk.lonet.api.model.feature.Notification
 import de.deftk.lonet.api.model.feature.Quota
 import de.deftk.lonet.api.model.feature.files.FileStorageSettings
@@ -14,7 +11,7 @@ import de.deftk.lonet.api.request.GroupApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
 import java.io.Serializable
 
-open class Group(login: String, name: String, type: Int, val baseUser: IManageable?, val fullName: String?, val passwordMustChange: Boolean, permissions: List<Permission>, val memberPermissions: List<Permission>, val reducedPermissions: List<Permission>, private val context: IContext) : AbstractOperator(login, name, permissions, type), IGroup, Serializable {
+open class Group(login: String, name: String, type: ManageableType, val baseUser: IManageable?, val fullName: String?, val passwordMustChange: Boolean, permissions: List<Permission>, val memberPermissions: List<Permission>, val reducedPermissions: List<Permission>, private val context: IContext) : AbstractOperator(login, name, permissions, type), IGroup, Serializable {
 
     companion object {
         fun fromJson(jsonObject: JsonObject, context: IContext): Group {
@@ -36,7 +33,7 @@ open class Group(login: String, name: String, type: Int, val baseUser: IManageab
             return Group(
                     jsonObject.get("login").asString,
                     jsonObject.get("name_hr").asString,
-                    jsonObject.get("type").asInt,
+                    ManageableType.getById(jsonObject.get("type").asInt),
                     if (jsonObject.has("base_user")) RemoteManageable.fromJson(jsonObject.get("base_user").asJsonObject) else null,
                     jsonObject.get("fullname")?.asString,
                     jsonObject.get("password_must_change")?.asInt == 1,

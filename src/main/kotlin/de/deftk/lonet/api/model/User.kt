@@ -2,10 +2,7 @@ package de.deftk.lonet.api.model
 
 import com.google.gson.JsonObject
 import de.deftk.lonet.api.LoNet
-import de.deftk.lonet.api.model.abstract.AbstractOperator
-import de.deftk.lonet.api.model.abstract.IContext
-import de.deftk.lonet.api.model.abstract.IManageable
-import de.deftk.lonet.api.model.abstract.IUser
+import de.deftk.lonet.api.model.abstract.*
 import de.deftk.lonet.api.model.feature.Notification
 import de.deftk.lonet.api.model.feature.SystemNotification
 import de.deftk.lonet.api.model.feature.Task
@@ -14,7 +11,7 @@ import de.deftk.lonet.api.response.ApiResponse
 import de.deftk.lonet.api.response.ResponseUtil
 import java.io.Serializable
 
-class User(login: String, name: String, type: Int, val baseUser: IManageable?, val fullName: String?, val passwordMustChange: Boolean, permissions: List<Permission>, val memberPermissions: List<Permission>, val reducedPermissions: List<Permission>, val authKey: String, private val context: IContext) : AbstractOperator(login, name, permissions, type), IUser, Serializable {
+class User(login: String, name: String, type: ManageableType, val baseUser: IManageable?, val fullName: String?, val passwordMustChange: Boolean, permissions: List<Permission>, val memberPermissions: List<Permission>, val reducedPermissions: List<Permission>, val authKey: String, private val context: IContext) : AbstractOperator(login, name, permissions, type), IUser, Serializable {
 
     companion object {
         fun fromResponse(response: ApiResponse, apiUrl: String, authKey: String): User {
@@ -24,7 +21,7 @@ class User(login: String, name: String, type: Int, val baseUser: IManageable?, v
 
             val jsonObject = loginResponse.get("user").asJsonObject
 
-            jsonObject.get("base_rights")?.asJsonArray?.add("self") // dirty hack, because too lazy to fix permissions ^^
+            jsonObject.get("base_rights")?.asJsonArray?.add("self") // hack, because api documentation doesn't tell much about permissions
             val permissions = mutableListOf<Permission>()
             jsonObject.get("base_rights")?.asJsonArray?.forEach { perm ->
                 permissions.addAll(Permission.getByName(perm.asString))
@@ -44,7 +41,7 @@ class User(login: String, name: String, type: Int, val baseUser: IManageable?, v
             context.user = User(
                     jsonObject.get("login").asString,
                     jsonObject.get("name_hr").asString,
-                    jsonObject.get("type").asInt,
+                    ManageableType.getById(jsonObject.get("type").asInt),
                     if (jsonObject.has("base_user")) RemoteManageable.fromJson(jsonObject.get("base_user").asJsonObject) else null,
                     jsonObject.get("fullname")?.asString,
                     jsonObject.get("password_must_change")?.asInt == 1,

@@ -6,6 +6,6 @@ interface IManageable: Serializable {
 
     fun getLogin(): String
     fun getName(): String
-    fun getType(): Int //TODO own enum
+    fun getType(): ManageableType
 
 }

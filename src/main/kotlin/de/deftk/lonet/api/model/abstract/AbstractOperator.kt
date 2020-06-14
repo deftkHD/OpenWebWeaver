@@ -12,7 +12,7 @@ import de.deftk.lonet.api.model.feature.mailbox.EmailFolder
 import de.deftk.lonet.api.request.OperatorApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
 
-abstract class AbstractOperator(private val login: String, private val name: String, val permissions: List<Permission>, private val type: Int) : IManageable, IMailbox, IFileStorage, ITaskList {
+abstract class AbstractOperator(private val login: String, private val name: String, val permissions: List<Permission>, private val type: ManageableType) : IManageable, IMailbox, IFileStorage, ITaskList {
 
     abstract fun getContext(): IContext
 
@@ -88,7 +88,7 @@ abstract class AbstractOperator(private val login: String, private val name: Str
         return name
     }
 
-    override fun getType(): Int {
+    override fun getType(): ManageableType {
         return type
     }
 
