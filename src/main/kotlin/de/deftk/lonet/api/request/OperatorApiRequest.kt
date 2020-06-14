@@ -2,7 +2,7 @@ package de.deftk.lonet.api.request
 
 import com.google.gson.JsonObject
 import de.deftk.lonet.api.model.abstract.AbstractOperator
-import de.deftk.lonet.api.model.feature.files.FileSearchOption
+import de.deftk.lonet.api.model.feature.files.SearchMode
 import de.deftk.lonet.api.response.ApiResponse
 
 open class OperatorApiRequest(val operator: AbstractOperator) : ApiRequest() {
@@ -35,7 +35,7 @@ open class OperatorApiRequest(val operator: AbstractOperator) : ApiRequest() {
         )
     }
 
-    fun addGetFileStorageFilesRequest(folderId: String? = null, getFiles: Boolean? = null, getFolders: Boolean? = null, getRoot: Boolean? = null, limit: Int? = null, offset: Int? = null, recursive: Boolean? = null, searchOption: FileSearchOption? = null, searchString: String? = null, login: String = operator.getLogin()): List<Int> {
+    fun addGetFileStorageFilesRequest(folderId: String? = null, getFiles: Boolean? = null, getFolders: Boolean? = null, getRoot: Boolean? = null, limit: Int? = null, offset: Int? = null, recursive: Boolean? = null, searchMode: SearchMode? = null, searchString: String? = null, login: String = operator.getLogin()): List<Int> {
         ensureCapacity(2)
         val requestProperties = JsonObject()
         if (folderId != null) requestProperties.addProperty("folder_id", folderId)
@@ -46,7 +46,7 @@ open class OperatorApiRequest(val operator: AbstractOperator) : ApiRequest() {
         if (limit != null) requestProperties.addProperty("limit", limit)
         if (offset != null) requestProperties.addProperty("offset", offset)
         if (recursive != null) requestProperties.addProperty("recursive", asApiBoolean(recursive))
-        if (searchOption != null) requestProperties.addProperty("search_option", searchOption.id)
+        if (searchMode != null) requestProperties.addProperty("search_option", searchMode.id)
         if (searchString != null) requestProperties.addProperty("search_string", searchString)
         return listOf(
                 addSetFocusRequest("files", login),

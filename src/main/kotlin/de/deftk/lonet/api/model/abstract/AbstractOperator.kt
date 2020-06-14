@@ -8,6 +8,7 @@ import de.deftk.lonet.api.model.feature.abstract.IMailbox
 import de.deftk.lonet.api.model.feature.abstract.ITaskList
 import de.deftk.lonet.api.model.feature.files.FileStorageSettings
 import de.deftk.lonet.api.model.feature.files.OnlineFile
+import de.deftk.lonet.api.model.feature.files.filters.FileFilter
 import de.deftk.lonet.api.model.feature.mailbox.EmailFolder
 import de.deftk.lonet.api.request.OperatorApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
@@ -55,9 +56,16 @@ abstract class AbstractOperator(private val login: String, private val name: Str
         return Pair(FileStorageSettings.fromJson(subResponse.get("settings").asJsonObject), Quota.fromJson(subResponse.get("quota").asJsonObject))
     }
 
-    override fun getFileStorageFiles(overwriteCache: Boolean): List<OnlineFile> {
+    override fun getFileStorageFiles(filter: FileFilter?, overwriteCache: Boolean): List<OnlineFile> {
         val request = OperatorApiRequest(this)
-        val id = request.addGetFileStorageFilesRequest("/", recursive = false, getFiles = true, getFolders = true)[1]
+        val id = request.addGetFileStorageFilesRequest(
+                "/",
+                recursive = false,
+                getFiles = true,
+                getFolders = true,
+                searchString = filter?.searchTerm,
+                searchMode = filter?.searchMode
+        )[1]
         val response = request.fireRequest(overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return subResponse.get("entries")?.asJsonArray?.map { OnlineFile.fromJson(it.asJsonObject, this) }

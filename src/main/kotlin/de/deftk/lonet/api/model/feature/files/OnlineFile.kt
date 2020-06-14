@@ -5,6 +5,7 @@ import de.deftk.lonet.api.model.RemoteManageable
 import de.deftk.lonet.api.model.abstract.AbstractOperator
 import de.deftk.lonet.api.model.abstract.IManageable
 import de.deftk.lonet.api.model.feature.abstract.IFilePrimitive
+import de.deftk.lonet.api.model.feature.files.filters.FileFilter
 import de.deftk.lonet.api.request.OperatorApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
 import java.io.Serializable
@@ -171,10 +172,17 @@ class OnlineFile(id: String, parentId: String, ordinal: Int, name: String, descr
         return fromJson(subResponse.get("folder").asJsonObject, operator)
     }
 
-    override fun getFileStorageFiles(overwriteCache: Boolean): List<OnlineFile> {
+    override fun getFileStorageFiles(filter: FileFilter?, overwriteCache: Boolean): List<OnlineFile> {
         check(type == FileType.FOLDER) { "File can't have children!" }
         val request = OperatorApiRequest(operator)
-        val id = request.addGetFileStorageFilesRequest(id, recursive = false, getFiles = true, getFolders = true)[1]
+        val id = request.addGetFileStorageFilesRequest(
+                id,
+                recursive = false,
+                getFiles = true,
+                getFolders = true,
+                searchString = filter?.searchTerm,
+                searchMode = filter?.searchMode
+        )[1]
         val response = request.fireRequest(overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return subResponse.get("entries")?.asJsonArray?.map { fromJson(it.asJsonObject, operator) } ?: emptyList()
