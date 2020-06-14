@@ -102,7 +102,6 @@ class User(login: String, name: String, type: Int, val baseUser: IManageable?, v
         val request = UserApiRequest(this)
         request.addRequest("logout", null)
         if (removeTrust) {
-            // WHAT HAVE YOU DONE?!
             val tmpUser = LoNet.loginToken(getLogin(), authKey, true)
             tmpUser.logout(false)
         }
