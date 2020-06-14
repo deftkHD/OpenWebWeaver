@@ -11,7 +11,7 @@ import de.deftk.lonet.api.response.ApiResponse
 import de.deftk.lonet.api.response.ResponseUtil
 import java.io.Serializable
 
-class User(login: String, name: String, type: ManageableType, val baseUser: IManageable?, val fullName: String?, val passwordMustChange: Boolean, permissions: List<Permission>, val memberPermissions: List<Permission>, val reducedPermissions: List<Permission>, val authKey: String, private val context: IContext) : AbstractOperator(login, name, permissions, type), IUser, Serializable {
+class User(login: String, name: String, type: ManageableType, val baseUser: IManageable?, val fullName: String?, val groups: List<Group>, val passwordMustChange: Boolean, permissions: List<Permission>, val memberPermissions: List<Permission>, val reducedPermissions: List<Permission>, val authKey: String, private val context: IContext) : AbstractOperator(login, name, permissions, type), IUser, Serializable {
 
     companion object {
         fun fromResponse(response: ApiResponse, apiUrl: String, authKey: String): User {
@@ -37,13 +37,13 @@ class User(login: String, name: String, type: ManageableType, val baseUser: IMan
             }
 
             val context = UserContext(informationResponse.get("session_id").asString, apiUrl)
-            context.groups = loginResponse.get("member").asJsonArray.map { Group.fromJson(it.asJsonObject, context) }
             context.user = User(
                     jsonObject.get("login").asString,
                     jsonObject.get("name_hr").asString,
                     ManageableType.getById(jsonObject.get("type").asInt),
                     if (jsonObject.has("base_user")) RemoteManageable.fromJson(jsonObject.get("base_user").asJsonObject) else null,
                     jsonObject.get("fullname")?.asString,
+                    loginResponse.get("member").asJsonArray.map { Group.fromJson(it.asJsonObject, context) },
                     jsonObject.get("password_must_change")?.asInt == 1,
                     permissions,
                     memberPermissions,
@@ -136,7 +136,6 @@ class User(login: String, name: String, type: ManageableType, val baseUser: IMan
     class UserContext(private var sessionId: String, private val requestUrl: String): IContext {
 
         internal lateinit var user: User
-        internal lateinit var groups: List<Group> //TODO should be inside user
 
         override fun getSessionId(): String {
             return sessionId
@@ -151,12 +150,12 @@ class User(login: String, name: String, type: ManageableType, val baseUser: IMan
         }
 
         override fun getGroups(): List<Group> {
-            return groups
+            return user.groups
         }
 
         override fun getOperator(login: String): AbstractOperator? {
             if (login == user.getLogin()) return user
-            return groups.firstOrNull { it.getLogin() == login }
+            return getGroups().firstOrNull { it.getLogin() == login }
         }
 
         override fun getOrCreateManageable(jsonObject: JsonObject): IManageable {
