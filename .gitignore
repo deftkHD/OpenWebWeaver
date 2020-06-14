@@ -1,5 +1,4 @@
 out/*
-src/de/deftk/lonet/api/Test.kt
 # Ignore Gradle project-specific cache directory
 .gradle
 
