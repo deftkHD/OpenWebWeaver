@@ -1,6 +1,7 @@
 package de.deftk.lonet.api.model
 
 import com.google.gson.JsonObject
+import de.deftk.lonet.api.exception.ApiException
 import de.deftk.lonet.api.model.abstract.*
 import de.deftk.lonet.api.model.feature.Notification
 import de.deftk.lonet.api.model.feature.Quota
@@ -88,7 +89,7 @@ open class Group(login: String, name: String, type: ManageableType, val baseUser
         allPosts.forEach { post -> tmpPosts[post.id] = post }
         allPosts.forEach { post ->
             if (post.parentId != "0") {
-                val parent = tmpPosts[post.parentId] ?: error("Comment has invalid parent!")
+                val parent = tmpPosts[post.parentId] ?: throw ApiException("Comment has invalid parent!")
                 parent.comments.add(post)
             } else {
                 rootPosts.add(post)

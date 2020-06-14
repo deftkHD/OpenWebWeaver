@@ -3,6 +3,7 @@ package de.deftk.lonet.api
 import com.google.gson.JsonArray
 import de.deftk.lonet.api.cache.DefaultCacheController
 import de.deftk.lonet.api.cache.ICacheController
+import de.deftk.lonet.api.exception.ApiException
 import de.deftk.lonet.api.model.User
 import de.deftk.lonet.api.model.abstract.IContext
 import de.deftk.lonet.api.request.ApiRequest
@@ -19,8 +20,6 @@ import java.net.URLEncoder
 import javax.net.ssl.HttpsURLConnection
 
 object LoNet {
-
-    //TODO use custom exception instead of error(...)
 
     var requestHandler: IRequestHandler = CachedRequestHandler()
     var cacheController: ICacheController = DefaultCacheController()
@@ -166,7 +165,7 @@ object LoNet {
             urlBuilder.append("/jsonrpc.php")
             return urlBuilder.toString()
         }
-        error("invalid get_responsible_host response")
+        throw ApiException("invalid get_responsible_host response")
     }
 
     fun serializeContent(params: Map<String, String>): ByteArray {

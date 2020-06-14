@@ -64,7 +64,7 @@ class User(login: String, name: String, type: ManageableType, val baseUser: IMan
         responses.withIndex().forEach { (index, subResponse) ->
             if (index % 2 == 1) {
                 val focus = responses[index - 1].get("result").asJsonObject
-                check(focus.get("method").asString == "set_focus")
+                assert(focus.get("method").asString == "set_focus")
                 val memberLogin = focus.get("user").asJsonObject.get("login").asString
                 val member = getContext().getOperator(memberLogin)!!
                 subResponse.get("result").asJsonObject.get("entries").asJsonArray.forEach { taskResponse ->
@@ -84,7 +84,7 @@ class User(login: String, name: String, type: ManageableType, val baseUser: IMan
         responses.withIndex().forEach { (index, subResponse) ->
             if (index % 2 == 1) {
                 val focus = responses[index - 1].get("result").asJsonObject
-                check(focus.get("method").asString == "set_focus")
+                assert(focus.get("method").asString == "set_focus")
                 val memberLogin = focus.get("user").asJsonObject.get("login").asString
                 val member = getContext().getOperator(memberLogin)!!
                 subResponse.get("result").asJsonObject.get("entries").asJsonArray.forEach { taskResponse ->

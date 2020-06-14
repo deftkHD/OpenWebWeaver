@@ -2,6 +2,7 @@ package de.deftk.lonet.api.response
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import de.deftk.lonet.api.exception.ApiException
 
 object ResponseUtil {
 
@@ -11,7 +12,7 @@ object ResponseUtil {
             if (subResponse.get("id").asInt == id)
                 return subResponse
         }
-        error("invalid response (expecting sub response with id $id): $response")
+        throw ApiException("invalid response (expecting sub response with id $id): $response")
     }
 
     fun getSubResponseResult(response: JsonElement, id: Int): JsonObject {
@@ -26,14 +27,14 @@ object ResponseUtil {
                 return result
             }
         }
-        error("invalid response (expecting sub response with method $method): $response")
+        throw ApiException("invalid response (expecting sub response with method $method): $response")
     }
 
     fun checkSuccess(response: JsonElement) {
         response.asJsonArray.map { it.asJsonObject }.forEach { subResponse ->
             val result = subResponse.get("result").asJsonObject
             if (result.has("return") && result.get("return").asString != "OK") {
-                throw IllegalStateException("Server returned error: ${result.get("error").asString}")
+                throw ApiException("Server returned error: ${result.get("error").asString}")
             }
         }
     }
