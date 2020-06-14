@@ -20,6 +20,8 @@ import javax.net.ssl.HttpsURLConnection
 
 object LoNet {
 
+    //TODO use custom exception instead of error(...)
+
     var requestHandler: IRequestHandler = CachedRequestHandler()
     var cacheController: ICacheController = DefaultCacheController()
 

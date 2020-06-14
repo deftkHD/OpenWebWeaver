@@ -26,11 +26,23 @@ class UserApiRequest(private val user: User) : OperatorApiRequest(user), Seriali
         )
     }
 
-    fun addGetSystemNotificationsRequest(): List<Int> {
+    fun addGetSystemNotificationsRequest(startId: Int? = null): List<Int> {
         ensureCapacity(2)
+        val requestProperties = JsonObject()
+        if (startId != null) requestProperties.addProperty("start_id", startId)
         return listOf(
                 addSetFocusRequest("messages", user.getLogin()),
-                addRequest("get_messages", null)
+                addRequest("get_messages", requestProperties)
+        )
+    }
+
+    fun addDeleteSystemNotificationRequest(id: Int): List<Int> {
+        ensureCapacity(2)
+        val requestProperties = JsonObject()
+        requestProperties.addProperty("id", id)
+        return listOf(
+                addSetFocusRequest("messages", user.getLogin()),
+                addRequest("delete_message", requestProperties)
         )
     }
 

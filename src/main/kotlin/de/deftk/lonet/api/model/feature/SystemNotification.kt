@@ -5,6 +5,7 @@ import de.deftk.lonet.api.model.RemoteManageable
 import de.deftk.lonet.api.model.User
 import de.deftk.lonet.api.model.abstract.IManageable
 import de.deftk.lonet.api.request.UserApiRequest
+import de.deftk.lonet.api.response.ResponseUtil
 import java.io.Serializable
 import java.util.*
 
@@ -29,14 +30,10 @@ class SystemNotification(val id: String, val messageType: SystemNotificationType
         }
     }
 
-    //FIXME this is not even correct implemented
     fun delete() {
-        //TODO pack inside user api request class
         val request = UserApiRequest(user)
-        request.addSetFocusRequest("messages", user.getLogin())
-        val json = JsonObject()
-        json.addProperty("id", id)
-        request.addRequest("delete_message", json)
+        request.addDeleteSystemNotificationRequest(this.id.toInt())[1] // response returns id as string, but request wants an integer
+        ResponseUtil.checkSuccess(request.fireRequest(true).toJson())
     }
 
     override fun toString(): String {
@@ -69,8 +66,10 @@ class SystemNotification(val id: String, val messageType: SystemNotificationType
         companion object {
             @JvmStatic
             fun getById(id: String): SystemNotificationType {
-                return values().firstOrNull { it.id == id }
-                        ?: UNKNOWN.apply { println("Unknown system notification $id") } //TODO print title
+                val type = values().firstOrNull { it.id == id } ?: UNKNOWN
+                if (type == UNKNOWN)
+                    println("Unknown system notification type $id")
+                return type
             }
         }
     }
