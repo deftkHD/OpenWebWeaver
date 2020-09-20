@@ -159,9 +159,7 @@ class User(login: String, name: String, type: ManageableType, val baseUser: IMan
         }
 
         override fun getOrCreateManageable(jsonObject: JsonObject): IManageable {
-            val local = getOperator(jsonObject.get("login").asString)
-            if (local != null) return local
-            return RemoteManageable.fromJson(jsonObject)
+            return getOperator(jsonObject.get("login").asString) ?: RemoteManageable.fromJson(jsonObject)
         }
 
         override fun getRequestUrl(): String {

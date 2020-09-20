@@ -203,11 +203,11 @@ class OnlineFile(id: String, parentId: String, ordinal: Int, name: String, descr
 
         val createdObject = jsonObject.get("created").asJsonObject
         creationDate = Date(createdObject.get("date").asLong * 1000)
-        creationMember = RemoteManageable.fromJson(createdObject.get("user").asJsonObject)
+        creationMember = operator.getContext().getOrCreateManageable(createdObject.get("user").asJsonObject)
 
         val modifiedObject = jsonObject.get("modified").asJsonObject
         modificationDate = Date(modifiedObject.get("date").asLong * 1000)
-        modificationMember = RemoteManageable.fromJson(modifiedObject.get("user").asJsonObject)
+        modificationMember = operator.getContext().getOrCreateManageable(modifiedObject.get("user").asJsonObject)
 
         //TODO parse "download_notifications" element & implement into api (has "users" array of member & "me" integer)
     }

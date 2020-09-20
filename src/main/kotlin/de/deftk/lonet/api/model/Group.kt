@@ -51,7 +51,7 @@ open class Group(login: String, name: String, type: ManageableType, val baseUser
         val id = request.addGetMembersRequest()[1]
         val response = request.fireRequest(overwriteCache)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return subResponse.get("users")?.asJsonArray?.map { RemoteManageable.fromJson(it.asJsonObject) } ?: emptyList()
+        return subResponse.get("users")?.asJsonArray?.map { getContext().getOrCreateManageable(it.asJsonObject) } ?: emptyList()
     }
 
     override fun getNotifications(overwriteCache: Boolean): List<Notification> {
