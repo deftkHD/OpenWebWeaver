@@ -122,7 +122,7 @@ class Contact(
     fun delete() {
         val request = OperatorApiRequest(operator)
         request.addDeleteContactRequest(id.toString())
-        val response = request.fireRequest()
+        val response = request.fireRequest(true)
         ResponseUtil.checkSuccess(response.toJson())
     }
 

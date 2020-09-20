@@ -5,6 +5,7 @@ import de.deftk.lonet.api.model.abstract.AbstractOperator
 import de.deftk.lonet.api.model.feature.contact.Gender
 import de.deftk.lonet.api.model.feature.files.SearchMode
 import de.deftk.lonet.api.response.ApiResponse
+import java.util.*
 
 open class OperatorApiRequest(val operator: AbstractOperator) : ApiRequest() {
 
@@ -257,6 +258,59 @@ open class OperatorApiRequest(val operator: AbstractOperator) : ApiRequest() {
         requestProperties.addProperty("id", id)
         return listOf(
                 addSetFocusRequest("addresses", login),
+                addRequest("delete_entry", requestProperties)
+        )
+    }
+
+    fun addGetAppointmentsRequest(login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        return listOf(
+                addSetFocusRequest("calendar", login),
+                addRequest("get_entries", null)
+        )
+    }
+
+    fun addAddAppointmentRequest(title: String, description: String? = null, endDate: Date? = null, endDateIso: String? = null, location: String? = null, rrule: String? = null, startDate: Date? = null, startDateIso: String? = null, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestProperties = JsonObject()
+        requestProperties.addProperty("title", title)
+        if (description != null) requestProperties.addProperty("description", description)
+        if (endDate != null) requestProperties.addProperty("end_date", endDate.time / 1000)
+        if (endDateIso != null) requestProperties.addProperty("end_date_iso", endDateIso)
+        if (location != null) requestProperties.addProperty("location", location)
+        if (rrule != null) requestProperties.addProperty("rrule", rrule)
+        if (startDate != null) requestProperties.addProperty("start_date", startDate.time / 1000)
+        if (startDateIso != null) requestProperties.addProperty("start_date_iso", startDateIso)
+        return listOf(
+                addSetFocusRequest("calendar", login),
+                addRequest("add_entry", requestProperties)
+        )
+    }
+
+    fun addSetAppointmentRequest(id: String, title: String? = null, description: String? = null, endDate: Date? = null, endDateIso: String? = null, location: String? = null, rrule: String? = null, startDate: Date? = null, startDateIso: String? = null, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestProperties = JsonObject()
+        requestProperties.addProperty("id", id)
+        if (title != null) requestProperties.addProperty("title", title)
+        if (description != null) requestProperties.addProperty("description", description)
+        if (endDate != null) requestProperties.addProperty("end_date", endDate.time / 1000)
+        if (endDateIso != null) requestProperties.addProperty("end_date_iso", endDateIso)
+        if (location != null) requestProperties.addProperty("location", location)
+        if (rrule != null) requestProperties.addProperty("rrule", rrule)
+        if (startDate != null) requestProperties.addProperty("start_date", startDate.time / 1000)
+        if (startDateIso != null) requestProperties.addProperty("start_date_iso", startDateIso)
+        return listOf(
+                addSetFocusRequest("calendar", login),
+                addRequest("set_entry", requestProperties)
+        )
+    }
+
+    fun addDeleteAppointmentRequest(id: String, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestProperties = JsonObject()
+        requestProperties.addProperty("id", id)
+        return listOf(
+                addSetFocusRequest("calendar", login),
                 addRequest("delete_entry", requestProperties)
         )
     }

@@ -3,10 +3,8 @@ package de.deftk.lonet.api.model.abstract
 import de.deftk.lonet.api.model.Permission
 import de.deftk.lonet.api.model.feature.Quota
 import de.deftk.lonet.api.model.feature.Task
-import de.deftk.lonet.api.model.feature.abstract.IContactHolder
-import de.deftk.lonet.api.model.feature.abstract.IFileStorage
-import de.deftk.lonet.api.model.feature.abstract.IMailbox
-import de.deftk.lonet.api.model.feature.abstract.ITaskList
+import de.deftk.lonet.api.model.feature.abstract.*
+import de.deftk.lonet.api.model.feature.calendar.Appointment
 import de.deftk.lonet.api.model.feature.contact.Contact
 import de.deftk.lonet.api.model.feature.contact.Gender
 import de.deftk.lonet.api.model.feature.files.FileStorageSettings
@@ -15,8 +13,9 @@ import de.deftk.lonet.api.model.feature.files.filters.FileFilter
 import de.deftk.lonet.api.model.feature.mailbox.EmailFolder
 import de.deftk.lonet.api.request.OperatorApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
+import java.util.*
 
-abstract class AbstractOperator(private val login: String, private val name: String, val permissions: List<Permission>, private val type: ManageableType) : IManageable, IMailbox, IFileStorage, ITaskList, IContactHolder {
+abstract class AbstractOperator(private val login: String, private val name: String, val permissions: List<Permission>, private val type: ManageableType) : IManageable, IMailbox, IFileStorage, ITaskList, IContactHolder, ICalendar {
 
     abstract fun getContext(): IContext
 
@@ -102,9 +101,25 @@ abstract class AbstractOperator(private val login: String, private val name: Str
     override fun addContact(categories: String?, firstName: String?, lastName: String?, homeStreet: String?, homeStreet2: String?, homePostalCode: String?, homeCity: String?, homeState: String?, homeCountry: String?, homeCoords: String?, homePhone: String?, homeFax: String?, mobilePhone: String?, birthday: String?, email: String?, gender: Gender?, hobby: String?, notes: String?, website: String?, company: String?, companyType: String?, jobTitle: String?): Contact {
         val request = OperatorApiRequest(this)
         val id = request.addAddContactRequest(categories, firstName, lastName, homeStreet, homeStreet2, homePostalCode, homeCity, homeState, homeCountry, homeCoords, homePhone, homeFax, mobilePhone, birthday, email, gender, hobby, notes, website, company, companyType, jobTitle)[1]
-        val response = request.fireRequest()
+        val response = request.fireRequest(true)
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return Contact.fromJson(subResponse.get("entry").asJsonObject, this)
+    }
+
+    override fun getAppointments(overwriteCache: Boolean): List<Appointment> {
+        val request = OperatorApiRequest(this)
+        val id = request.addGetAppointmentsRequest()[1]
+        val response = request.fireRequest(overwriteCache)
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return subResponse.getAsJsonArray("entries").map { Appointment.fromJson(it.asJsonObject, this) }
+    }
+
+    override fun addAppointment(title: String, description: String?, endDate: Date?, endDateIso: String?, location: String?, rrule: String?, startDate: Date?, startDateIso: String?): Appointment {
+        val request = OperatorApiRequest(this)
+        val id = request.addAddAppointmentRequest(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, login)[1]
+        val response = request.fireRequest(true)
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return Appointment.fromJson(subResponse.get("entry").asJsonObject, this)
     }
 
     override fun getLogin(): String {
