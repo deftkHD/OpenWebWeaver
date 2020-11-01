@@ -315,8 +315,8 @@ open class OperatorApiRequest(val operator: AbstractOperator) : ApiRequest() {
         )
     }
 
-    fun fireRequest(overwriteCache: Boolean = false): ApiResponse {
-        return fireRequest(operator.getContext(), overwriteCache)
+    fun fireRequest(): ApiResponse {
+        return fireRequest(operator.getContext())
     }
 
 }

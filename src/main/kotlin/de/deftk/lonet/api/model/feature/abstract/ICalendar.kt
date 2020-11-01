@@ -5,7 +5,7 @@ import java.util.*
 
 interface ICalendar {
 
-    fun getAppointments(overwriteCache: Boolean = false): List<Appointment>
+    fun getAppointments(): List<Appointment>
     fun addAppointment(title: String, description: String? = null, endDate: Date? = null, endDateIso: String? = null, location: String? = null, rrule: String? = null, startDate: Date? = null, startDateIso: String? = null): Appointment
 
 }

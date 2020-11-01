@@ -26,13 +26,13 @@ class EmailFolder(val id: String, val name: String, val type: EmailFolderType, v
         }
     }
 
-    fun getEmails(overwriteCache: Boolean = false): List<Email> {
+    fun getEmails(): List<Email> {
         val request = ApiRequest()
         request.addSetFocusRequest("mailbox", operator.getLogin())
         val requestParams = JsonObject()
         requestParams.addProperty("folder_id", id)
         request.addRequest("get_messages", requestParams)
-        val response = request.fireRequest(operator.getContext(), overwriteCache)
+        val response = request.fireRequest(operator.getContext())
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         return subResponse.get("messages").asJsonArray.map { Email.fromJson(it.asJsonObject, this, operator) }
     }

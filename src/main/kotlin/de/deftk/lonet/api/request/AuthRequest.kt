@@ -81,12 +81,12 @@ open class AuthRequest(val requestUrl: String) : ApiRequest(), Serializable {
         addRequest("get_profile", obj)
     }
 
-    override fun fireRequest(context: IContext, overwriteCache: Boolean): ApiResponse {
+    override fun fireRequest(context: IContext): ApiResponse {
         error("Operation not supported!")
     }
 
     fun fireRequest(): ApiResponse {
-        return super.fireRequest(AuthContext(requestUrl), true)
+        return super.fireRequest(AuthContext(requestUrl))
     }
 
     private fun sha1Hash(str: String): String {

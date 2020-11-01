@@ -5,7 +5,7 @@ import de.deftk.lonet.api.model.feature.files.filters.FileFilter
 
 interface IFilePrimitive {
 
-    fun getFileStorageFiles(filter: FileFilter? = null, overwriteCache: Boolean = false): List<OnlineFile>
+    fun getFileStorageFiles(filter: FileFilter? = null): List<OnlineFile>
 
     fun createFolder(name: String, description: String? = null): OnlineFile
 

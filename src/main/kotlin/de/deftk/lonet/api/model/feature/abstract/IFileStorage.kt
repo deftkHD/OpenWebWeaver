@@ -5,7 +5,7 @@ import de.deftk.lonet.api.model.feature.files.FileStorageSettings
 
 interface IFileStorage: IFilePrimitive {
 
-    fun getFileStorageState(overwriteCache: Boolean = false): Pair<FileStorageSettings, Quota>
+    fun getFileStorageState(): Pair<FileStorageSettings, Quota>
 
 
 }

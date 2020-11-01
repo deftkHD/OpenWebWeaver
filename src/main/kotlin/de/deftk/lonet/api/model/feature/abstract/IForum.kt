@@ -6,7 +6,7 @@ import de.deftk.lonet.api.model.feature.forum.ForumSettings
 
 interface IForum {
 
-    fun getForumState(overwriteCache: Boolean = false): Pair<Quota, ForumSettings>
-    fun getForumPosts(parentId: String? = null, overwriteCache: Boolean = false): List<ForumPost>
+    fun getForumState(): Pair<Quota, ForumSettings>
+    fun getForumPosts(parentId: String? = null): List<ForumPost>
 
 }

@@ -64,7 +64,7 @@ open class ApiRequest(): Serializable {
         return addRequest("get_information", 999, JsonObject())
     }
 
-    open fun fireRequest(context: IContext, overwriteCache: Boolean = false): ApiResponse {
+    open fun fireRequest(context: IContext): ApiResponse {
         if (context !is AuthRequest.AuthContext) {
             val requests = this.requests
             this.requests = mutableListOf()
@@ -74,7 +74,7 @@ open class ApiRequest(): Serializable {
                 currentRequest().addAll(request)
             }
         }
-        return LoNet.requestHandler.performRequest(this, context, !overwriteCache)
+        return LoNet.requestHandler.performRequest(this, context)
     }
 
     protected fun asApiBoolean(boolean: Boolean): Int {

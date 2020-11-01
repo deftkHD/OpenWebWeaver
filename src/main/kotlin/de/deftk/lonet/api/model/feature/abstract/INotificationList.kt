@@ -4,6 +4,6 @@ import de.deftk.lonet.api.model.feature.Notification
 
 interface INotificationList {
 
-    fun getNotifications(overwriteCache: Boolean = false): List<Notification>
+    fun getNotifications(): List<Notification>
 
 }

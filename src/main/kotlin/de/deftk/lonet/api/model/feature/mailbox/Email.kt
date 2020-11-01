@@ -29,7 +29,7 @@ class Email(val id: Int, val subject: String, read: Boolean, val flagged: Boolea
     var read = read
         private set
 
-    fun read(overwriteCache: Boolean = false): EmailContent {
+    fun read(): EmailContent {
         //TODO put into request class
         val request = ApiRequest()
         request.addSetFocusRequest("mailbox", operator.getLogin())
@@ -37,7 +37,7 @@ class Email(val id: Int, val subject: String, read: Boolean, val flagged: Boolea
         requestParams.addProperty("folder_id", folder.id)
         requestParams.addProperty("message_id", id)
         request.addRequest("read_message", requestParams)
-        val response = request.fireRequest(operator.getContext(), overwriteCache)
+        val response = request.fireRequest(operator.getContext())
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), 3)
         read = true
         return EmailContent.fromJson(subResponse.get("message").asJsonObject)

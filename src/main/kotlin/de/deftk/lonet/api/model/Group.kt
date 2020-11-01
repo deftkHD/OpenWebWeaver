@@ -46,42 +46,42 @@ open class Group(login: String, name: String, type: ManageableType, val baseUser
         }
     }
 
-    override fun getMembers(overwriteCache: Boolean): List<IManageable> {
+    override fun getMembers(): List<IManageable> {
         val request = GroupApiRequest(this)
         val id = request.addGetMembersRequest()[1]
-        val response = request.fireRequest(overwriteCache)
+        val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return subResponse.get("users")?.asJsonArray?.map { getContext().getOrCreateManageable(it.asJsonObject) } ?: emptyList()
     }
 
-    override fun getNotifications(overwriteCache: Boolean): List<Notification> {
+    override fun getNotifications(): List<Notification> {
         val request = GroupApiRequest(this)
         val id = request.addGetNotificationsRequest()[1]
-        val response = request.fireRequest(overwriteCache)
+        val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return subResponse.get("entries")?.asJsonArray?.map { Notification.fromJson(it.asJsonObject, this) } ?: emptyList()
     }
 
-    override fun getFileStorageState(overwriteCache: Boolean): Pair<FileStorageSettings, Quota> {
+    override fun getFileStorageState(): Pair<FileStorageSettings, Quota> {
         val request = GroupApiRequest(this)
         val id = request.addGetFileStorageStateRequest()[1]
-        val response = request.fireRequest(overwriteCache)
+        val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return Pair(FileStorageSettings.fromJson(subResponse.get("settings").asJsonObject), Quota.fromJson(subResponse.get("quota").asJsonObject))
     }
 
-    override fun getForumState(overwriteCache: Boolean): Pair<Quota, ForumSettings> {
+    override fun getForumState(): Pair<Quota, ForumSettings> {
         val request = GroupApiRequest(this)
         val id = request.addGetForumStateRequest()[1]
-        val response = request.fireRequest( overwriteCache)
+        val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return Pair(Quota.fromJson(subResponse.get("quota").asJsonObject), ForumSettings.fromJson(subResponse.get("settings").asJsonObject))
     }
 
-    override fun getForumPosts(parentId: String?, overwriteCache: Boolean): List<ForumPost> {
+    override fun getForumPosts(parentId: String?): List<ForumPost> {
         val request = GroupApiRequest(this)
         val id = request.addGetForumPostsRequest(parentId = parentId)[1]
-        val response = request.fireRequest(overwriteCache)
+        val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         val allPosts = subResponse.get("entries").asJsonArray.map { ForumPost.fromJson(it.asJsonObject, this) }
         val rootPosts = mutableListOf<ForumPost>()

@@ -81,7 +81,7 @@ class Contact(
     fun edit(categories: String? = null, firstName: String? = null, lastName: String? = null, homeStreet: String? = null, homeStreet2: String? = null, homePostalCode: String? = null, homeCity: String? = null, homeState: String? = null, homeCountry: String? = null, homeCoords: String? = null, homePhone: String? = null, homeFax: String? = null, mobilePhone: String? = null, birthday: String? = null, email: String? = null, gender: Gender? = null, hobby: String? = null, notes: String? = null, website: String? = null, company: String? = null, companyType: String? = null, jobTitle: String? = null) {
         val request = OperatorApiRequest(operator)
         val id = request.addSetContactRequest(id.toString(), categories, firstName, lastName, homeStreet, homeStreet2, homePostalCode, homeCity, homeState, homeCountry, homeCoords, homePhone, homeFax, mobilePhone, birthday, email, gender, hobby, notes, website, company, companyType, jobTitle)[1]
-        val response = request.fireRequest(true)
+        val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         readFrom(subResponse.get("entry").asJsonObject)
     }
@@ -122,7 +122,7 @@ class Contact(
     fun delete() {
         val request = OperatorApiRequest(operator)
         request.addDeleteContactRequest(id.toString())
-        val response = request.fireRequest(true)
+        val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
     }
 

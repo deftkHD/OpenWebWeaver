@@ -5,6 +5,6 @@ import de.deftk.lonet.api.model.feature.SystemNotification
 
 interface ISystemNotificationList {
 
-    fun getSystemNotifications(overwriteCache: Boolean = false): List<SystemNotification>
+    fun getSystemNotifications(): List<SystemNotification>
 
 }

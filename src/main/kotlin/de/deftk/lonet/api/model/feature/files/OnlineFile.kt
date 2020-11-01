@@ -72,11 +72,11 @@ class OnlineFile(id: String, parentId: String, ordinal: Int, name: String, descr
     var modificationMember = modificationMember
         private set
 
-    fun getTmpDownloadUrl(overwriteCache: Boolean = false): FileDownload {
+    fun getTmpDownloadUrl(): FileDownload {
         check(type == FileType.FILE) { "Download urls are only available for files" }
         val request = OperatorApiRequest(operator)
         val id = request.addGetFileDownloadUrl(id)[1]
-        val response = request.fireRequest(overwriteCache)
+        val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return FileDownload.fromJson(subResponse.get("file").asJsonObject)
     }
@@ -88,7 +88,7 @@ class OnlineFile(id: String, parentId: String, ordinal: Int, name: String, descr
             FileType.FOLDER -> request.addUpdateFolderRequest(id, name = name)[1]
             else -> error("Can't update name")
         }
-        val response = request.fireRequest(true)
+        val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         updateFrom(subResponse.get("file").asJsonObject)
     }
@@ -100,7 +100,7 @@ class OnlineFile(id: String, parentId: String, ordinal: Int, name: String, descr
             FileType.FOLDER -> request.addUpdateFolderRequest(id, description = description)[1]
             else -> error("Can't update description")
         }
-        val response = request.fireRequest( true)
+        val response = request.fireRequest( )
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         updateFrom(subResponse.get("file").asJsonObject)
     }
@@ -112,7 +112,7 @@ class OnlineFile(id: String, parentId: String, ordinal: Int, name: String, descr
             FileType.FILE -> request.addUpdateFileRequest(id, selfDownloadNotification = receive)[1]
             else -> error("Can't update receive update notification state")
         }
-        val response = request.fireRequest( true)
+        val response = request.fireRequest( )
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         updateFrom(subResponse.get("file").asJsonObject)
     }
@@ -124,7 +124,7 @@ class OnlineFile(id: String, parentId: String, ordinal: Int, name: String, descr
             FileType.FILE -> request.addUpdateFolderRequest(id, selfUploadNotification = receive)[1]
             else -> error("Can't update receive update notification state")
         }
-        val response = request.fireRequest(true)
+        val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         updateFrom(subResponse.get("file").asJsonObject)
     }
@@ -136,7 +136,7 @@ class OnlineFile(id: String, parentId: String, ordinal: Int, name: String, descr
             FileType.FILE -> request.addUpdateFolderRequest(id, readable = readable)[1]
             else -> error("Can't update readable state")
         }
-        val response = request.fireRequest(true)
+        val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         updateFrom(subResponse.get("file").asJsonObject)
     }
@@ -148,7 +148,7 @@ class OnlineFile(id: String, parentId: String, ordinal: Int, name: String, descr
             FileType.FILE -> request.addUpdateFolderRequest(id, writable = writable)[1]
             else -> error("Can't update writable state")
         }
-        val response = request.fireRequest(true)
+        val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         updateFrom(subResponse.get("file").asJsonObject)
     }
@@ -160,19 +160,19 @@ class OnlineFile(id: String, parentId: String, ordinal: Int, name: String, descr
             FileType.FOLDER -> request.addDeleteFolderRequest(id)[1]
             else -> error("Can't delete object")
         }
-        val response = request.fireRequest(true)
+        val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
     }
 
     override fun createFolder(name: String, description: String?): OnlineFile {
         val request = OperatorApiRequest(operator)
         val id = request.addAddFolderRequest(id, name, description)[1]
-        val response = request.fireRequest(true)
+        val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return fromJson(subResponse.get("folder").asJsonObject, operator)
     }
 
-    override fun getFileStorageFiles(filter: FileFilter?, overwriteCache: Boolean): List<OnlineFile> {
+    override fun getFileStorageFiles(filter: FileFilter?): List<OnlineFile> {
         check(type == FileType.FOLDER) { "File can't have children!" }
         val request = OperatorApiRequest(operator)
         val id = request.addGetFileStorageFilesRequest(
@@ -183,7 +183,7 @@ class OnlineFile(id: String, parentId: String, ordinal: Int, name: String, descr
                 searchString = filter?.searchTerm,
                 searchMode = filter?.searchMode
         )[1]
-        val response = request.fireRequest(overwriteCache)
+        val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return subResponse.get("entries")?.asJsonArray?.map { fromJson(it.asJsonObject, operator) } ?: emptyList()
     }

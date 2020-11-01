@@ -19,26 +19,26 @@ abstract class AbstractOperator(private val login: String, private val name: Str
 
     abstract fun getContext(): IContext
 
-    override fun getEmailStatus(overwriteCache: Boolean): Pair<Quota, Int> {
+    override fun getEmailStatus(): Pair<Quota, Int> {
         val request = OperatorApiRequest(this)
         val id = request.addGetEmailStateRequest()[1]
-        val response = request.fireRequest(getContext(), overwriteCache)
+        val response = request.fireRequest(getContext())
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return Pair(Quota.fromJson(subResponse.get("quota").asJsonObject), subResponse.get("unread_messages").asInt)
     }
 
-    override fun getEmailQuota(overwriteCache: Boolean): Quota {
-        return getEmailStatus(overwriteCache).first
+    override fun getEmailQuota(): Quota {
+        return getEmailStatus().first
     }
 
-    override fun getUnreadEmailCount(overwriteCache: Boolean): Int {
-        return getEmailStatus(overwriteCache).second
+    override fun getUnreadEmailCount(): Int {
+        return getEmailStatus().second
     }
 
-    override fun getEmailFolders(overwriteCache: Boolean): List<EmailFolder> {
+    override fun getEmailFolders(): List<EmailFolder> {
         val request = OperatorApiRequest(this)
         val id = request.addGetEmailFoldersRequest()[1]
-        val response = request.fireRequest(getContext(), overwriteCache)
+        val response = request.fireRequest(getContext())
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return subResponse.get("folders").asJsonArray.map { EmailFolder.fromJson(it.asJsonObject, this) }
     }
@@ -46,19 +46,19 @@ abstract class AbstractOperator(private val login: String, private val name: Str
     override fun sendEmail(to: String, subject: String, plainBody: String, text: String?, bcc: String?, cc: String?) {
         val request = OperatorApiRequest(this)
         request.addSendEmailRequest(to, subject, plainBody, text, bcc, cc)
-        val response = request.fireRequest(getContext(), true)
+        val response = request.fireRequest(getContext())
         ResponseUtil.checkSuccess(response.toJson())
     }
 
-    override fun getFileStorageState(overwriteCache: Boolean): Pair<FileStorageSettings, Quota> {
+    override fun getFileStorageState(): Pair<FileStorageSettings, Quota> {
         val request = OperatorApiRequest(this)
         val id = request.addGetFileStorageStateRequest()[1]
-        val response = request.fireRequest(getContext(), overwriteCache)
+        val response = request.fireRequest(getContext())
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return Pair(FileStorageSettings.fromJson(subResponse.get("settings").asJsonObject), Quota.fromJson(subResponse.get("quota").asJsonObject))
     }
 
-    override fun getFileStorageFiles(filter: FileFilter?, overwriteCache: Boolean): List<OnlineFile> {
+    override fun getFileStorageFiles(filter: FileFilter?): List<OnlineFile> {
         val request = OperatorApiRequest(this)
         val id = request.addGetFileStorageFilesRequest(
                 "/",
@@ -68,7 +68,7 @@ abstract class AbstractOperator(private val login: String, private val name: Str
                 searchString = filter?.searchTerm,
                 searchMode = filter?.searchMode
         )[1]
-        val response = request.fireRequest(overwriteCache)
+        val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return subResponse.get("entries")?.asJsonArray?.map { OnlineFile.fromJson(it.asJsonObject, this) }
                 ?: emptyList()
@@ -77,23 +77,23 @@ abstract class AbstractOperator(private val login: String, private val name: Str
     override fun createFolder(name: String, description: String?): OnlineFile {
         val request = OperatorApiRequest(this)
         val id = request.addAddFolderRequest("/", name, description)[1]
-        val response = request.fireRequest(true)
+        val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return OnlineFile.fromJson(subResponse.get("folder").asJsonObject, this)
     }
 
-    override fun getTasks(overwriteCache: Boolean): List<Task> {
+    override fun getTasks(): List<Task> {
         val request = OperatorApiRequest(this)
         val id = request.addGetTasksRequest()[1]
-        val response = request.fireRequest(overwriteCache)
+        val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return subResponse.get("entries")?.asJsonArray?.map { Task.fromJson(it.asJsonObject, this) } ?: emptyList()
     }
 
-    override fun getContacts(overwriteCache: Boolean): List<Contact> {
+    override fun getContacts(): List<Contact> {
         val request = OperatorApiRequest(this)
         val id = request.addGetContactsRequest()[1]
-        val response = request.fireRequest(overwriteCache)
+        val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return subResponse.get("entries")?.asJsonArray?.map { Contact.fromJson(it.asJsonObject, this) } ?: emptyList()
     }
@@ -101,15 +101,15 @@ abstract class AbstractOperator(private val login: String, private val name: Str
     override fun addContact(categories: String?, firstName: String?, lastName: String?, homeStreet: String?, homeStreet2: String?, homePostalCode: String?, homeCity: String?, homeState: String?, homeCountry: String?, homeCoords: String?, homePhone: String?, homeFax: String?, mobilePhone: String?, birthday: String?, email: String?, gender: Gender?, hobby: String?, notes: String?, website: String?, company: String?, companyType: String?, jobTitle: String?): Contact {
         val request = OperatorApiRequest(this)
         val id = request.addAddContactRequest(categories, firstName, lastName, homeStreet, homeStreet2, homePostalCode, homeCity, homeState, homeCountry, homeCoords, homePhone, homeFax, mobilePhone, birthday, email, gender, hobby, notes, website, company, companyType, jobTitle)[1]
-        val response = request.fireRequest(true)
+        val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return Contact.fromJson(subResponse.get("entry").asJsonObject, this)
     }
 
-    override fun getAppointments(overwriteCache: Boolean): List<Appointment> {
+    override fun getAppointments(): List<Appointment> {
         val request = OperatorApiRequest(this)
         val id = request.addGetAppointmentsRequest()[1]
-        val response = request.fireRequest(overwriteCache)
+        val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return subResponse.getAsJsonArray("entries").map { Appointment.fromJson(it.asJsonObject, this) }
     }
@@ -117,7 +117,7 @@ abstract class AbstractOperator(private val login: String, private val name: Str
     override fun addAppointment(title: String, description: String?, endDate: Date?, endDateIso: String?, location: String?, rrule: String?, startDate: Date?, startDateIso: String?): Appointment {
         val request = OperatorApiRequest(this)
         val id = request.addAddAppointmentRequest(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, login)[1]
-        val response = request.fireRequest(true)
+        val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return Appointment.fromJson(subResponse.get("entry").asJsonObject, this)
     }

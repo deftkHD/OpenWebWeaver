@@ -33,7 +33,7 @@ class SystemNotification(val id: String, val messageType: SystemNotificationType
     fun delete() {
         val request = UserApiRequest(user)
         request.addDeleteSystemNotificationRequest(this.id.toInt())[1] // response returns id as string, but request wants an integer
-        ResponseUtil.checkSuccess(request.fireRequest(true).toJson())
+        ResponseUtil.checkSuccess(request.fireRequest().toJson())
     }
 
     override fun toString(): String {

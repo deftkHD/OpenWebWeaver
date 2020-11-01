@@ -6,6 +6,6 @@ import de.deftk.lonet.api.response.ApiResponse
 
 interface IRequestHandler {
 
-    fun performRequest(request: ApiRequest, context: IContext, allowCachedResponse: Boolean = true): ApiResponse
+    fun performRequest(request: ApiRequest, context: IContext): ApiResponse
 
 }

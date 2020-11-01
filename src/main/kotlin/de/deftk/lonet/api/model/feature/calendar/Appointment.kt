@@ -38,7 +38,7 @@ class Appointment(val id: String, var uid: String?, var title: String, var descr
     fun edit(title: String? = null, description: String? = null, endDate: Date? = null, endDateIso: String? = null, location: String? = null, rrule: String? = null, startDate: Date? = null, startDateIso: String? = null) {
         val request = OperatorApiRequest(operator)
         val id = request.addSetAppointmentRequest(id, title, description, endDate, endDateIso, location, rrule, startDate, startDateIso)[1]
-        val response = request.fireRequest(true)
+        val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         readFrom(subResponse.get("entry").asJsonObject)
     }
@@ -46,7 +46,7 @@ class Appointment(val id: String, var uid: String?, var title: String, var descr
     fun delete() {
         val request = OperatorApiRequest(operator)
         request.addDeleteAppointmentRequest(id)
-        val response = request.fireRequest(true)
+        val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
     }
 

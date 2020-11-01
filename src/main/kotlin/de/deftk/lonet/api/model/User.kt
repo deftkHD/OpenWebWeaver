@@ -55,10 +55,10 @@ class User(login: String, name: String, type: ManageableType, val baseUser: IMan
         }
     }
 
-    override fun getAllTasks(overwriteCache: Boolean): List<Task> {
+    override fun getAllTasks(): List<Task> {
         val request = UserApiRequest(this)
         val taskIds = request.addGetAllTasksRequest()
-        val response = request.fireRequest(overwriteCache).toJson().asJsonArray
+        val response = request.fireRequest().toJson().asJsonArray
         val tasks = mutableListOf<Task>()
         val responses = response.filter { taskIds.contains(it.asJsonObject.get("id").asInt) }.map { it.asJsonObject }
         responses.withIndex().forEach { (index, subResponse) ->
@@ -75,10 +75,10 @@ class User(login: String, name: String, type: ManageableType, val baseUser: IMan
         return tasks
     }
 
-    override fun getAllNotifications(overwriteCache: Boolean): List<Notification> {
+    override fun getAllNotifications(): List<Notification> {
         val request = UserApiRequest(this)
         val notificationIds = request.addGetAllNotificationsRequest()
-        val response = request.fireRequest(overwriteCache).toJson().asJsonArray
+        val response = request.fireRequest().toJson().asJsonArray
         val notifications = mutableListOf<Notification>()
         val responses = response.filter { notificationIds.contains(it.asJsonObject.get("id").asInt) }.map { it.asJsonObject }
         responses.withIndex().forEach { (index, subResponse) ->
@@ -102,22 +102,22 @@ class User(login: String, name: String, type: ManageableType, val baseUser: IMan
             val tmpUser = LoNet.loginToken(getLogin(), authKey, true)
             tmpUser.logout(false)
         }
-        val response = request.fireRequest(getContext(), true)
+        val response = request.fireRequest(getContext())
         ResponseUtil.checkSuccess(response.toJson())
     }
 
     override fun getAutoLoginUrl(): String {
         val request = UserApiRequest(this)
         val id = request.addGetAutoLoginUrlRequest()[1]
-        val response = request.fireRequest(true)
+        val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return subResponse.get("url").asString
     }
 
-    override fun getSystemNotifications(overwriteCache: Boolean): List<SystemNotification> {
+    override fun getSystemNotifications(): List<SystemNotification> {
         val request = UserApiRequest(this)
         val id = request.addGetSystemNotificationsRequest()[1]
-        val response = request.fireRequest(overwriteCache)
+        val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return subResponse.get("messages")?.asJsonArray?.map { SystemNotification.fromJson(it.asJsonObject, this) }
                 ?: emptyList()
@@ -125,7 +125,7 @@ class User(login: String, name: String, type: ManageableType, val baseUser: IMan
 
     override fun checkSession(): Boolean {
         val request = UserApiRequest(this)
-        val response = request.fireRequest(true)
+        val response = request.fireRequest()
         return runCatching { ResponseUtil.checkSuccess(response.toJson()) }.isSuccess
     }
 
