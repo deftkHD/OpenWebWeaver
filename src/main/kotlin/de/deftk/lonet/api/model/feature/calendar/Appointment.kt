@@ -1,14 +1,13 @@
 package de.deftk.lonet.api.model.feature.calendar
 
 import com.google.gson.JsonObject
-import de.deftk.lonet.api.model.RemoteManageable
 import de.deftk.lonet.api.model.abstract.AbstractOperator
 import de.deftk.lonet.api.model.abstract.IManageable
 import de.deftk.lonet.api.request.OperatorApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
 import java.util.*
 
-class Appointment(val id: String, var uid: String?, var title: String, var description: String?, var endDate: Date?, var endDateIso: String?, var location: String?, var tzid: String?, var rrule: String?, var startDate: Date?, var startDateIso: String?, var creationDate: Date?, var creationMember: IManageable?, var modificationDate: Date?, var modificationMember: IManageable?, val operator: AbstractOperator) {
+class Appointment(val id: String, uid: String?, title: String, description: String?, endDate: Date?, endDateIso: String?, location: String?, tzid: String?, rrule: String?, startDate: Date?, startDateIso: String?, creationDate: Date?, creationMember: IManageable?, modificationDate: Date?, modificationMember: IManageable?, val operator: AbstractOperator) {
 
     companion object {
         fun fromJson(jsonObject: JsonObject, operator: AbstractOperator): Appointment {
@@ -33,6 +32,52 @@ class Appointment(val id: String, var uid: String?, var title: String, var descr
             appointment.readFrom(jsonObject)
             return appointment
         }
+    }
+
+    var uid: String?
+        private set
+    var title: String
+        private set
+    var description: String?
+        private set
+    var endDate: Date?
+        private set
+    var endDateIso: String?
+        private set
+    var location: String?
+        private set
+    var tzid: String?
+        private set
+    var rrule: String?
+        private set
+    var startDate: Date?
+        private set
+    var startDateIso: String?
+        private set
+    var creationDate: Date?
+        private set
+    var creationMember: IManageable?
+        private set
+    var modificationDate: Date?
+        private set
+    var modificationMember: IManageable?
+        private set
+
+    init {
+        this.uid = uid
+        this.title = title
+        this.description = description
+        this.endDate = endDate
+        this.endDateIso = endDateIso
+        this.location = location
+        this.tzid = tzid
+        this.rrule = rrule
+        this.startDate = startDate
+        this.startDateIso = startDateIso
+        this.creationDate = creationDate
+        this.creationMember = creationMember
+        this.modificationDate = modificationDate
+        this.modificationMember = modificationMember
     }
 
     fun edit(title: String? = null, description: String? = null, endDate: Date? = null, endDateIso: String? = null, location: String? = null, rrule: String? = null, startDate: Date? = null, startDateIso: String? = null) {
