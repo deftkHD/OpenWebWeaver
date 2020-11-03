@@ -1,3 +1,5 @@
+@file:Suppress("DuplicatedCode")
+
 package de.deftk.lonet.api.request
 
 import com.google.gson.JsonObject
@@ -135,14 +137,6 @@ open class OperatorApiRequest(val operator: AbstractOperator) : ApiRequest() {
         )
     }
 
-    fun addGetEmailFoldersRequest(login: String = operator.getLogin()): List<Int> {
-        ensureCapacity(2)
-        return listOf(
-                addSetFocusRequest("mailbox", login),
-                addRequest("get_folders", null)
-        )
-    }
-
     fun addSendEmailRequest(to: String, subject: String, plainBody: String, text: String?, bcc: String?, cc: String?, login: String = operator.getLogin()): List<Int> {
         ensureCapacity(2)
         val requestParams = JsonObject()
@@ -158,6 +152,133 @@ open class OperatorApiRequest(val operator: AbstractOperator) : ApiRequest() {
         return listOf(
                 addSetFocusRequest("mailbox", login),
                 addRequest("send_mail", requestParams)
+        )
+    }
+
+    fun addAddEmailFolderRequest(name: String, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("name", name)
+        return listOf(
+                addSetFocusRequest("mailbox", login),
+                addRequest("add_folder", requestParams)
+        )
+    }
+
+    fun addSetEmailFolderRequest(folderId: String, name: String?, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("folder_id", folderId)
+        if (name != null)
+            requestParams.addProperty("name", name)
+        return listOf(
+                addSetFocusRequest("mailbox", login),
+                addRequest("set_folder", requestParams)
+        )
+    }
+
+    fun addDeleteEmailFolderRequest(folderId: String, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("folder_id", folderId)
+        return listOf(
+                addSetFocusRequest("mailbox", login),
+                addRequest("delete_folder", requestParams)
+        )
+    }
+
+    fun addGetEmailFoldersRequest(login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        return listOf(
+                addSetFocusRequest("mailbox", login),
+                addRequest("get_folders", null)
+        )
+    }
+
+    fun addGetEmailsRequest(folderId: String, limit: Int?, offset: Int?, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("folder_id", folderId)
+        if (limit != null)
+            requestParams.addProperty("limit", limit)
+        if (offset != null)
+            requestParams.addProperty("offset", offset)
+        return listOf(
+                addSetFocusRequest("mailbox", login),
+                addRequest("get_messages", requestParams)
+        )
+    }
+
+    fun addReadEmailRequest(folderId: String, messageId: Int, peek: Boolean?, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("folder_id", folderId)
+        requestParams.addProperty("message_id", messageId)
+        if (peek != null)
+            requestParams.addProperty("peek", peek)
+        return listOf(
+                addSetFocusRequest("mailbox", login),
+                addRequest("read_message", requestParams)
+        )
+    }
+
+    fun addEditEmailRequest(folderId: String, messageId: Int, isFlagged: Boolean?, isUnread: Boolean?, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("folder_id", folderId)
+        requestParams.addProperty("message_id", messageId)
+        if (isFlagged != null)
+            requestParams.addProperty("is_flagged", isFlagged)
+        if (isUnread != null)
+            requestParams.addProperty("is_unread", isUnread)
+        return listOf(
+                addSetFocusRequest("mailbox", login),
+                addRequest("set_message", requestParams)
+        )
+    }
+
+    fun addMoveEmailRequest(folderId: String, messageId: Int, destinationFolderId: String, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("folder_id", folderId)
+        requestParams.addProperty("message_id", messageId)
+        requestParams.addProperty("target_folder_id", destinationFolderId)
+        return listOf(
+                addSetFocusRequest("mailbox", login),
+                addRequest("move_message", requestParams)
+        )
+    }
+
+    fun addDeleteEmailRequest(folderId: String, messageId: Int, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("folder_id", folderId)
+        requestParams.addProperty("message_id", messageId)
+        return listOf(
+                addSetFocusRequest("mailbox", login),
+                addRequest("delete_message", requestParams)
+        )
+    }
+
+    fun addGetEmailSignatureRequest(login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        return listOf(
+                addSetFocusRequest("mailbox", login),
+                addRequest("get_signature", null)
+        )
+    }
+
+    fun addSetEmailSignatureRequest(text: String, positionAnswer: String?, positionForward: String?, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("text", text)
+        if (positionAnswer != null)
+            requestParams.addProperty("position_answer", positionAnswer)
+        if (positionForward != null)
+            requestParams.addProperty("position_forward", positionForward)
+        return listOf(
+                addSetFocusRequest("mailbox", login),
+                addRequest("set_signature", requestParams)
         )
     }
 

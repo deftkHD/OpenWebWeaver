@@ -11,6 +11,7 @@ import de.deftk.lonet.api.model.feature.files.FileStorageSettings
 import de.deftk.lonet.api.model.feature.files.OnlineFile
 import de.deftk.lonet.api.model.feature.files.filters.FileFilter
 import de.deftk.lonet.api.model.feature.mailbox.EmailFolder
+import de.deftk.lonet.api.model.feature.mailbox.EmailSignature
 import de.deftk.lonet.api.request.OperatorApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
 import java.util.*
@@ -43,11 +44,25 @@ abstract class AbstractOperator(private val login: String, private val name: Str
         return subResponse.get("folders").asJsonArray.map { EmailFolder.fromJson(it.asJsonObject, this) }
     }
 
+    override fun addEmailFolder(name: String) {
+        val request = OperatorApiRequest(this)
+        request.addAddEmailFolderRequest(name)
+        val response = request.fireRequest(getContext())
+        ResponseUtil.checkSuccess(response.toJson())
+    }
+
     override fun sendEmail(to: String, subject: String, plainBody: String, text: String?, bcc: String?, cc: String?) {
         val request = OperatorApiRequest(this)
         request.addSendEmailRequest(to, subject, plainBody, text, bcc, cc)
         val response = request.fireRequest(getContext())
         ResponseUtil.checkSuccess(response.toJson())
+    }
+
+    override fun getEmailSignature(): EmailSignature {
+        val request = OperatorApiRequest(this)
+        val id = request.addGetEmailSignatureRequest()[1]
+        val response = request.fireRequest(getContext())
+        return EmailSignature.fromJson(ResponseUtil.getSubResponseResult(response.toJson(), id).get("signature").asJsonObject, this)
     }
 
     override fun getFileStorageState(): Pair<FileStorageSettings, Quota> {

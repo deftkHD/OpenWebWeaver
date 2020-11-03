@@ -17,9 +17,9 @@ It might also work with other instances of WebWeaver, but this is not tested.
 - [x] Write emails
 - [x] Email quota
 - [ ] Email attachments
-- [ ] Delete emails
-- [ ] Move emails
-- [ ] Email signature
+- [x] Delete emails
+- [x] Move emails
+- [x] Email signature
 ---
 - [x] Get group members
 - [ ] Send quick messages

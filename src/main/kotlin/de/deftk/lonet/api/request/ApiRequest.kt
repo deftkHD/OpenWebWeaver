@@ -36,10 +36,10 @@ open class ApiRequest(): Serializable {
         return addRequest("set_session", currentRequest().size() + 1, obj)
     }
 
-    fun addSetFocusRequest(requestParams: String?, login: String?): Int {
+    fun addSetFocusRequest(scope: String?, login: String?): Int {
         val obj = JsonObject()
-        if (requestParams != null)
-            obj.addProperty("object", requestParams)
+        if (scope != null)
+            obj.addProperty("object", scope)
         if (login != null)
             obj.addProperty("login", login)
         return addRequest("set_focus", obj)
