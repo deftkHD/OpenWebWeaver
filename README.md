@@ -67,9 +67,9 @@ user.logout(true)
 - [ ] Delete group notifications
 ---
 - [x] Read tasks
-- [ ] Add tasks
-- [ ] Edit tasks
-- [ ] Delete tasks
+- [x] Add tasks
+- [x] Edit tasks
+- [x] Delete tasks
 - [ ] Mark tasks as done (Not supported by API)
 ---
 - [ ] Read courselets

@@ -113,6 +113,14 @@ abstract class AbstractOperator(private val login: String, private val name: Str
         return subResponse.get("entries")?.asJsonArray?.map { Task.fromJson(it.asJsonObject, this) } ?: emptyList()
     }
 
+    override fun addTask(title: String, completed: Boolean?, description: String?, dueDate: Date?, startDate: Date?): Task {
+        val request = OperatorApiRequest(this)
+        val id = request.addAddTaskRequest(title, completed, description, dueDate, startDate)[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return Task.fromJson(subResponse.get("entry").asJsonObject, this)
+    }
+
     override fun getContacts(): List<Contact> {
         val request = OperatorApiRequest(this)
         val id = request.addGetContactsRequest()[1]

@@ -381,6 +381,54 @@ open class OperatorApiRequest(val operator: AbstractOperator) : ApiRequest() {
         )
     }
 
+    fun addAddTaskRequest(title: String, completed: Boolean? = null, description: String? = null, dueDate: Date? = null, startDate: Date? = null, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("title", title)
+        if (completed != null)
+            requestParams.addProperty("completed", asApiBoolean(completed))
+        if (description != null)
+            requestParams.addProperty("description", description)
+        if (dueDate != null)
+            requestParams.addProperty("due_date", dueDate.time / 1000)
+        if (startDate != null)
+            requestParams.addProperty("start_date", startDate.time / 1000)
+        return listOf(
+                addSetFocusRequest("tasks", login),
+                addRequest("add_entry", requestParams)
+        )
+    }
+
+    fun addSetTaskRequest(id: String, completed: Boolean? = null, description: String? = null, dueDate: Date? = null, startDate: Date? = null, title: String? = null, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("id", id)
+        if (completed != null)
+            requestParams.addProperty("completed", asApiBoolean(completed))
+        if (description != null)
+            requestParams.addProperty("description", description)
+        if (dueDate != null)
+            requestParams.addProperty("due_date", dueDate.time / 1000)
+        if (startDate != null)
+            requestParams.addProperty("start_date", startDate.time / 1000)
+        if (title != null)
+            requestParams.addProperty("title", title)
+        return listOf(
+                addSetFocusRequest("tasks", login),
+                addRequest("set_entry", requestParams)
+        )
+    }
+
+    fun addDeleteTaskRequest(id: String, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("id", id)
+        return listOf(
+                addSetFocusRequest("tasks", login),
+                addRequest("delete_entry", requestParams)
+        )
+    }
+
     fun addGetNotificationsRequest(login: String = operator.getLogin()): List<Int> {
         ensureCapacity(2)
         return listOf(
