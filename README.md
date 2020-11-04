@@ -77,8 +77,8 @@ user.logout(true)
 ---
 - [x] Forum quota
 - [x] Read forum posts
-- [ ] Add forum posts
-- [ ] Delete forum posts
+- [x] Add forum posts
+- [x] Delete forum posts
 - [ ] Forum attachments
 ---
 - [ ] Get wiki

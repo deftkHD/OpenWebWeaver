@@ -7,6 +7,7 @@ import de.deftk.lonet.api.model.feature.Notification
 import de.deftk.lonet.api.model.feature.Quota
 import de.deftk.lonet.api.model.feature.files.FileStorageSettings
 import de.deftk.lonet.api.model.feature.forum.ForumPost
+import de.deftk.lonet.api.model.feature.forum.ForumPostIcon
 import de.deftk.lonet.api.model.feature.forum.ForumSettings
 import de.deftk.lonet.api.request.GroupApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
@@ -84,6 +85,7 @@ open class Group(login: String, name: String, type: ManageableType, val baseUser
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         val allPosts = subResponse.get("entries").asJsonArray.map { ForumPost.fromJson(it.asJsonObject, this) }
+        // build tree structure
         val rootPosts = mutableListOf<ForumPost>()
         val tmpPosts = mutableMapOf<String, ForumPost>()
         allPosts.forEach { post -> tmpPosts[post.id] = post }
@@ -96,6 +98,14 @@ open class Group(login: String, name: String, type: ManageableType, val baseUser
             }
         }
         return rootPosts
+    }
+
+    override fun addForumPost(title: String, text: String, icon: ForumPostIcon, parentId: String, importSessionFile: String?, importSessionFiles: Array<String>?, replyNotificationMe: Boolean?): ForumPost {
+        val request = GroupApiRequest(this)
+        val id = request.addAddForumPostRequest(title, text, icon, parentId, importSessionFile, importSessionFiles, replyNotificationMe)[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return ForumPost.fromJson(subResponse.get("entry").asJsonObject, this)
     }
 
     override fun getContext(): IContext {

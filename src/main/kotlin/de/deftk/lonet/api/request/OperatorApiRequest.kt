@@ -132,15 +132,15 @@ open class OperatorApiRequest(val operator: AbstractOperator) : ApiRequest() {
     }
 
     fun addAddSparseFileRequest(folderId: String, name: String, size: Int, description: String? = null, login: String = operator.getLogin()): List<Int> {
-        return listOf()
+        TODO("Not yet implemented")
     }
 
     fun addImportSessionFileRequest(id: String, createCopy: Boolean? = null, description: String? = null, fileId: String? = null, folderId: String? = null, sparseKey: String? = null, login: String = operator.getLogin()): List<Int> {
-        return listOf()
+        TODO("Not yet implemented")
     }
 
     fun addExportSessionFileRequest(id: String, login: String = operator.getLogin()): List<Int> {
-        return listOf()
+        TODO("Not yet implemented")
     }
 
     fun addDeleteFileRequest(fileId: String, login: String = operator.getLogin()): List<Int> {

@@ -3,10 +3,12 @@ package de.deftk.lonet.api.model.feature.forum
 import com.google.gson.JsonObject
 import de.deftk.lonet.api.model.Group
 import de.deftk.lonet.api.model.abstract.IManageable
+import de.deftk.lonet.api.request.GroupApiRequest
+import de.deftk.lonet.api.response.ResponseUtil
 import java.io.Serializable
 import java.util.*
 
-class ForumPost(val id: String, val parentId: String, val title: String, val text: String, val icon: ForumMessageIcon, val level: Int, val commentCount: Int, val creationDate: Date, val creationMember: IManageable, val modificationDate: Date, val modificationMember: IManageable, val pinned: Boolean, val locked: Boolean, val member: Group) : Serializable {
+class ForumPost(val id: String, val parentId: String, val title: String, val text: String, val icon: ForumPostIcon, val level: Int, val commentCount: Int, val creationDate: Date, val creationMember: IManageable, val modificationDate: Date, val modificationMember: IManageable, val pinned: Boolean, val locked: Boolean, val group: Group) : Serializable {
 
     val comments = mutableListOf<ForumPost>()
 
@@ -19,7 +21,7 @@ class ForumPost(val id: String, val parentId: String, val title: String, val tex
                     jsonObject.get("parent_id").asString,
                     jsonObject.get("title").asString,
                     jsonObject.get("text").asString,
-                    ForumMessageIcon.getById(jsonObject.get("icon").asInt),
+                    ForumPostIcon.getById(jsonObject.get("icon").asInt),
                     jsonObject.get("level").asInt,
                     jsonObject.get("children").asJsonObject.get("count").asInt,
                     //jsonObject.get("files").asJsonArray //seems to be unused (always empty)
@@ -34,21 +36,15 @@ class ForumPost(val id: String, val parentId: String, val title: String, val tex
         }
     }
 
-    enum class ForumMessageIcon(val id: Int) : Serializable {
-        INFORMATION(0),
-        HUMOR(1),
-        QUESTION(2),
-        ANSWER(3),
-        UP_VOTE(4),
-        DOWN_VOTE(5),
-        UNKNOWN(-1);
+    fun addComment(title: String, text: String, icon: ForumPostIcon, importSessionFile: String? = null, importSessionFiles: Array<String>? = null, replyNotificationMe: Boolean? = null): ForumPost {
+        return group.addForumPost(title, text, icon, id, importSessionFile, importSessionFiles, replyNotificationMe)
+    }
 
-        companion object {
-            fun getById(id: Int): ForumMessageIcon {
-                return values().firstOrNull { it.id == id } ?: UNKNOWN
-            }
-        }
-
+    fun delete() {
+        val request = GroupApiRequest(group)
+        request.addDeleteForumPostRequest(id)
+        val response = request.fireRequest()
+        ResponseUtil.checkSuccess(response.toJson())
     }
 
 }
