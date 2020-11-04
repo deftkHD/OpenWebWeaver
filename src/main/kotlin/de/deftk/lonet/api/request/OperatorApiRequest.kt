@@ -215,7 +215,7 @@ open class OperatorApiRequest(val operator: AbstractOperator) : ApiRequest() {
         requestParams.addProperty("folder_id", folderId)
         requestParams.addProperty("message_id", messageId)
         if (peek != null)
-            requestParams.addProperty("peek", peek)
+            requestParams.addProperty("peek", asApiBoolean(peek))
         return listOf(
                 addSetFocusRequest("mailbox", login),
                 addRequest("read_message", requestParams)
@@ -228,9 +228,9 @@ open class OperatorApiRequest(val operator: AbstractOperator) : ApiRequest() {
         requestParams.addProperty("folder_id", folderId)
         requestParams.addProperty("message_id", messageId)
         if (isFlagged != null)
-            requestParams.addProperty("is_flagged", isFlagged)
+            requestParams.addProperty("is_flagged", asApiBoolean(isFlagged))
         if (isUnread != null)
-            requestParams.addProperty("is_unread", isUnread)
+            requestParams.addProperty("is_unread", asApiBoolean(isUnread))
         return listOf(
                 addSetFocusRequest("mailbox", login),
                 addRequest("set_message", requestParams)
