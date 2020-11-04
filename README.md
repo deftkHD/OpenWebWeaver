@@ -1,6 +1,28 @@
 LoNetApi is an API wrapper for the JSON API provided by LoNet².
 It might also work with other instances of WebWeaver, but this is not tested.
 
+## Usage
+### One time login
+```kotlin
+val user = LoNet.login(username, password)
+```
+### Login with token
+```kotlin
+val user = LoNet.loginCreateTrust(username, password, description, identity)
+```
+Note: Description and identity are used in the LoNet² Web App to identify different tokens
+
+The obtained token will be stored in the variable authKey inside the user object.
+Re-login using this token:
+```kotlin
+val user = LoNet.loginToken(username, token)
+```
+
+### Revoke token
+```kotlin
+user.logout(true)
+```
+
 ## Status
 - [x] Simple login
 - [x] Token login
@@ -76,7 +98,6 @@ It might also work with other instances of WebWeaver, but this is not tested.
 - [ ] Trash
 ---
 - [x] Read system notifications
-
 
 ## Disclaimer
 This project is neither authorized nor endorsed by Cornelsen (LoNet²) or DigiOnline (WebWeaver).
