@@ -89,13 +89,13 @@ user.logout(true)
 - [x] File storage settings
 - [x] Read files
 - [x] Download url
-- [ ] Download via API
-- [ ] Upload
+- [x] Download via API
+- [x] Upload
 - [ ] Proxies
 - [x] Create folders
 - [x] Edit file metadata
 - [x] Delete files/folders
-- [ ] Trash
+- [x] Trash
 ---
 - [x] Read system notifications
 

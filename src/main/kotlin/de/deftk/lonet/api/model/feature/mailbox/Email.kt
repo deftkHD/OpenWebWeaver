@@ -53,7 +53,7 @@ class Email(val id: Int, val subject: String, isRead: Boolean?, isFlagged: Boole
 
     fun edit(isFlagged: Boolean? = null, isUnread: Boolean? = null) {
         val request = OperatorApiRequest(operator)
-        request.addEditEmailRequest(folder.id, id, isFlagged, isUnread)
+        request.addSetEmailRequest(folder.id, id, isFlagged, isUnread)
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
         if (isFlagged != null)

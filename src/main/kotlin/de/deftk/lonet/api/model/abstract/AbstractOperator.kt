@@ -73,7 +73,7 @@ abstract class AbstractOperator(private val login: String, private val name: Str
         return Pair(FileStorageSettings.fromJson(subResponse.get("settings").asJsonObject), Quota.fromJson(subResponse.get("quota").asJsonObject))
     }
 
-    override fun getFileStorageFiles(filter: FileFilter?): List<OnlineFile> {
+    override fun getFiles(filter: FileFilter?): List<OnlineFile> {
         val request = OperatorApiRequest(this)
         val id = request.addGetFileStorageFilesRequest(
                 "/",
@@ -89,12 +89,20 @@ abstract class AbstractOperator(private val login: String, private val name: Str
                 ?: emptyList()
     }
 
-    override fun createFolder(name: String, description: String?): OnlineFile {
+    override fun addFolder(name: String, description: String?): OnlineFile {
         val request = OperatorApiRequest(this)
         val id = request.addAddFolderRequest("/", name, description)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return OnlineFile.fromJson(subResponse.get("folder").asJsonObject, this)
+    }
+
+    override fun getTrash(limit: Int?): List<OnlineFile> {
+        val request = OperatorApiRequest(this)
+        val id = request.addGetTrashRequest(limit)[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return subResponse.get("files").asJsonArray.map { OnlineFile.fromJson(it.asJsonObject, this) }
     }
 
     override fun getTasks(): List<Task> {

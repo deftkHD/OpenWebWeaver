@@ -29,57 +29,118 @@ open class OperatorApiRequest(val operator: AbstractOperator) : ApiRequest() {
     }
 
     //TODO implement
-    fun addSetFileStorageSettingsRequest(selfUploadNotification: Boolean? = null, login: String = operator.getLogin()): List<Int> {
+    fun addSetFileStorageSettingsRequest(uploadNotificationAddLogin: String?, uploadNotificationDeleteLogin: String?, selfUploadNotification: Boolean? = null, login: String = operator.getLogin()): List<Int> {
         ensureCapacity(2)
         val requestProperties = JsonObject()
-        if (selfUploadNotification != null) requestProperties.addProperty("upload_notification_me", asApiBoolean(selfUploadNotification))
+        if (uploadNotificationAddLogin != null)
+            requestProperties.addProperty("upload_notification_add_login", uploadNotificationAddLogin)
+        if (uploadNotificationDeleteLogin != null)
+            requestProperties.addProperty("upload_notification_delete_login", uploadNotificationDeleteLogin)
+        if (selfUploadNotification != null)
+            requestProperties.addProperty("upload_notification_me", asApiBoolean(selfUploadNotification))
         return listOf(
                 addSetFocusRequest("files", login),
                 addRequest("set_settings", requestProperties)
         )
     }
 
-    fun addGetFileStorageFilesRequest(folderId: String? = null, getFiles: Boolean? = null, getFolders: Boolean? = null, getRoot: Boolean? = null, limit: Int? = null, offset: Int? = null, recursive: Boolean? = null, searchMode: SearchMode? = null, searchString: String? = null, login: String = operator.getLogin()): List<Int> {
+    fun addGetFileStorageFilesRequest(folderId: String? = null, getFiles: Boolean? = null, getFolder: Boolean? = null, getFolders: Boolean? = null, getRoot: Boolean? = null, limit: Int? = null, offset: Int? = null, recursive: Boolean? = null, searchMode: SearchMode? = null, searchString: String? = null, login: String = operator.getLogin()): List<Int> {
         ensureCapacity(2)
-        val requestProperties = JsonObject()
-        if (folderId != null) requestProperties.addProperty("folder_id", folderId)
-        requestProperties.addProperty("get_file_download_url", 0)
-        if (getFiles != null) requestProperties.addProperty("get_files", asApiBoolean(getFiles))
-        if (getFolders != null) requestProperties.addProperty("get_folders", asApiBoolean(getFolders))
-        if (getRoot != null) requestProperties.addProperty("get_root", asApiBoolean(getRoot))
-        if (limit != null) requestProperties.addProperty("limit", limit)
-        if (offset != null) requestProperties.addProperty("offset", offset)
-        if (recursive != null) requestProperties.addProperty("recursive", asApiBoolean(recursive))
-        if (searchMode != null) requestProperties.addProperty("search_option", searchMode.id)
-        if (searchString != null) requestProperties.addProperty("search_string", searchString)
+        val requestParams = JsonObject()
+        if (folderId != null)
+            requestParams.addProperty("folder_id", folderId)
+        if (getFiles != null)
+            requestParams.addProperty("get_files", asApiBoolean(getFiles))
+        if (getFolder != null)
+            requestParams.addProperty("get_folder", asApiBoolean(getFolder))
+        if (getFolders != null)
+            requestParams.addProperty("get_folders", asApiBoolean(getFolders))
+        if (getRoot != null)
+            requestParams.addProperty("get_root", asApiBoolean(getRoot))
+        if (limit != null)
+            requestParams.addProperty("limit", limit)
+        if (offset != null)
+            requestParams.addProperty("offset", offset)
+        if (recursive != null)
+            requestParams.addProperty("recursive", asApiBoolean(recursive))
+        if (searchMode != null)
+            requestParams.addProperty("search_option", searchMode.id)
+        if (searchString != null)
+            requestParams.addProperty("search_string", searchString)
         return listOf(
                 addSetFocusRequest("files", login),
-                addRequest("get_entries", requestProperties)
+                addRequest("get_entries", requestParams)
         )
     }
 
-    fun addGetFileDownloadUrl(fileId: String, login: String = operator.getLogin()): List<Int> {
+    fun addGetFileRequest(id: String, limit: Int? = null, offset: Int? = null, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("id", id)
+        if (limit != null)
+            requestParams.addProperty("limit", limit)
+        if (offset != null)
+            requestParams.addProperty("offset", offset)
+        return listOf(
+                addSetFocusRequest("files", login),
+                addRequest("get_file", requestParams)
+        )
+    }
+
+    fun addGetPreviewDownloadUrlRequest(id: String, login: String = operator.getLogin()): List<Int> {
         ensureCapacity(2)
         val requestProperties = JsonObject()
-        requestProperties.addProperty("id", fileId)
+        requestProperties.addProperty("id", id)
+        return listOf(
+                addSetFocusRequest("files", login),
+                addRequest("get_preview_download_url", requestProperties)
+        )
+    }
+
+    fun addGetFileDownloadUrlRequest(id: String, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestProperties = JsonObject()
+        requestProperties.addProperty("id", id)
         return listOf(
                 addSetFocusRequest("files", login),
                 addRequest("get_file_download_url", requestProperties)
         )
     }
 
-    fun addUpdateFileRequest(fileId: String, description: String? = null, name: String? = null, parentId: String? = null, selfDownloadNotification: Boolean? = null, login: String = operator.getLogin()): List<Int> {
+    fun addGetFileProxyNonceRequest(id: String, login: String = operator.getLogin()): List<Int> {
         ensureCapacity(2)
         val requestProperties = JsonObject()
-        requestProperties.addProperty("id", fileId)
-        if (description != null) requestProperties.addProperty("description", description)
-        if (name != null) requestProperties.addProperty("name", name)
-        if (parentId != null) requestProperties.addProperty("folder_id", name)
-        if (selfDownloadNotification != null) requestProperties.addProperty("download_notification_me", asApiBoolean(selfDownloadNotification))
+        requestProperties.addProperty("id", id)
         return listOf(
                 addSetFocusRequest("files", login),
-                addRequest("set_file", requestProperties)
+                addRequest("get_file_proxy_nonce", requestProperties)
         )
+    }
+
+    fun addAddFileRequest(data: String, folderId: String, name: String, description: String? = null, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("data", data)
+        requestParams.addProperty("folder_id", folderId)
+        requestParams.addProperty("name", name)
+        if (description != null)
+            requestParams.addProperty("description", description)
+        return listOf(
+                addSetFocusRequest("files", login),
+                addRequest("add_file", requestParams)
+        )
+    }
+
+    fun addAddSparseFileRequest(folderId: String, name: String, size: Int, description: String? = null, login: String = operator.getLogin()): List<Int> {
+        return listOf()
+    }
+
+    fun addImportSessionFileRequest(id: String, createCopy: Boolean? = null, description: String? = null, fileId: String? = null, folderId: String? = null, sparseKey: String? = null, login: String = operator.getLogin()): List<Int> {
+        return listOf()
+    }
+
+    fun addExportSessionFileRequest(id: String, login: String = operator.getLogin()): List<Int> {
+        return listOf()
     }
 
     fun addDeleteFileRequest(fileId: String, login: String = operator.getLogin()): List<Int> {
@@ -92,30 +153,15 @@ open class OperatorApiRequest(val operator: AbstractOperator) : ApiRequest() {
         )
     }
 
-    fun addAddFolderRequest(parentId: String, name: String, description: String? = null, login: String = operator.getLogin()): List<Int> {
+    fun addAddFolderRequest(folderId: String, name: String, description: String? = null, login: String = operator.getLogin()): List<Int> {
         ensureCapacity(2)
         val requestProperties = JsonObject()
-        requestProperties.addProperty("folder_id", parentId)
+        requestProperties.addProperty("folder_id", folderId)
         requestProperties.addProperty("name", name)
         if (description != null) requestProperties.addProperty("description", description)
         return listOf(
                 addSetFocusRequest("files", login),
                 addRequest("add_folder", requestProperties)
-        )
-    }
-
-    fun addUpdateFolderRequest(folderId: String, description: String? = null, name: String? = null, readable: Boolean? = null, writable: Boolean? = null, selfUploadNotification: Boolean? = null, login: String = operator.getLogin()): List<Int> {
-        ensureCapacity(2)
-        val requestProperties = JsonObject()
-        requestProperties.addProperty("id", folderId)
-        if (description != null) requestProperties.addProperty("description", description)
-        if (name != null) requestProperties.addProperty("name", name)
-        if (readable != null) requestProperties.addProperty("readable", asApiBoolean(readable))
-        if (writable != null) requestProperties.addProperty("writable", asApiBoolean(writable))
-        if (selfUploadNotification != null) requestProperties.addProperty("upload_notification_me", asApiBoolean(selfUploadNotification))
-        return listOf(
-                addSetFocusRequest("files", login),
-                addRequest("set_folder", requestProperties)
         )
     }
 
@@ -126,6 +172,51 @@ open class OperatorApiRequest(val operator: AbstractOperator) : ApiRequest() {
         return listOf(
                 addSetFocusRequest("files", login),
                 addRequest("delete_folder", requestProperties)
+        )
+    }
+
+    fun addSetFileRequest(fileId: String, description: String? = null, downloadNotificationAddLogin: String? = null, downloadNotificationDeleteLogin: String? = null, downloadNotificationMe: Boolean? = null, name: String? = null, folderId: String? = null, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestProperties = JsonObject()
+        requestProperties.addProperty("id", fileId)
+        if (description != null) requestProperties.addProperty("description", description)
+        if (downloadNotificationAddLogin != null) requestProperties.addProperty("download_notification_add_login", downloadNotificationAddLogin)
+        if (downloadNotificationDeleteLogin != null) requestProperties.addProperty("download_notification_delete_login", downloadNotificationDeleteLogin)
+        if (downloadNotificationMe != null) requestProperties.addProperty("download_notification_me", asApiBoolean(downloadNotificationMe))
+        if (name != null) requestProperties.addProperty("name", name)
+        if (folderId != null) requestProperties.addProperty("folder_id", name)
+        if (downloadNotificationMe != null) requestProperties.addProperty("download_notification_me", asApiBoolean(downloadNotificationMe))
+        return listOf(
+                addSetFocusRequest("files", login),
+                addRequest("set_file", requestProperties)
+        )
+    }
+
+    fun addSetFolderRequest(folderId: String, description: String? = null, name: String? = null, readable: Boolean? = null, uploadNotificationAddLogin: String? = null, uploadNotificationDeleteLogin: String? = null, uploadNotificationMe: Boolean? = null, writable: Boolean? = null, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestProperties = JsonObject()
+        requestProperties.addProperty("id", folderId)
+        if (description != null) requestProperties.addProperty("description", description)
+        if (name != null) requestProperties.addProperty("name", name)
+        if (readable != null) requestProperties.addProperty("readable", asApiBoolean(readable))
+        if (uploadNotificationAddLogin != null) requestProperties.addProperty("upload_notification_add_login", uploadNotificationAddLogin)
+        if (uploadNotificationDeleteLogin != null) requestProperties.addProperty("upload_notification_delete_login", uploadNotificationDeleteLogin)
+        if (uploadNotificationMe != null) requestProperties.addProperty("upload_notification_me", asApiBoolean(uploadNotificationMe))
+        if (writable != null) requestProperties.addProperty("writable", asApiBoolean(writable))
+        return listOf(
+                addSetFocusRequest("files", login),
+                addRequest("set_folder", requestProperties)
+        )
+    }
+
+    fun addGetTrashRequest(limit: Int? = null, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        if (limit != null)
+            requestParams.addProperty("limit", limit)
+        return listOf(
+                addSetFocusRequest("files", login),
+                addRequest("get_trash", requestParams)
         )
     }
 
@@ -222,7 +313,7 @@ open class OperatorApiRequest(val operator: AbstractOperator) : ApiRequest() {
         )
     }
 
-    fun addEditEmailRequest(folderId: String, messageId: Int, isFlagged: Boolean?, isUnread: Boolean?, login: String = operator.getLogin()): List<Int> {
+    fun addSetEmailRequest(folderId: String, messageId: Int, isFlagged: Boolean?, isUnread: Boolean?, login: String = operator.getLogin()): List<Int> {
         ensureCapacity(2)
         val requestParams = JsonObject()
         requestParams.addProperty("folder_id", folderId)

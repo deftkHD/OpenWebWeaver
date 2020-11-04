@@ -3,14 +3,14 @@ package de.deftk.lonet.api.model.feature.files
 import com.google.gson.JsonObject
 import java.io.Serializable
 
-data class FileDownload(val name: String, val size: Long, val downloadUrl: String) : Serializable {
+data class FileProxyNonce(val name: String, val size: Long, val nonce: String) : Serializable {
 
     companion object {
-        fun fromJson(jsonObject: JsonObject): FileDownload {
-            return FileDownload(
+        fun fromJson(jsonObject: JsonObject): FileProxyNonce {
+            return FileProxyNonce(
                     jsonObject.get("name").asString,
                     jsonObject.get("size").asLong,
-                    jsonObject.get("download_url").asString
+                    jsonObject.get("nonce").asString
             )
         }
     }
