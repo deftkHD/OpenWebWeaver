@@ -86,4 +86,15 @@ open class GroupApiRequest(val group: Group) : OperatorApiRequest(group), Serial
         )
     }
 
+    fun addGetWikiPageRequest(name: String? = null, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        if (name != null)
+            requestParams.addProperty("name", name)
+        return listOf(
+                addSetFocusRequest("wiki", login),
+                addRequest("get_page", requestParams)
+        )
+    }
+
 }

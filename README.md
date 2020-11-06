@@ -81,7 +81,7 @@ user.logout(true)
 - [x] Delete forum posts
 - [ ] Forum attachments
 ---
-- [ ] Get wiki
+- [x] Get wiki
 ---
 - [ ] Resource management
 ---

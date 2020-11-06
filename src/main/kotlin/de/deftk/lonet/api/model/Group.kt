@@ -4,6 +4,7 @@ import com.google.gson.JsonObject
 import de.deftk.lonet.api.exception.ApiException
 import de.deftk.lonet.api.model.abstract.*
 import de.deftk.lonet.api.model.feature.Quota
+import de.deftk.lonet.api.model.feature.WikiPage
 import de.deftk.lonet.api.model.feature.board.BoardNotification
 import de.deftk.lonet.api.model.feature.board.BoardNotificationColor
 import de.deftk.lonet.api.model.feature.board.BoardType
@@ -149,6 +150,14 @@ open class Group(login: String, name: String, type: ManageableType, val baseUser
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return ForumPost.fromJson(subResponse.get("entry").asJsonObject, this)
+    }
+
+    override fun getWikiPage(name: String?): WikiPage? {
+        val request = GroupApiRequest(this)
+        val id = request.addGetWikiPageRequest(name)[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return WikiPage.fromJson(subResponse.get("page").asJsonObject)
     }
 
     override fun getContext(): IContext {
