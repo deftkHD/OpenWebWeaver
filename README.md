@@ -62,9 +62,9 @@ user.logout(true)
 - [ ] Delete notes
 ---
 - [x] Read group notifications
-- [ ] Add group notifications
-- [ ] Edit group notifications
-- [ ] Delete group notifications
+- [x] Add group notifications
+- [x] Edit group notifications
+- [x] Delete group notifications
 ---
 - [x] Read tasks
 - [x] Add tasks

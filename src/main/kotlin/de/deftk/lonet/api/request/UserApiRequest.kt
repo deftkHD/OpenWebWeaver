@@ -62,11 +62,37 @@ class UserApiRequest(private val user: User) : OperatorApiRequest(user), Seriali
     fun addGetAllNotificationsRequest(): List<Int> {
         val ids = mutableListOf<Int>()
         if (Feature.BOARD.isAvailable(user.permissions)) {
-            ids.addAll(addGetNotificationsRequest())
+            ids.addAll(addGetBoardNotificationsRequest())
         }
         user.getContext().getGroups().forEach { membership ->
             if (Feature.BOARD.isAvailable(membership.memberPermissions)) {
-                ids.addAll(addGetNotificationsRequest(membership.getLogin()))
+                ids.addAll(addGetBoardNotificationsRequest(membership.getLogin()))
+            }
+        }
+        return ids
+    }
+
+    fun addGetAllTeacherNotificationsRequest(): List<Int> {
+        val ids = mutableListOf<Int>()
+        if (Feature.BOARD.isAvailable(user.permissions)) {
+            ids.addAll(addGetTeacherBoardNotificationsRequest())
+        }
+        user.getContext().getGroups().forEach { membership ->
+            if (Feature.BOARD.isAvailable(membership.memberPermissions)) {
+                ids.addAll(addGetTeacherBoardNotificationsRequest(membership.getLogin()))
+            }
+        }
+        return ids
+    }
+
+    fun addGetAllPupilNotificationsRequest(): List<Int> {
+        val ids = mutableListOf<Int>()
+        if (Feature.BOARD.isAvailable(user.permissions)) {
+            ids.addAll(addGetPupilBoardNotificationsRequest())
+        }
+        user.getContext().getGroups().forEach { membership ->
+            if (Feature.BOARD.isAvailable(membership.memberPermissions)) {
+                ids.addAll(addGetPupilBoardNotificationsRequest(membership.getLogin()))
             }
         }
         return ids

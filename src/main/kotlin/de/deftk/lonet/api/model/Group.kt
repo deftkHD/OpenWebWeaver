@@ -3,8 +3,10 @@ package de.deftk.lonet.api.model
 import com.google.gson.JsonObject
 import de.deftk.lonet.api.exception.ApiException
 import de.deftk.lonet.api.model.abstract.*
-import de.deftk.lonet.api.model.feature.Notification
 import de.deftk.lonet.api.model.feature.Quota
+import de.deftk.lonet.api.model.feature.board.BoardNotification
+import de.deftk.lonet.api.model.feature.board.BoardNotificationColor
+import de.deftk.lonet.api.model.feature.board.BoardType
 import de.deftk.lonet.api.model.feature.files.FileStorageSettings
 import de.deftk.lonet.api.model.feature.forum.ForumPost
 import de.deftk.lonet.api.model.feature.forum.ForumPostIcon
@@ -12,6 +14,7 @@ import de.deftk.lonet.api.model.feature.forum.ForumSettings
 import de.deftk.lonet.api.request.GroupApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
 import java.io.Serializable
+import java.util.*
 
 open class Group(login: String, name: String, type: ManageableType, val baseUser: IManageable?, val fullName: String?, val passwordMustChange: Boolean, permissions: List<Permission>, val memberPermissions: List<Permission>, val reducedPermissions: List<Permission>, private val context: IContext) : AbstractOperator(login, name, permissions, type), IGroup, Serializable {
 
@@ -55,12 +58,52 @@ open class Group(login: String, name: String, type: ManageableType, val baseUser
         return subResponse.get("users")?.asJsonArray?.map { getContext().getOrCreateManageable(it.asJsonObject) } ?: emptyList()
     }
 
-    override fun getNotifications(): List<Notification> {
+    override fun getBoardNotifications(): List<BoardNotification> {
         val request = GroupApiRequest(this)
-        val id = request.addGetNotificationsRequest()[1]
+        val id = request.addGetBoardNotificationsRequest()[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return subResponse.get("entries")?.asJsonArray?.map { Notification.fromJson(it.asJsonObject, this) } ?: emptyList()
+        return subResponse.get("entries")?.asJsonArray?.map { BoardNotification.fromJson(it.asJsonObject, this, BoardType.ALL) } ?: emptyList()
+    }
+
+    override fun addBoardNotification(title: String, text: String, color: BoardNotificationColor?, killDate: Date?): BoardNotification {
+        val request = GroupApiRequest(this)
+        val id = request.addAddBoardNotificationRequest(title, text, color, killDate)[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return BoardNotification.fromJson(subResponse.get("entry").asJsonObject, this, BoardType.ALL)
+    }
+
+    override fun getTeacherBoardNotifications(): List<BoardNotification> {
+        val request = GroupApiRequest(this)
+        val id = request.addGetTeacherBoardNotificationsRequest()[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return subResponse.get("entries")?.asJsonArray?.map { BoardNotification.fromJson(it.asJsonObject, this, BoardType.TEACHER) } ?: emptyList()
+    }
+
+    override fun addTeacherBoardNotification(title: String, text: String, color: BoardNotificationColor?, killDate: Date?): BoardNotification {
+        val request = GroupApiRequest(this)
+        val id = request.addAddTeacherBoardNotificationRequest(title, text, color, killDate)[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return BoardNotification.fromJson(subResponse.get("entry").asJsonObject, this, BoardType.TEACHER)
+    }
+
+    override fun getPupilBoardNotifications(): List<BoardNotification> {
+        val request = GroupApiRequest(this)
+        val id = request.addGetPupilBoardNotificationsRequest()[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return subResponse.get("entries")?.asJsonArray?.map { BoardNotification.fromJson(it.asJsonObject, this, BoardType.PUPIL) } ?: emptyList()
+    }
+
+    override fun addPupilBoardNotification(title: String, text: String, color: BoardNotificationColor?, killDate: Date?): BoardNotification {
+        val request = GroupApiRequest(this)
+        val id = request.addAddPupilBoardNotificationRequest(title, text, color, killDate)[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return BoardNotification.fromJson(subResponse.get("entry").asJsonObject, this, BoardType.PUPIL)
     }
 
     override fun getFileStorageState(): Pair<FileStorageSettings, Quota> {

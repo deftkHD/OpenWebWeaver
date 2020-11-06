@@ -3,9 +3,10 @@ package de.deftk.lonet.api.model
 import com.google.gson.JsonObject
 import de.deftk.lonet.api.LoNet
 import de.deftk.lonet.api.model.abstract.*
-import de.deftk.lonet.api.model.feature.Notification
 import de.deftk.lonet.api.model.feature.SystemNotification
 import de.deftk.lonet.api.model.feature.Task
+import de.deftk.lonet.api.model.feature.board.BoardNotification
+import de.deftk.lonet.api.model.feature.board.BoardType
 import de.deftk.lonet.api.request.UserApiRequest
 import de.deftk.lonet.api.response.ApiResponse
 import de.deftk.lonet.api.response.ResponseUtil
@@ -75,11 +76,11 @@ class User(login: String, name: String, type: ManageableType, val baseUser: IMan
         return tasks
     }
 
-    override fun getAllNotifications(): List<Notification> {
+    override fun getAllBoardNotifications(): List<BoardNotification> {
         val request = UserApiRequest(this)
         val notificationIds = request.addGetAllNotificationsRequest()
         val response = request.fireRequest().toJson().asJsonArray
-        val notifications = mutableListOf<Notification>()
+        val notifications = mutableListOf<BoardNotification>()
         val responses = response.filter { notificationIds.contains(it.asJsonObject.get("id").asInt) }.map { it.asJsonObject }
         responses.withIndex().forEach { (index, subResponse) ->
             if (index % 2 == 1) {
@@ -88,7 +89,47 @@ class User(login: String, name: String, type: ManageableType, val baseUser: IMan
                 val memberLogin = focus.get("user").asJsonObject.get("login").asString
                 val member = getContext().getOperator(memberLogin)!!
                 subResponse.get("result").asJsonObject.get("entries").asJsonArray.forEach { taskResponse ->
-                    notifications.add(Notification.fromJson(taskResponse.asJsonObject, member))
+                    notifications.add(BoardNotification.fromJson(taskResponse.asJsonObject, member, BoardType.ALL))
+                }
+            }
+        }
+        return notifications
+    }
+
+    override fun getAllTeacherBoardNotifications(): List<BoardNotification> {
+        val request = UserApiRequest(this)
+        val notificationIds = request.addGetAllTeacherNotificationsRequest()
+        val response = request.fireRequest().toJson().asJsonArray
+        val notifications = mutableListOf<BoardNotification>()
+        val responses = response.filter { notificationIds.contains(it.asJsonObject.get("id").asInt) }.map { it.asJsonObject }
+        responses.withIndex().forEach { (index, subResponse) ->
+            if (index % 2 == 1) {
+                val focus = responses[index - 1].get("result").asJsonObject
+                assert(focus.get("method").asString == "set_focus")
+                val memberLogin = focus.get("user").asJsonObject.get("login").asString
+                val member = getContext().getOperator(memberLogin)!!
+                subResponse.get("result").asJsonObject.get("entries").asJsonArray.forEach { taskResponse ->
+                    notifications.add(BoardNotification.fromJson(taskResponse.asJsonObject, member, BoardType.TEACHER))
+                }
+            }
+        }
+        return notifications
+    }
+
+    override fun getAllPupilBoardNotifications(): List<BoardNotification> {
+        val request = UserApiRequest(this)
+        val notificationIds = request.addGetAllPupilNotificationsRequest()
+        val response = request.fireRequest().toJson().asJsonArray
+        val notifications = mutableListOf<BoardNotification>()
+        val responses = response.filter { notificationIds.contains(it.asJsonObject.get("id").asInt) }.map { it.asJsonObject }
+        responses.withIndex().forEach { (index, subResponse) ->
+            if (index % 2 == 1) {
+                val focus = responses[index - 1].get("result").asJsonObject
+                assert(focus.get("method").asString == "set_focus")
+                val memberLogin = focus.get("user").asJsonObject.get("login").asString
+                val member = getContext().getOperator(memberLogin)!!
+                subResponse.get("result").asJsonObject.get("entries").asJsonArray.forEach { taskResponse ->
+                    notifications.add(BoardNotification.fromJson(taskResponse.asJsonObject, member, BoardType.PUPIL))
                 }
             }
         }

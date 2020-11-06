@@ -4,6 +4,7 @@ package de.deftk.lonet.api.request
 
 import com.google.gson.JsonObject
 import de.deftk.lonet.api.model.abstract.AbstractOperator
+import de.deftk.lonet.api.model.feature.board.BoardNotificationColor
 import de.deftk.lonet.api.model.feature.contact.Gender
 import de.deftk.lonet.api.model.feature.files.SearchMode
 import de.deftk.lonet.api.response.ApiResponse
@@ -429,14 +430,6 @@ open class OperatorApiRequest(val operator: AbstractOperator) : ApiRequest() {
         )
     }
 
-    fun addGetNotificationsRequest(login: String = operator.getLogin()): List<Int> {
-        ensureCapacity(2)
-        return listOf(
-                addSetFocusRequest("board", login),
-                addRequest("get_entries", null)
-        )
-    }
-
     fun addGetContactsRequest(login: String = operator.getLogin()): List<Int> {
         ensureCapacity(2)
         return listOf(
@@ -572,6 +565,159 @@ open class OperatorApiRequest(val operator: AbstractOperator) : ApiRequest() {
         return listOf(
                 addSetFocusRequest("calendar", login),
                 addRequest("delete_entry", requestProperties)
+        )
+    }
+
+    fun addGetTeacherBoardNotificationsRequest(login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        return listOf(
+                addSetFocusRequest("board_teacher", login),
+                addRequest("get_entries", null)
+        )
+    }
+
+    fun addAddTeacherBoardNotificationRequest(title: String, text: String, color: BoardNotificationColor? = null, killDate: Date? = null, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("title", title)
+        requestParams.addProperty("text", text)
+        if (color != null)
+            requestParams.addProperty("color", color.id)
+        if (killDate != null)
+            requestParams.addProperty("kill_date", killDate.time / 1000)
+        return listOf(
+                addSetFocusRequest("board_teacher", login),
+                addRequest("add_entry", requestParams)
+        )
+    }
+
+    fun addSetTeacherBoardNotificationRequest(id: String, title: String? = null, text: String? = null, color: BoardNotificationColor? = null, killDate: Date? = null, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("id", id)
+        if (title != null)
+            requestParams.addProperty("title", title)
+        if (text != null)
+            requestParams.addProperty("text", text)
+        if (color != null)
+            requestParams.addProperty("color", color.id)
+        if (killDate != null)
+            requestParams.addProperty("kill_date", killDate.time / 1000)
+        return listOf(
+                addSetFocusRequest("board_teacher", login),
+                addRequest("set_entry", requestParams)
+        )
+    }
+
+    fun addDeleteTeacherBoardNotificationRequest(id: String, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("id", id)
+        return listOf(
+                addSetFocusRequest("board_teacher", login),
+                addRequest("delete_entry", requestParams)
+        )
+    }
+
+    fun addGetPupilBoardNotificationsRequest(login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        return listOf(
+                addSetFocusRequest("board_pupil", login),
+                addRequest("get_entries", null)
+        )
+    }
+
+    fun addAddPupilBoardNotificationRequest(title: String, text: String, color: BoardNotificationColor? = null, killDate: Date? = null, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("title", title)
+        requestParams.addProperty("text", text)
+        if (color != null)
+            requestParams.addProperty("color", color.id)
+        if (killDate != null)
+            requestParams.addProperty("kill_date", killDate.time / 1000)
+        return listOf(
+                addSetFocusRequest("board_pupil", login),
+                addRequest("add_entry", requestParams)
+        )
+    }
+
+    fun addSetPupilBoardNotificationRequest(id: String, title: String? = null, text: String? = null, color: BoardNotificationColor? = null, killDate: Date? = null, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("id", id)
+        if (title != null)
+            requestParams.addProperty("title", title)
+        if (text != null)
+            requestParams.addProperty("text", text)
+        if (color != null)
+            requestParams.addProperty("color", color.id)
+        if (killDate != null)
+            requestParams.addProperty("kill_date", killDate.time / 1000)
+        return listOf(
+                addSetFocusRequest("board_pupil", login),
+                addRequest("set_entry", requestParams)
+        )
+    }
+
+    fun addDeletePupilBoardNotificationRequest(id: String, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("id", id)
+        return listOf(
+                addSetFocusRequest("board_pupil", login),
+                addRequest("delete_entry", requestParams)
+        )
+    }
+
+    fun addGetBoardNotificationsRequest(login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        return listOf(
+                addSetFocusRequest("board", login),
+                addRequest("get_entries", null)
+        )
+    }
+
+    fun addAddBoardNotificationRequest(title: String, text: String, color: BoardNotificationColor? = null, killDate: Date? = null, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("title", title)
+        requestParams.addProperty("text", text)
+        if (color != null)
+            requestParams.addProperty("color", color.id)
+        if (killDate != null)
+            requestParams.addProperty("kill_date", killDate.time / 1000)
+        return listOf(
+                addSetFocusRequest("board", login),
+                addRequest("add_entry", requestParams)
+        )
+    }
+
+    fun addSetBoardNotificationRequest(id: String, title: String? = null, text: String? = null, color: BoardNotificationColor? = null, killDate: Date? = null, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("id", id)
+        if (title != null)
+            requestParams.addProperty("title", title)
+        if (text != null)
+            requestParams.addProperty("text", text)
+        if (color != null)
+            requestParams.addProperty("color", color.id)
+        if (killDate != null)
+            requestParams.addProperty("kill_date", killDate.time / 1000)
+        return listOf(
+                addSetFocusRequest("board", login),
+                addRequest("set_entry", requestParams)
+        )
+    }
+
+    fun addDeleteBoardNotificationRequest(id: String, login: String = operator.getLogin()): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("id", id)
+        return listOf(
+                addSetFocusRequest("board", login),
+                addRequest("delete_entry", requestParams)
         )
     }
 
