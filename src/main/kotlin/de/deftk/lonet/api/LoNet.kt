@@ -111,7 +111,16 @@ object LoNet {
             responses.add(ApiResponse(sb.toString(), responseCode))
         }
         val remappedResponses = responses.withIndex().map { (index, response) ->
-            response.toJson().asJsonArray.map { json ->
+            val responseJson = response.toJson()
+            if (!responseJson.isJsonArray) {
+                val errorObject = responseJson.asJsonObject.get("error")?.asJsonObject
+                if (errorObject != null) {
+                    throw ApiException("Internal error (${errorObject.get("code").asInt}): ${errorObject.get("message").asString}")
+                } else {
+                    throw ApiException("Internal error: No error object, but failure")
+                }
+            }
+            responseJson.asJsonArray.map { json ->
                 // remap id
                 val obj = json.asJsonObject
                 val newId = index * (ApiRequest.SUB_REQUESTS_PER_REQUEST + 1) + obj.get("id").asInt
