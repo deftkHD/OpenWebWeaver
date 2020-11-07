@@ -101,6 +101,7 @@ user.logout(true)
 - [x] Trash
 ---
 - [x] Read system notifications
+- [x] Delete system notifications
 
 ## Disclaimer
-This project is neither authorized nor endorsed by Cornelsen (LoNet²) or DigiOnline (WebWeaver).
+This project is neither authorized nor endorsed by Cornelsen Verlag (LoNet²) or DigiOnline GmbH (WebWeaver).
