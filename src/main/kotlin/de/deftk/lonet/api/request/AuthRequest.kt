@@ -62,10 +62,10 @@ open class AuthRequest(val requestUrl: String) : ApiRequest(), Serializable {
         }
         val obj = JsonObject()
         obj.addProperty("application", "wwa")
-        obj.addProperty("hash", sha1Hash("$nonceKey$salt$token"))
+        obj.addProperty("hash", sha256Hash("$nonceKey$salt$token"))
         obj.addProperty("salt", salt.toString())
         obj.addProperty("nonce_id", nonceId)
-        obj.addProperty("algorithm", "sha1")
+        obj.addProperty("algorithm", "sha256")
         obj.addProperty("login", login)
         obj.addProperty("get_miniature", true)
         addRequest("login", obj)
@@ -89,9 +89,9 @@ open class AuthRequest(val requestUrl: String) : ApiRequest(), Serializable {
         return super.fireRequest(AuthContext(requestUrl))
     }
 
-    private fun sha1Hash(str: String): String {
+    private fun sha256Hash(str: String): String {
         return try {
-            val digest = MessageDigest.getInstance("SHA-1")
+            val digest = MessageDigest.getInstance("SHA-256")
             digest.reset()
             digest.update(str.toByteArray(Charsets.UTF_8))
             return byteToHex(digest.digest() ?: ByteArray(0))
