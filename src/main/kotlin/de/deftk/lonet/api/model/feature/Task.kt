@@ -79,9 +79,9 @@ class Task(val id: String, title: String?, description: String?, startDate: Date
         val modifiedObject = jsonObject.get("modified").asJsonObject
 
         creationDate = Date(createdObject.get("date").asLong * 1000)
-        creationMember = Group.fromJson(createdObject.get("user").asJsonObject, operator.getContext())
+        creationMember = operator.getContext().getOrCreateManageable(createdObject.get("user").asJsonObject)
         modificationDate = Date(modifiedObject.get("date").asLong * 1000)
-        modificationMember = Group.fromJson(modifiedObject.get("user").asJsonObject, operator.getContext())
+        modificationMember = operator.getContext().getOrCreateManageable(modifiedObject.get("user").asJsonObject)
     }
 
     override fun toString(): String {
