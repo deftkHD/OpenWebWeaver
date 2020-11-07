@@ -72,8 +72,11 @@ user.logout(true)
 - [x] Delete tasks
 - [ ] Mark tasks as done (Not supported by API)
 ---
-- [ ] Read courselets
-- [ ] Manage courselets
+- [x] Read courselets
+- [ ] Parse courselets configuration
+- [ ] Courselet templates
+- [ ] Import courselets
+- [x] Manage/edit courselets (Only partly supported by API)
 ---
 - [x] Forum quota
 - [x] Read forum posts

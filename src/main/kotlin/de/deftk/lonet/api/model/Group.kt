@@ -8,6 +8,9 @@ import de.deftk.lonet.api.model.feature.WikiPage
 import de.deftk.lonet.api.model.feature.board.BoardNotification
 import de.deftk.lonet.api.model.feature.board.BoardNotificationColor
 import de.deftk.lonet.api.model.feature.board.BoardType
+import de.deftk.lonet.api.model.feature.courselets.Courselet
+import de.deftk.lonet.api.model.feature.courselets.CourseletDownload
+import de.deftk.lonet.api.model.feature.courselets.Mapping
 import de.deftk.lonet.api.model.feature.files.FileStorageSettings
 import de.deftk.lonet.api.model.feature.forum.ForumPost
 import de.deftk.lonet.api.model.feature.forum.ForumPostIcon
@@ -158,6 +161,54 @@ open class Group(login: String, name: String, type: ManageableType, val baseUser
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return WikiPage.fromJson(subResponse.get("page").asJsonObject)
+    }
+
+    override fun getCourseletsState(): Pair<Quota, String> {
+        val request = GroupApiRequest(this)
+        val id = request.addGetCourseletsStateRequest()[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return Pair(Quota.fromJson(subResponse.get("quota").asJsonObject), subResponse.get("runtime_version_hash").asString)
+    }
+
+    override fun getCourseletsConfiguration(): JsonObject {
+        val request = GroupApiRequest(this)
+        val id = request.addGetCourseletsConfigurationRequest()[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return subResponse.get("configuration").asJsonObject
+    }
+
+    override fun getCourselets(): List<Courselet> {
+        val request = GroupApiRequest(this)
+        val id = request.addGetCourseletsRequest()[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return subResponse.get("courselets").asJsonArray.map { Courselet.fromJson(it.asJsonObject, this) }
+    }
+
+    override fun getCourseletMappings(): List<Mapping> {
+        val request = GroupApiRequest(this)
+        val id = request.addGetCourseletMappingsRequest()[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return subResponse.get("mappings").asJsonArray.map { Mapping.fromJson(it.asJsonObject, this) }
+    }
+
+    override fun addCourseletMapping(name: String): Mapping {
+        val request = GroupApiRequest(this)
+        val id = request.addAddCourseletMappingRequest(name)[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return Mapping.fromJson(subResponse.get("mapping").asJsonObject, this)
+    }
+
+    override fun exportCourseletRuntime(): CourseletDownload {
+        val request = GroupApiRequest(this)
+        val id = request.addExportCourseletRuntimeRequest()[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return CourseletDownload.fromJson(subResponse.get("file").asJsonObject)
     }
 
     override fun getContext(): IContext {
