@@ -16,7 +16,7 @@ import de.deftk.lonet.api.request.OperatorApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
 import java.util.*
 
-abstract class AbstractOperator(private val login: String, private val name: String, val permissions: List<Permission>, private val type: ManageableType) : IManageable, IMailbox, IFileStorage, ITaskList, IContactHolder, ICalendar {
+abstract class AbstractOperator(private val login: String, private val name: String, val baseRights: List<Permission>, val effectiveRights: List<Permission>, private val type: ManageableType) : IManageable, IMailbox, IFileStorage, ITaskList, IContactHolder, ICalendar {
 
     abstract fun getContext(): IContext
 

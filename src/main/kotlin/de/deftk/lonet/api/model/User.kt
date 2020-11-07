@@ -12,7 +12,7 @@ import de.deftk.lonet.api.response.ApiResponse
 import de.deftk.lonet.api.response.ResponseUtil
 import java.io.Serializable
 
-class User(login: String, name: String, type: ManageableType, val baseUser: IManageable?, val fullName: String?, val groups: List<Group>, val passwordMustChange: Boolean, permissions: List<Permission>, val memberPermissions: List<Permission>, val reducedPermissions: List<Permission>, val authKey: String, private val context: IContext) : AbstractOperator(login, name, permissions, type), IUser, Serializable {
+class User(login: String, name: String, type: ManageableType, val baseUser: IManageable?, val fullName: String?, val groups: List<Group>, val passwordMustChange: Boolean, baseRights: List<Permission>, effectiveRights: List<Permission>, val authKey: String, private val context: IContext) : AbstractOperator(login, name, baseRights, effectiveRights, type), IUser, Serializable {
 
     companion object {
         fun fromResponse(response: ApiResponse, apiUrl: String, authKey: String): User {
@@ -22,20 +22,11 @@ class User(login: String, name: String, type: ManageableType, val baseUser: IMan
 
             val jsonObject = loginResponse.get("user").asJsonObject
 
-            jsonObject.get("base_rights")?.asJsonArray?.add("self") // hack, because api documentation doesn't tell much about permissions
-            val permissions = mutableListOf<Permission>()
+            val baseRights = mutableListOf<Permission>()
             jsonObject.get("base_rights")?.asJsonArray?.forEach { perm ->
-                permissions.addAll(Permission.getByName(perm.asString))
+                baseRights.add(Permission.getByName(perm.asString))
             }
-            permissions.addAll(Permission.getByName("self"))
-            val memberPermissions = mutableListOf<Permission>()
-            jsonObject.get("member_rights")?.asJsonArray?.forEach { perm ->
-                memberPermissions.addAll(Permission.getByName(perm.asString))
-            }
-            val reducedMemberPermissions = mutableListOf<Permission>()
-            jsonObject.get("reduced_rights")?.asJsonArray?.forEach { perm ->
-                reducedMemberPermissions.addAll(Permission.getByName(perm.asString))
-            }
+            baseRights.add(Permission.SELF)
 
             val context = UserContext(informationResponse.get("session_id").asString, apiUrl)
             context.user = User(
@@ -46,9 +37,8 @@ class User(login: String, name: String, type: ManageableType, val baseUser: IMan
                     jsonObject.get("fullname")?.asString,
                     loginResponse.get("member").asJsonArray.map { Group.fromJson(it.asJsonObject, context) },
                     jsonObject.get("password_must_change")?.asInt == 1,
-                    permissions,
-                    memberPermissions,
-                    reducedMemberPermissions,
+                    baseRights,
+                    jsonObject.get("effective_rights").asJsonArray.map { Permission.getByName(it.asString) },
                     authKey,
                     context
             )

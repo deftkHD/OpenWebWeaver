@@ -20,24 +20,15 @@ import de.deftk.lonet.api.response.ResponseUtil
 import java.io.Serializable
 import java.util.*
 
-open class Group(login: String, name: String, type: ManageableType, val baseUser: IManageable?, val fullName: String?, val passwordMustChange: Boolean, permissions: List<Permission>, val memberPermissions: List<Permission>, val reducedPermissions: List<Permission>, private val context: IContext) : AbstractOperator(login, name, permissions, type), IGroup, Serializable {
+open class Group(login: String, name: String, type: ManageableType, val baseUser: IManageable?, val fullName: String?, val passwordMustChange: Boolean, baseRights: List<Permission>, val reducedRights: List<Permission>, val memberRights: List<Permission>, effectiveRights: List<Permission>, private val context: IContext) : AbstractOperator(login, name, baseRights, effectiveRights, type), IGroup, Serializable {
 
     companion object {
         fun fromJson(jsonObject: JsonObject, context: IContext): Group {
-            jsonObject.get("base_rights")?.asJsonArray?.add("self") // dirty hack, because too lazy to fix permissions ^^
-            val permissions = mutableListOf<Permission>()
+            val baseRights = mutableListOf<Permission>()
             jsonObject.get("base_rights")?.asJsonArray?.forEach { perm ->
-                permissions.addAll(Permission.getByName(perm.asString))
+                baseRights.add(Permission.getByName(perm.asString))
             }
-            permissions.addAll(Permission.getByName("self"))
-            val memberPermissions = mutableListOf<Permission>()
-            jsonObject.get("member_rights")?.asJsonArray?.forEach { perm ->
-                memberPermissions.addAll(Permission.getByName(perm.asString))
-            }
-            val reducedMemberPermissions = mutableListOf<Permission>()
-            jsonObject.get("reduced_rights")?.asJsonArray?.forEach { perm ->
-                reducedMemberPermissions.addAll(Permission.getByName(perm.asString))
-            }
+            baseRights.add(Permission.SELF)
 
             return Group(
                     jsonObject.get("login").asString,
@@ -46,9 +37,10 @@ open class Group(login: String, name: String, type: ManageableType, val baseUser
                     if (jsonObject.has("base_user")) RemoteManageable.fromJson(jsonObject.get("base_user").asJsonObject) else null,
                     jsonObject.get("fullname")?.asString,
                     jsonObject.get("password_must_change")?.asInt == 1,
-                    permissions,
-                    memberPermissions,
-                    reducedMemberPermissions,
+                    baseRights,
+                    jsonObject.get("reduced_rights")?.asJsonArray?.map { Permission.getByName(it.asString) } ?: emptyList(),
+                    jsonObject.get("member_rights").asJsonArray.map { Permission.getByName(it.asString) },
+                    jsonObject.get("effective_rights").asJsonArray.map { Permission.getByName(it.asString) },
                     context
             )
         }
