@@ -44,7 +44,7 @@ class SystemNotification(val id: String, val messageType: SystemNotificationType
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as Task
+        other as SystemNotification
 
         if (id != other.id) return false
 
