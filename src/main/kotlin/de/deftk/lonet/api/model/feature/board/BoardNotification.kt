@@ -95,7 +95,7 @@ class BoardNotification(val id: String, title: String?, text: String?, color: Bo
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as Task
+        other as BoardNotification
 
         if (id != other.id) return false
 
