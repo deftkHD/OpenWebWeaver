@@ -4,6 +4,7 @@ import com.google.gson.JsonObject
 import de.deftk.lonet.api.model.abstract.AbstractOperator
 import de.deftk.lonet.api.request.OperatorApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
+import de.deftk.lonet.api.utils.getStringOrNull
 
 class EmailSignature(var text: String, var positionAnswer: Position?, var positionForward: Position?, val operator: AbstractOperator) {
 
@@ -29,8 +30,8 @@ class EmailSignature(var text: String, var positionAnswer: Position?, var positi
     }
 
     private fun readFrom(jsonObject: JsonObject) {
-        positionAnswer = Position.byTextValue(jsonObject.get("position_answer").asString)
-        positionForward = Position.byTextValue(jsonObject.get("position_forward").asString)
+        positionAnswer = Position.byTextValue(jsonObject.getStringOrNull("position_answer"))
+        positionForward = Position.byTextValue(jsonObject.getStringOrNull("position_forward"))
     }
 
     enum class Position(val text: String) {
@@ -39,7 +40,7 @@ class EmailSignature(var text: String, var positionAnswer: Position?, var positi
         NONE("none");
 
         companion object {
-            fun byTextValue(text: String): Position? {
+            fun byTextValue(text: String?): Position? {
                 return values().firstOrNull { it.text == text }
             }
         }

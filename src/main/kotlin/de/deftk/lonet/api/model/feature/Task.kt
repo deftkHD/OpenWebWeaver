@@ -1,11 +1,11 @@
 package de.deftk.lonet.api.model.feature
 
 import com.google.gson.JsonObject
-import de.deftk.lonet.api.model.Group
 import de.deftk.lonet.api.model.abstract.AbstractOperator
 import de.deftk.lonet.api.model.abstract.IManageable
 import de.deftk.lonet.api.request.OperatorApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
+import de.deftk.lonet.api.utils.*
 import java.io.Serializable
 import java.util.*
 
@@ -21,11 +21,11 @@ class Task(val id: String, title: String?, description: String?, startDate: Date
                     null,
                     null,
                     null,
-                    jsonObject.get("completed").asInt == 1,
-                    Date(createdObject.get("date").asLong * 1000),
-                    operator.getContext().getOrCreateManageable(createdObject.get("user").asJsonObject),
-                    Date(modifiedObject.get("date").asLong * 1000),
-                    operator.getContext().getOrCreateManageable(modifiedObject.get("user").asJsonObject),
+                    jsonObject.getBoolOrNull("completed")!!,
+                    createdObject.getApiDate("date"),
+                    createdObject.getManageable("user", operator),
+                    modifiedObject.getApiDate("date"),
+                    modifiedObject.getManageable("user", operator),
                     operator
             )
             task.readFrom(jsonObject)
@@ -69,19 +69,19 @@ class Task(val id: String, title: String?, description: String?, startDate: Date
     }
 
     private fun readFrom(jsonObject: JsonObject) {
-        title = jsonObject.get("title")?.asString
-        description = jsonObject.get("description")?.asString
-        startDate = if (jsonObject.get("start_date").asInt != 0) Date(jsonObject.get("start_date").asLong * 1000) else null
-        endDate = if (jsonObject.get("due_date").asInt != 0) Date(jsonObject.get("due_date").asLong * 1000) else null
-        completed = jsonObject.get("completed").asInt == 1
+        title = jsonObject.getStringOrNull("title")
+        description = jsonObject.getStringOrNull("description")
+        startDate = jsonObject.getApiDateOrNull("start_date")
+        endDate = jsonObject.getApiDateOrNull("due_date")
+        completed = jsonObject.getBoolOrNull("completed")!!
 
         val createdObject = jsonObject.get("created").asJsonObject
         val modifiedObject = jsonObject.get("modified").asJsonObject
 
-        creationDate = Date(createdObject.get("date").asLong * 1000)
-        creationMember = operator.getContext().getOrCreateManageable(createdObject.get("user").asJsonObject)
-        modificationDate = Date(modifiedObject.get("date").asLong * 1000)
-        modificationMember = operator.getContext().getOrCreateManageable(modifiedObject.get("user").asJsonObject)
+        creationDate = createdObject.getApiDate("date")
+        creationMember = createdObject.getManageable("user", operator)
+        modificationDate = modifiedObject.getApiDate("date")
+        modificationMember = modifiedObject.getManageable("user", operator)
     }
 
     override fun toString(): String {

@@ -8,12 +8,11 @@ enum class ForumPostIcon(val id: Int) : Serializable {
     QUESTION(2),
     ANSWER(3),
     UP_VOTE(4),
-    DOWN_VOTE(5),
-    UNKNOWN(-1);
+    DOWN_VOTE(5);
 
     companion object {
-        fun getById(id: Int): ForumPostIcon {
-            return values().firstOrNull { it.id == id } ?: UNKNOWN
+        fun getById(id: Int?): ForumPostIcon? {
+            return values().firstOrNull { it.id == id }
         }
     }
 

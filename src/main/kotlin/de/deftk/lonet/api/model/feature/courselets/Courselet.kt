@@ -5,6 +5,9 @@ import de.deftk.lonet.api.model.Group
 import de.deftk.lonet.api.model.abstract.IManageable
 import de.deftk.lonet.api.request.GroupApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
+import de.deftk.lonet.api.utils.getApiDate
+import de.deftk.lonet.api.utils.getBoolOrNull
+import de.deftk.lonet.api.utils.getManageable
 import java.util.*
 
 class Courselet(val id: Int, val title: String, val mapping: String, val isLink: Boolean, val isVisible: Boolean, val isTemplate: Boolean, val size: Int, val creationDate: Date, val creationMember: IManageable, val modificationDate: Date, val modificationMember: IManageable, val group: Group) {
@@ -17,14 +20,14 @@ class Courselet(val id: Int, val title: String, val mapping: String, val isLink:
                     jsonObject.get("id").asInt,
                     jsonObject.get("title").asString,
                     jsonObject.get("mapping").asString,
-                    jsonObject.get("is_link").asString == "true",
-                    jsonObject.get("is_visible").asString == "true",
-                    jsonObject.get("is_template").asString == "true",
+                    jsonObject.getBoolOrNull("is_link")!!,
+                    jsonObject.getBoolOrNull("is_visible")!!,
+                    jsonObject.getBoolOrNull("is_template")!!,
                     jsonObject.get("size").asInt,
-                    Date(createdObject.get("date").asInt * 1000L),
-                    group.getContext().getOrCreateManageable(createdObject.get("user").asJsonObject),
-                    Date(modifiedObject.get("date").asInt * 1000L),
-                    group.getContext().getOrCreateManageable(modifiedObject.get("user").asJsonObject),
+                    createdObject.getApiDate("date"),
+                    createdObject.getManageable("user", group),
+                    modifiedObject.getApiDate("date"),
+                    modifiedObject.getManageable("user", group),
                     group
             )
         }

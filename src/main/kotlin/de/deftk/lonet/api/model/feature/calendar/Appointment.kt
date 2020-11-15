@@ -5,12 +5,18 @@ import de.deftk.lonet.api.model.abstract.AbstractOperator
 import de.deftk.lonet.api.model.abstract.IManageable
 import de.deftk.lonet.api.request.OperatorApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
+import de.deftk.lonet.api.utils.getApiDate
+import de.deftk.lonet.api.utils.getApiDateOrNull
+import de.deftk.lonet.api.utils.getManageable
+import de.deftk.lonet.api.utils.getStringOrNull
 import java.util.*
 
 class Appointment(val id: String, uid: String?, title: String, description: String?, endDate: Date?, endDateIso: String?, location: String?, tzid: String?, rrule: String?, startDate: Date?, startDateIso: String?, creationDate: Date?, creationMember: IManageable?, modificationDate: Date?, modificationMember: IManageable?, val operator: AbstractOperator) {
 
     companion object {
         fun fromJson(jsonObject: JsonObject, operator: AbstractOperator): Appointment {
+            val createdObject = jsonObject.get("created").asJsonObject
+            val modifiedObject = jsonObject.get("modified").asJsonObject
             val appointment = Appointment(
                     jsonObject.get("id").asString,
                     null,
@@ -23,10 +29,10 @@ class Appointment(val id: String, uid: String?, title: String, description: Stri
                     null,
                     null,
                     null,
-                    null,
-                    null,
-                    null,
-                    null,
+                    createdObject.getApiDate("date"),
+                    createdObject.getManageable("user", operator),
+                    modifiedObject.getApiDate("date"),
+                    modifiedObject.getManageable("user", operator),
                     operator
             )
             appointment.readFrom(jsonObject)
@@ -34,51 +40,34 @@ class Appointment(val id: String, uid: String?, title: String, description: Stri
         }
     }
 
-    var uid: String?
+    var uid = uid
         private set
-    var title: String
+    var title = title
         private set
-    var description: String?
+    var description = description
         private set
-    var endDate: Date?
+    var endDate = endDate
         private set
-    var endDateIso: String?
+    var endDateIso = endDateIso
         private set
-    var location: String?
+    var location = location
         private set
-    var tzid: String?
+    var tzid = tzid
         private set
-    var rrule: String?
+    var rrule = rrule
         private set
-    var startDate: Date?
+    var startDate = startDate
         private set
-    var startDateIso: String?
+    var startDateIso = startDateIso
         private set
-    var creationDate: Date?
+    var creationDate = creationDate
         private set
-    var creationMember: IManageable?
+    var creationMember = creationMember
         private set
-    var modificationDate: Date?
+    var modificationDate = modificationDate
         private set
-    var modificationMember: IManageable?
+    var modificationMember = modificationMember
         private set
-
-    init {
-        this.uid = uid
-        this.title = title
-        this.description = description
-        this.endDate = endDate
-        this.endDateIso = endDateIso
-        this.location = location
-        this.tzid = tzid
-        this.rrule = rrule
-        this.startDate = startDate
-        this.startDateIso = startDateIso
-        this.creationDate = creationDate
-        this.creationMember = creationMember
-        this.modificationDate = modificationDate
-        this.modificationMember = modificationMember
-    }
 
     fun edit(title: String? = null, description: String? = null, endDate: Date? = null, endDateIso: String? = null, location: String? = null, rrule: String? = null, startDate: Date? = null, startDateIso: String? = null) {
         val request = OperatorApiRequest(operator)
@@ -96,24 +85,24 @@ class Appointment(val id: String, uid: String?, title: String, description: Stri
     }
 
     private fun readFrom(jsonObject: JsonObject) {
-        uid = jsonObject.get("uid")?.asString
+        uid = jsonObject.getStringOrNull("uid")
         title = jsonObject.get("title").asString
-        description = jsonObject.get("description")?.asString
-        endDate = if (jsonObject.has("end_date")) Date(jsonObject.get("end_date").asInt * 1000L) else null
-        endDateIso = jsonObject.get("end_date_iso")?.asString
-        location = jsonObject.get("location")?.asString
-        tzid = jsonObject.get("tzid")?.asString
-        rrule = jsonObject.get("rrule")?.asString
-        startDate = if (jsonObject.has("start_date")) Date(jsonObject.get("start_date").asInt * 1000L) else null
-        startDateIso = jsonObject.get("start_date_iso")?.asString
+        description = jsonObject.getStringOrNull("description")
+        endDate = jsonObject.getApiDateOrNull("end_date")
+        endDateIso = jsonObject.getStringOrNull("end_date_iso")
+        location = jsonObject.getStringOrNull("location")
+        tzid = jsonObject.getStringOrNull("tzid")
+        rrule = jsonObject.getStringOrNull("rrule")
+        startDate = jsonObject.getApiDateOrNull("start_date")
+        startDateIso = jsonObject.getStringOrNull("start_date_iso")
 
         val createdObject = jsonObject.get("created").asJsonObject
-        creationDate = Date(createdObject.get("date").asLong * 1000)
-        creationMember = operator.getContext().getOrCreateManageable(createdObject.get("user").asJsonObject)
+        creationDate = createdObject.getApiDate("date")
+        creationMember = createdObject.getManageable("user", operator)
 
         val modifiedObject = jsonObject.get("modified").asJsonObject
-        modificationDate = Date(modifiedObject.get("date").asLong * 1000)
-        modificationMember = operator.getContext().getOrCreateManageable(createdObject.get("user").asJsonObject)
+        modificationDate = modifiedObject.getApiDate("date")
+        modificationMember = modifiedObject.getManageable("user", operator)
     }
 
 }

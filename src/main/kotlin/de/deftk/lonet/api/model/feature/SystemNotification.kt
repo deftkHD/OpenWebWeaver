@@ -1,30 +1,31 @@
 package de.deftk.lonet.api.model.feature
 
 import com.google.gson.JsonObject
-import de.deftk.lonet.api.model.RemoteManageable
 import de.deftk.lonet.api.model.User
 import de.deftk.lonet.api.model.abstract.IManageable
 import de.deftk.lonet.api.request.UserApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
+import de.deftk.lonet.api.utils.getApiDate
+import de.deftk.lonet.api.utils.getBoolOrNull
+import de.deftk.lonet.api.utils.getStringOrNull
 import java.io.Serializable
 import java.util.*
 
-class SystemNotification(val id: String, val messageType: SystemNotificationType, val date: Date, val message: String, val data: String, val member: IManageable, val group: IManageable, val fromId: Any?, val read: Boolean, val obj: String?, val user: User) : Serializable {
+class SystemNotification(val id: String, val messageType: SystemNotificationType?, val date: Date, val message: String, val data: String, val member: IManageable, val group: IManageable, val fromId: Any?, val read: Boolean, val obj: String?, val user: User) : Serializable {
 
     companion object {
         fun fromJson(jsonObject: JsonObject, user: User): SystemNotification {
-            val fromId = jsonObject.get("from_id")
             return SystemNotification(
                     jsonObject.get("id").asString,
-                    SystemNotificationType.getById(jsonObject.get("message").asString),
-                    Date(jsonObject.get("date").asLong * 1000),
+                    SystemNotificationType.getById(jsonObject.getStringOrNull("message")),
+                    jsonObject.getApiDate("date"),
                     jsonObject.get("message_hr").asString,
                     jsonObject.get("data").asString,
                     user.getContext().getOrCreateManageable(jsonObject.get("from_user").asJsonObject),
                     user.getContext().getOrCreateManageable(jsonObject.get("from_group").asJsonObject),
-                    if (fromId.isJsonNull) null else fromId.asString,
-                    jsonObject.get("is_unread").asInt == 0,
-                    jsonObject.get("object")?.asString,
+                    jsonObject.getStringOrNull("from_id"),
+                    !jsonObject.getBoolOrNull("is_unread")!!,
+                    jsonObject.getStringOrNull("object"),
                     user
             )
         }
@@ -60,14 +61,14 @@ class SystemNotification(val id: String, val messageType: SystemNotificationType
         FILE_DOWNLOAD("8"),
         NEW_NOTIFICATION("29"),
         NEW_TRUST("33"),
-        NEW_TASK("46"),
-        UNKNOWN("");
+        UNAUTHORIZED_LOGIN_LOCATION("35"),
+        NEW_TASK("46");
 
         companion object {
             @JvmStatic
-            fun getById(id: String): SystemNotificationType {
-                val type = values().firstOrNull { it.id == id } ?: UNKNOWN
-                if (type == UNKNOWN)
+            fun getById(id: String?): SystemNotificationType? {
+                val type = values().firstOrNull { it.id == id }
+                if (type == null)
                     println("Unknown system notification type $id")
                 return type
             }

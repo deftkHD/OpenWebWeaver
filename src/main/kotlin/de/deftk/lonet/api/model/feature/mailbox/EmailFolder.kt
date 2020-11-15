@@ -26,12 +26,8 @@ class EmailFolder(val id: String, name: String, val type: EmailFolderType, val o
         }
     }
 
-    var name: String
+    var name = name
         private set
-
-    init {
-        this.name = name
-    }
 
     fun getEmails(limit: Int? = null, offset: Int? = null): List<Email> {
         val request = OperatorApiRequest(operator)

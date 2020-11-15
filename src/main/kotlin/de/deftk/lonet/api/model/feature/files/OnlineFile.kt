@@ -7,6 +7,7 @@ import de.deftk.lonet.api.model.feature.abstract.IFilePrimitive
 import de.deftk.lonet.api.model.feature.files.filters.FileFilter
 import de.deftk.lonet.api.request.OperatorApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
+import de.deftk.lonet.api.utils.*
 import java.io.Serializable
 import java.util.*
 
@@ -20,26 +21,26 @@ class OnlineFile(id: String, parentId: String?, ordinal: Int?, name: String, des
             val effectiveObject = jsonObject.get("effective")?.asJsonObject
             return OnlineFile(
                     jsonObject.get("id").asString,
-                    jsonObject.get("parent_id")?.asString,
-                    jsonObject.get("ordinal")?.asInt,
+                    jsonObject.getStringOrNull("parent_id"),
+                    jsonObject.getIntOrNull("ordinal"),
                     jsonObject.get("name").asString,
-                    jsonObject.get("description")?.asString,
-                    if (jsonObject.has("type")) FileType.getById(jsonObject.get("type").asString) else null,
+                    jsonObject.getStringOrNull("description"),
+                    FileType.getById(jsonObject.getStringOrNull("type")),
                     jsonObject.get("size").asLong,
-                    jsonObject.get("readable")?.asInt?.equals(1),
-                    jsonObject.get("writable")?.asInt?.equals(1),
-                    jsonObject.get("sparse")?.asInt?.equals(1),
-                    jsonObject.get("mine")?.asInt?.equals(1),
-                    jsonObject.get("shared")?.asInt?.equals(1),
-                    Date(createdObject.get("date").asLong * 1000),
-                    operator.getContext().getOrCreateManageable(createdObject.get("user").asJsonObject),
-                    Date(modifiedObject.get("date").asLong * 1000),
-                    operator.getContext().getOrCreateManageable(modifiedObject.get("user").asJsonObject),
-                    effectiveObject?.get("read")?.asInt?.equals(1),
-                    effectiveObject?.get("write")?.asInt?.equals(1),
-                    effectiveObject?.get("modify")?.asInt?.equals(1),
-                    effectiveObject?.get("delete")?.asInt?.equals(1),
-                    jsonObject.get("preview")?.asInt?.equals(1),
+                    jsonObject.getBoolOrNull("readable"),
+                    jsonObject.getBoolOrNull("writable"),
+                    jsonObject.getBoolOrNull("sparse"),
+                    jsonObject.getBoolOrNull("mine"),
+                    jsonObject.getBoolOrNull("shared"),
+                    createdObject.getApiDate("date"),
+                    createdObject.getManageable("user", operator),
+                    modifiedObject.getApiDate("date"),
+                    modifiedObject.getManageable("user", operator),
+                    effectiveObject?.getBoolOrNull("read"),
+                    effectiveObject?.getBoolOrNull("write"),
+                    effectiveObject?.getBoolOrNull("modify"),
+                    effectiveObject?.getBoolOrNull("delete"),
+                    jsonObject.getBoolOrNull("preview"),
                     operator
             )
         }
@@ -290,33 +291,33 @@ class OnlineFile(id: String, parentId: String?, ordinal: Int?, name: String, des
 
     private fun readFrom(jsonObject: JsonObject) {
         id = jsonObject.get("id").asString
-        parentId = jsonObject.get("parent_id")?.asString
-        ordinal = jsonObject.get("ordinal")?.asInt
+        parentId = jsonObject.getStringOrNull("parent_id")
+        ordinal = jsonObject.getIntOrNull("ordinal")
         name = jsonObject.get("name").asString
-        description = jsonObject.get("description")?.asString
-        type = if (jsonObject.has("type")) FileType.getById(jsonObject.get("type").asString) else null
+        description = jsonObject.getStringOrNull("description")
+        type = FileType.getById(jsonObject.getStringOrNull("type"))
         size = jsonObject.get("size").asLong
-        readable = jsonObject.get("readable")?.asInt?.equals(1)
-        writable = jsonObject.get("writable")?.asInt?.equals(1)
-        sparse = jsonObject.get("sparse")?.asInt?.equals(1)
-        mine = jsonObject.get("mine")?.asInt?.equals(1)
-        shared = jsonObject.get("shared")?.asInt?.equals(1)
+        readable = jsonObject.getBoolOrNull("readable")
+        writable = jsonObject.getBoolOrNull("writable")
+        sparse = jsonObject.getBoolOrNull("sparse")
+        mine = jsonObject.getBoolOrNull("mine")
+        shared = jsonObject.getBoolOrNull("shared")
 
         val createdObject = jsonObject.get("created").asJsonObject
-        creationDate = Date(createdObject.get("date").asLong * 1000)
-        creationMember = operator.getContext().getOrCreateManageable(createdObject.get("user").asJsonObject)
+        creationDate = createdObject.getApiDate("date")
+        creationMember = createdObject.getManageable("user", operator)
 
         val modifiedObject = jsonObject.get("modified").asJsonObject
-        modificationDate = Date(modifiedObject.get("date").asLong * 1000)
-        modificationMember = operator.getContext().getOrCreateManageable(modifiedObject.get("user").asJsonObject)
+        modificationDate = modifiedObject.getApiDate("date")
+        modificationMember = modifiedObject.getManageable("user", operator)
 
         val effectiveObject = jsonObject.get("effective")?.asJsonObject
-        effectiveRead = effectiveObject?.get("read")?.asInt?.equals(1)
-        effectiveWrite = effectiveObject?.get("write")?.asInt?.equals(1)
-        effectiveModify = effectiveObject?.get("modify")?.asInt?.equals(1)
-        effectiveDelete = effectiveObject?.get("delete")?.asInt?.equals(1)
+        effectiveRead = effectiveObject?.getBoolOrNull("read")
+        effectiveWrite = effectiveObject?.getBoolOrNull("write")
+        effectiveModify = effectiveObject?.getBoolOrNull("modify")
+        effectiveDelete = effectiveObject?.getBoolOrNull("delete")
 
-        preview = jsonObject.get("preview")?.asInt?.equals(1)
+        preview = jsonObject.getBoolOrNull("preview")
     }
 
     override fun getTrash(limit: Int?): List<OnlineFile> {
@@ -353,15 +354,13 @@ class OnlineFile(id: String, parentId: String?, ordinal: Int?, name: String, des
 
     enum class FileType(val id: String) : Serializable {
         FILE("file"),
-        FOLDER("folder"),
-        UNKNOWN("");
+        FOLDER("folder");
 
         companion object {
-            fun getById(id: String): FileType {
-                return values().firstOrNull { it.id == id } ?: UNKNOWN.apply { println("unknown file type: $id") }
+            fun getById(id: String?): FileType? {
+                return values().firstOrNull { it.id == id }
             }
         }
     }
-
 
 }

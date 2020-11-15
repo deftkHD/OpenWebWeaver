@@ -4,6 +4,7 @@ import com.google.gson.JsonObject
 import de.deftk.lonet.api.model.abstract.AbstractOperator
 import de.deftk.lonet.api.request.OperatorApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
+import de.deftk.lonet.api.utils.getApiDate
 import java.io.Serializable
 import java.util.*
 
@@ -17,7 +18,7 @@ class Email(val id: Int, val subject: String, isRead: Boolean?, isFlagged: Boole
                     null,
                     null,
                     jsonObject.get("is_answered").asInt == 1,
-                    Date(jsonObject.get("date").asLong * 1000),
+                    jsonObject.getApiDate("date"),
                     jsonObject.get("size").asLong,
                     jsonObject.get("from")?.asJsonArray?.map { EmailAddress.fromJson(it.asJsonObject) },
                     folder,
@@ -28,20 +29,14 @@ class Email(val id: Int, val subject: String, isRead: Boolean?, isFlagged: Boole
         }
     }
 
-    var isRead: Boolean?
+    var isRead = isRead
         private set
 
-    var isFlagged: Boolean?
+    var isFlagged = isFlagged
         private set
 
-    var folder: EmailFolder
+    var folder = folder
         private set
-
-    init {
-        this.isRead = isRead
-        this.isFlagged = isFlagged
-        this.folder = folder
-    }
 
     fun read(peek: Boolean? = null): EmailContent {
         val request = OperatorApiRequest(operator)

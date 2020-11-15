@@ -3,9 +3,9 @@ package de.deftk.lonet.api.model.feature.board
 import com.google.gson.JsonObject
 import de.deftk.lonet.api.model.abstract.AbstractOperator
 import de.deftk.lonet.api.model.abstract.IManageable
-import de.deftk.lonet.api.model.feature.Task
 import de.deftk.lonet.api.request.OperatorApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
+import de.deftk.lonet.api.utils.*
 import java.io.Serializable
 import java.util.*
 
@@ -17,14 +17,14 @@ class BoardNotification(val id: String, title: String?, text: String?, color: Bo
             val modifiedObject = jsonObject.get("modified").asJsonObject
             val notification = BoardNotification(
                     jsonObject.get("id").asString,
-                    jsonObject.get("title")?.asString,
-                    jsonObject.get("text")?.asString,
+                    jsonObject.getStringOrNull("title"),
+                    jsonObject.getStringOrNull("text"),
                     BoardNotificationColor.getById(jsonObject.get("color").asInt),
                     null,
-                    Date(createdObject.get("date").asLong * 1000),
-                    operator.getContext().getOrCreateManageable(createdObject.get("user").asJsonObject),
-                    Date(modifiedObject.get("date").asLong * 1000),
-                    operator.getContext().getOrCreateManageable(modifiedObject.get("user").asJsonObject),
+                    createdObject.getApiDate("date"),
+                    createdObject.getManageable("user", operator),
+                    modifiedObject.getApiDate("date"),
+                    modifiedObject.getManageable("user", operator),
                     board,
                     operator
             )
@@ -74,17 +74,17 @@ class BoardNotification(val id: String, title: String?, text: String?, color: Bo
     }
 
     private fun readFrom(jsonObject: JsonObject) {
-        title = jsonObject.get("title")?.asString
-        text = jsonObject.get("text")?.asString
-        color = if (jsonObject.has("color")) BoardNotificationColor.getById(jsonObject.get("color").asInt) else null
-        killDate = if (jsonObject.has("kill_date")) Date(jsonObject.get("kill_date").asInt * 1000L) else null
+        title = jsonObject.getStringOrNull("title")
+        text = jsonObject.getStringOrNull("text")
+        color = BoardNotificationColor.getById(jsonObject.getIntOrNull("color"))
+        killDate = jsonObject.getApiDateOrNull("kill_date")
 
         val createdObject = jsonObject.get("created").asJsonObject
         val modifiedObject = jsonObject.get("modified").asJsonObject
-        creationDate = Date(createdObject.get("date").asLong * 1000)
-        creationMember = operator.getContext().getOrCreateManageable(createdObject.get("user").asJsonObject)
-        modificationDate = Date(modifiedObject.get("date").asLong * 1000)
-        modificationMember = operator.getContext().getOrCreateManageable(modifiedObject.get("user").asJsonObject)
+        creationDate = createdObject.getApiDate("date")
+        creationMember = createdObject.getManageable("user", operator)
+        modificationDate = modifiedObject.getApiDate("date")
+        modificationMember = modifiedObject.getManageable("user", operator)
     }
 
     override fun toString(): String {

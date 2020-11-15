@@ -5,10 +5,14 @@ import de.deftk.lonet.api.model.Group
 import de.deftk.lonet.api.model.abstract.IManageable
 import de.deftk.lonet.api.request.GroupApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
+import de.deftk.lonet.api.utils.getApiDate
+import de.deftk.lonet.api.utils.getBoolOrNull
+import de.deftk.lonet.api.utils.getIntOrNull
+import de.deftk.lonet.api.utils.getManageable
 import java.io.Serializable
 import java.util.*
 
-class ForumPost(val id: String, val parentId: String, val title: String, val text: String, val icon: ForumPostIcon, val level: Int, val commentCount: Int, val creationDate: Date, val creationMember: IManageable, val modificationDate: Date, val modificationMember: IManageable, val pinned: Boolean, val locked: Boolean, val group: Group) : Serializable {
+class ForumPost(val id: String, val parentId: String, val title: String, val text: String, val icon: ForumPostIcon?, val level: Int, val commentCount: Int, val creationDate: Date, val creationMember: IManageable, val modificationDate: Date, val modificationMember: IManageable, val pinned: Boolean, val locked: Boolean, val group: Group) : Serializable {
 
     val comments = mutableListOf<ForumPost>()
 
@@ -21,16 +25,16 @@ class ForumPost(val id: String, val parentId: String, val title: String, val tex
                     jsonObject.get("parent_id").asString,
                     jsonObject.get("title").asString,
                     jsonObject.get("text").asString,
-                    ForumPostIcon.getById(jsonObject.get("icon").asInt),
+                    ForumPostIcon.getById(jsonObject.getIntOrNull("icon")),
                     jsonObject.get("level").asInt,
                     jsonObject.get("children").asJsonObject.get("count").asInt,
                     //jsonObject.get("files").asJsonArray //seems to be unused (always empty)
-                    Date(creationObject.get("date").asInt * 1000L),
-                    group.getContext().getOrCreateManageable(creationObject.get("user").asJsonObject),
-                    Date(modificationObject.get("date").asInt * 1000L),
-                    group.getContext().getOrCreateManageable(modificationObject.get("user").asJsonObject),
-                    jsonObject.get("pinned")?.asInt == 1,
-                    jsonObject.get("locked")?.asInt == 1,
+                    creationObject.getApiDate("date"),
+                    creationObject.getManageable("user", group),
+                    modificationObject.getApiDate("date"),
+                    modificationObject.getManageable("user", group),
+                    jsonObject.getBoolOrNull("pinned")!!,
+                    jsonObject.getBoolOrNull("locked")!!,
                     group
             )
         }

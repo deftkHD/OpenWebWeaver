@@ -5,37 +5,40 @@ import de.deftk.lonet.api.model.abstract.AbstractOperator
 import de.deftk.lonet.api.model.abstract.IManageable
 import de.deftk.lonet.api.request.OperatorApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
+import de.deftk.lonet.api.utils.getApiDate
+import de.deftk.lonet.api.utils.getManageable
+import de.deftk.lonet.api.utils.getStringOrNull
 import java.util.*
 
 class Contact(
         val id: Int,
-        var uid: String?,
-        var categories: String?,
-        var firstName: String?,
-        var lastName: String?,
-        var homeStreet: String?,
-        var homeStreet2: String?,
-        var homePostalCode: String?,
-        var homeCity: String?,
-        var homeState: String?,
-        var homeCountry: String?,
-        var homeCoords: String?,
-        var homePhone: String?,
-        var homeFax: String?,
-        var mobilePhone: String?,
-        var birthday: String?,
-        var emailAddress: String?,
-        var gender: Gender?,
-        var hobbies: String?,
-        var notes: String?,
-        var website: String?,
-        var company: String?,
-        var companyType: String?,
-        var jobTitle: String?,
-        var creationDate: Date,
-        var creationMember: IManageable,
-        var modificationDate: Date,
-        var modificationMember: IManageable,
+        uid: String?,
+        categories: String?,
+        firstName: String?,
+        lastName: String?,
+        homeStreet: String?,
+        homeStreet2: String?,
+        homePostalCode: String?,
+        homeCity: String?,
+        homeState: String?,
+        homeCountry: String?,
+        homeCoords: String?,
+        homePhone: String?,
+        homeFax: String?,
+        mobilePhone: String?,
+        birthday: String?,
+        emailAddress: String?,
+        gender: Gender?,
+        hobbies: String?,
+        notes: String?,
+        website: String?,
+        company: String?,
+        companyType: String?,
+        jobTitle: String?,
+        creationDate: Date,
+        creationMember: IManageable,
+        modificationDate: Date,
+        modificationMember: IManageable,
         val operator: AbstractOperator
 ) {
 
@@ -68,15 +71,71 @@ class Contact(
                     null,
                     null,
                     null,
-                    Date(createdObject.get("date").asLong * 1000),
-                    operator.getContext().getOrCreateManageable(createdObject.get("user").asJsonObject),
-                    Date(modifiedObject.get("date").asLong * 1000),
-                    operator.getContext().getOrCreateManageable(modifiedObject.get("user").asJsonObject),
-                    operator)
+                    createdObject.getApiDate("date"),
+                    createdObject.getManageable("user", operator),
+                    modifiedObject.getApiDate("date"),
+                    modifiedObject.getManageable("user", operator),
+                    operator
+            )
             contact.readFrom(jsonObject)
             return contact
         }
     }
+
+    var uid = uid
+        private set
+    var categories = categories
+        private set
+    var firstName = firstName
+        private set
+    var lastName = lastName
+        private set
+    var homeStreet = homeStreet
+        private set
+    var homeStreet2 = homeStreet2
+        private set
+    var homePostalCode = homePostalCode
+        private set
+    var homeCity = homeCity
+        private set
+    var homeState = homeState
+        private set
+    var homeCountry = homeCountry
+        private set
+    var homeCoords = homeCoords
+        private set
+    var homePhone = homePhone
+        private set
+    var homeFax = homeFax
+        private set
+    var mobilePhone = mobilePhone
+        private set
+    var birthday = birthday
+        private set
+    var emailAddress = emailAddress
+        private set
+    var gender = gender
+        private set
+    var hobbies = hobbies
+        private set
+    var notes = notes
+        private set
+    var website = website
+        private set
+    var company = company
+        private set
+    var companyType = companyType
+        private set
+    var jobTitle = jobTitle
+        private set
+    var creationDate = creationDate
+        private set
+    var creationMember = creationMember
+        private set
+    var modificationDate = modificationDate
+        private set
+    var modificationMember = modificationMember
+        private set
 
     fun edit(categories: String? = null, firstName: String? = null, lastName: String? = null, homeStreet: String? = null, homeStreet2: String? = null, homePostalCode: String? = null, homeCity: String? = null, homeState: String? = null, homeCountry: String? = null, homeCoords: String? = null, homePhone: String? = null, homeFax: String? = null, mobilePhone: String? = null, birthday: String? = null, email: String? = null, gender: Gender? = null, hobby: String? = null, notes: String? = null, website: String? = null, company: String? = null, companyType: String? = null, jobTitle: String? = null) {
         val request = OperatorApiRequest(operator)
@@ -90,33 +149,33 @@ class Contact(
         val createdObject = jsonObject.get("created").asJsonObject
         val modifiedObject = jsonObject.get("modified").asJsonObject
 
-        uid = jsonObject.get("uid")?.asString
-        categories = jsonObject.get("categories")?.asString
-        firstName = jsonObject.get("firstname")?.asString
-        lastName = jsonObject.get("lastname")?.asString
-        homeStreet = jsonObject.get("homestreet")?.asString
-        homeStreet2 = jsonObject.get("homestreet2")?.asString
-        homePostalCode = jsonObject.get("homepostalcode")?.asString
-        homeCity = jsonObject.get("homecity")?.asString
-        homeState = jsonObject.get("homestate")?.asString
-        homeCountry = jsonObject.get("homecountry")?.asString
-        homeCoords = jsonObject.get("homecoords")?.asString
-        homePhone = jsonObject.get("homephone")?.asString
-        homeFax = jsonObject.get("homefax")?.asString
-        mobilePhone = jsonObject.get("mobilephone")?.asString
-        birthday = jsonObject.get("birthday")?.asString
-        emailAddress = jsonObject.get("emailaddress")?.asString
-        gender = if (jsonObject.has("gender")) Gender.getById(jsonObject.get("gender").asString.toInt()) else null
-        hobbies = jsonObject.get("hobby")?.asString
-        notes = jsonObject.get("notes")?.asString
-        website = jsonObject.get("webpage")?.asString
-        company = jsonObject.get("company")?.asString
-        companyType = jsonObject.get("companytype")?.asString
-        jobTitle = jsonObject.get("jobtitle")?.asString
-        creationDate = Date(createdObject.get("date").asLong * 1000)
-        creationMember = operator.getContext().getOrCreateManageable(createdObject.get("user").asJsonObject)
-        modificationDate = Date(modifiedObject.get("date").asLong * 1000)
-        modificationMember = operator.getContext().getOrCreateManageable(modifiedObject.get("user").asJsonObject)
+        uid = jsonObject.getStringOrNull("uid")
+        categories = jsonObject.getStringOrNull("categories")
+        firstName = jsonObject.getStringOrNull("firstname")
+        lastName = jsonObject.getStringOrNull("lastname")
+        homeStreet = jsonObject.getStringOrNull("homestreet")
+        homeStreet2 = jsonObject.getStringOrNull("homestreet2")
+        homePostalCode = jsonObject.getStringOrNull("homepostalcode")
+        homeCity = jsonObject.getStringOrNull("homecity")
+        homeState = jsonObject.getStringOrNull("homestate")
+        homeCountry = jsonObject.getStringOrNull("homecountry")
+        homeCoords = jsonObject.getStringOrNull("homecoords")
+        homePhone = jsonObject.getStringOrNull("homephone")
+        homeFax = jsonObject.getStringOrNull("homefax")
+        mobilePhone = jsonObject.getStringOrNull("mobilephone")
+        birthday = jsonObject.getStringOrNull("birthday")
+        emailAddress = jsonObject.getStringOrNull("emailaddress")
+        gender = Gender.getById(jsonObject.getStringOrNull("gender")?.toInt())
+        hobbies = jsonObject.getStringOrNull("hobby")
+        notes = jsonObject.getStringOrNull("notes")
+        website = jsonObject.getStringOrNull("webpage")
+        company = jsonObject.getStringOrNull("company")
+        companyType = jsonObject.getStringOrNull("companytype")
+        jobTitle = jsonObject.getStringOrNull("jobtitle")
+        creationDate = createdObject.getApiDate("date")
+        creationMember = createdObject.getManageable("user", operator)
+        modificationDate = modifiedObject.getApiDate("date")
+        modificationMember = modifiedObject.getManageable("user", operator)
     }
 
     fun delete() {
