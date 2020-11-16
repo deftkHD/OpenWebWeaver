@@ -105,10 +105,10 @@ class OnlineFile(id: String, parentId: String?, ordinal: Int?, name: String, des
         return subResponse.get("entries")?.asJsonArray?.map { fromJson(it.asJsonObject, operator) } ?: emptyList()
     }
 
-    fun download(): FileChunk {
+    fun download(limit: Int? = null, offset: Int? = null): FileChunk {
         check(type == FileType.FILE) { "Download only available for files" }
         val request = OperatorApiRequest(operator)
-        val id = request.addGetFileRequest(id)[1]
+        val id = request.addGetFileRequest(id, limit, offset)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return FileChunk.fromJson(subResponse.get("file").asJsonObject)
