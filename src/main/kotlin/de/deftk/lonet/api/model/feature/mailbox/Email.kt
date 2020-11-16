@@ -100,7 +100,7 @@ class Email(val id: Int, val subject: String, unread: Boolean?, flagged: Boolean
                         jsonObject.get("body_plain").asString,
                         jsonObject.get("text")?.asString,
                         jsonObject.get("to").asJsonArray.map { EmailAddress.fromJson(it.asJsonObject) },
-                        jsonObject.get("files").asJsonArray.map { Attachment.fromJson(it.asJsonObject) }
+                        jsonObject.get("files")?.asJsonArray?.map { Attachment.fromJson(it.asJsonObject) } ?: emptyList()
                 )
             }
         }
