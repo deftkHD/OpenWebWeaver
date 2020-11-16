@@ -4,9 +4,11 @@ import com.google.gson.JsonObject
 import de.deftk.lonet.api.model.abstract.AbstractOperator
 import de.deftk.lonet.api.request.OperatorApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
+import de.deftk.lonet.api.utils.getApiDate
 import java.io.Serializable
+import java.util.*
 
-class EmailFolder(val id: String, name: String, val type: EmailFolderType, val operator: AbstractOperator) : Serializable {
+class EmailFolder(val id: String, name: String, val type: EmailFolderType, val mDate: Date, val operator: AbstractOperator) : Serializable {
 
     companion object {
         fun fromJson(jsonObject: JsonObject, operator: AbstractOperator): EmailFolder {
@@ -21,6 +23,7 @@ class EmailFolder(val id: String, name: String, val type: EmailFolderType, val o
                     jsonObject.get("id").asString,
                     jsonObject.get("name").asString,
                     type,
+                    jsonObject.getApiDate("m_date"),
                     operator
             )
         }

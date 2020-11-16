@@ -5,10 +5,11 @@ import de.deftk.lonet.api.model.abstract.AbstractOperator
 import de.deftk.lonet.api.request.OperatorApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
 import de.deftk.lonet.api.utils.getApiDate
+import de.deftk.lonet.api.utils.getBoolOrNull
 import java.io.Serializable
 import java.util.*
 
-class Email(val id: Int, val subject: String, isRead: Boolean?, isFlagged: Boolean?, val answered: Boolean, val date: Date, val size: Long, val from: List<EmailAddress>?, folder: EmailFolder, val operator: AbstractOperator) : Serializable {
+class Email(val id: Int, val subject: String, unread: Boolean?, flagged: Boolean?, answered: Boolean?, deleted: Boolean?, val date: Date, val size: Long, val from: List<EmailAddress>?, folder: EmailFolder, val operator: AbstractOperator) : Serializable {
 
     companion object {
         fun fromJson(jsonObject: JsonObject, folder: EmailFolder, operator: AbstractOperator): Email {
@@ -17,7 +18,8 @@ class Email(val id: Int, val subject: String, isRead: Boolean?, isFlagged: Boole
                     jsonObject.get("subject").asString,
                     null,
                     null,
-                    jsonObject.get("is_answered").asInt == 1,
+                    null,
+                    null,
                     jsonObject.getApiDate("date"),
                     jsonObject.get("size").asLong,
                     jsonObject.get("from")?.asJsonArray?.map { EmailAddress.fromJson(it.asJsonObject) },
@@ -29,10 +31,16 @@ class Email(val id: Int, val subject: String, isRead: Boolean?, isFlagged: Boole
         }
     }
 
-    var isRead = isRead
+    var unread = unread
         private set
 
-    var isFlagged = isFlagged
+    var flagged = flagged
+        private set
+
+    var answered = answered
+        private set
+
+    var deleted = deleted
         private set
 
     var folder = folder
@@ -52,9 +60,9 @@ class Email(val id: Int, val subject: String, isRead: Boolean?, isFlagged: Boole
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
         if (isFlagged != null)
-            this.isFlagged = isFlagged
+            this.flagged = isFlagged
         if (isUnread != null)
-            this.isRead = !isUnread
+            this.unread = isUnread
     }
 
     fun move(to: EmailFolder) {
@@ -70,25 +78,29 @@ class Email(val id: Int, val subject: String, isRead: Boolean?, isFlagged: Boole
         request.addDeleteEmailRequest(folder.id, id)
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
+        deleted = true
     }
 
     private fun readFrom(jsonObject: JsonObject) {
-        isRead = jsonObject.get("is_unread").asInt == 0
-        isFlagged = jsonObject.get("is_flagged").asInt == 1
+        unread = jsonObject.getBoolOrNull("is_unread")
+        flagged = jsonObject.getBoolOrNull("is_flagged")
+        answered = jsonObject.getBoolOrNull("is_flagged")
+        deleted = jsonObject.getBoolOrNull("is_deleted")
     }
 
     override fun toString(): String {
         return subject
     }
 
-    data class EmailContent(val plainBody: String, val text: String?, val to: List<EmailAddress>) : Serializable {
+    data class EmailContent(val plainBody: String, val text: String?, val to: List<EmailAddress>, val files: List<Attachment>) : Serializable {
 
         companion object {
             fun fromJson(jsonObject: JsonObject): EmailContent {
                 return EmailContent(
                         jsonObject.get("body_plain").asString,
                         jsonObject.get("text")?.asString,
-                        jsonObject.get("to").asJsonArray.map { EmailAddress.fromJson(it.asJsonObject) }
+                        jsonObject.get("to").asJsonArray.map { EmailAddress.fromJson(it.asJsonObject) },
+                        jsonObject.get("files").asJsonArray.map { Attachment.fromJson(it.asJsonObject) }
                 )
             }
         }

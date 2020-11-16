@@ -42,6 +42,7 @@ user.logout(true)
 - [x] Delete emails
 - [x] Move emails
 - [x] Email signature
+- [ ] Answer emails
 ---
 - [x] Get group members
 - [ ] Send quick messages
@@ -82,7 +83,6 @@ user.logout(true)
 - [x] Read forum posts
 - [x] Add forum posts
 - [x] Delete forum posts
-- [ ] Forum attachments
 ---
 - [x] Get wiki
 ---
