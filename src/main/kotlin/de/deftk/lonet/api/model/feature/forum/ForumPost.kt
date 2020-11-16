@@ -12,7 +12,7 @@ import de.deftk.lonet.api.utils.getManageable
 import java.io.Serializable
 import java.util.*
 
-class ForumPost(val id: String, val parentId: String, val title: String, val text: String, val icon: ForumPostIcon?, val level: Int, val commentCount: Int, val creationDate: Date, val creationMember: IManageable, val modificationDate: Date, val modificationMember: IManageable, val pinned: Boolean, val locked: Boolean, val group: Group) : Serializable {
+class ForumPost(val id: String, val parentId: String, val title: String, val text: String, val icon: ForumPostIcon?, val level: Int, val commentCount: Int, val creationDate: Date, val creationMember: IManageable, val modificationDate: Date, val modificationMember: IManageable, val pinned: Boolean?, val locked: Boolean?, val group: Group) : Serializable {
 
     val comments = mutableListOf<ForumPost>()
 
@@ -33,8 +33,8 @@ class ForumPost(val id: String, val parentId: String, val title: String, val tex
                     creationObject.getManageable("user", group),
                     modificationObject.getApiDate("date"),
                     modificationObject.getManageable("user", group),
-                    jsonObject.getBoolOrNull("pinned")!!,
-                    jsonObject.getBoolOrNull("locked")!!,
+                    jsonObject.getBoolOrNull("pinned"),
+                    jsonObject.getBoolOrNull("locked"),
                     group
             )
         }
