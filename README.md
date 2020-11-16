@@ -100,6 +100,8 @@ user.logout(true)
 - [x] Delete files/folders
 - [x] Trash
 ---
+- [x] Session files
+---
 - [x] Read system notifications
 - [x] Delete system notifications
 

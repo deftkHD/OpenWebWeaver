@@ -7,6 +7,7 @@ import de.deftk.lonet.api.model.feature.SystemNotification
 import de.deftk.lonet.api.model.feature.Task
 import de.deftk.lonet.api.model.feature.board.BoardNotification
 import de.deftk.lonet.api.model.feature.board.BoardType
+import de.deftk.lonet.api.model.feature.files.session.SessionFile
 import de.deftk.lonet.api.request.UserApiRequest
 import de.deftk.lonet.api.response.ApiResponse
 import de.deftk.lonet.api.response.ResponseUtil
@@ -158,6 +159,14 @@ class User(login: String, name: String, type: ManageableType, val baseUser: IMan
         val request = UserApiRequest(this)
         val response = request.fireRequest()
         return runCatching { ResponseUtil.checkSuccess(response.toJson()) }.isSuccess
+    }
+
+    override fun addSessionFile(name: String, data: ByteArray): SessionFile {
+        val request = UserApiRequest(this)
+        val id = request.addAddSessionFileRequest(name, data)[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return SessionFile.fromJson(subResponse.get("file").asJsonObject, this)
     }
 
     override fun getContext(): IContext {

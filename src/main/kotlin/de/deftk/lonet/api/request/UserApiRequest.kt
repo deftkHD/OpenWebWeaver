@@ -5,6 +5,7 @@ import de.deftk.lonet.api.model.Feature
 import de.deftk.lonet.api.model.Locale
 import de.deftk.lonet.api.model.User
 import java.io.Serializable
+import java.util.*
 
 class UserApiRequest(private val user: User) : OperatorApiRequest(user), Serializable {
 
@@ -96,6 +97,72 @@ class UserApiRequest(private val user: User) : OperatorApiRequest(user), Seriali
             }
         }
         return ids
+    }
+
+    fun addAddSessionFileRequest(name: String, data: ByteArray): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("name", name)
+        requestParams.addProperty("data", Base64.getEncoder().encodeToString(data))
+        return listOf(
+                addSetFocusRequest("session_files", user.getLogin()),
+                addRequest("add_file", requestParams)
+        )
+    }
+
+    fun addAppendSessionFileRequest(id: String, data: ByteArray): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("id", id)
+        requestParams.addProperty("data", Base64.getEncoder().encodeToString(data))
+        return listOf(
+                addSetFocusRequest("session_files", user.getLogin()),
+                addRequest("append_file", requestParams)
+        )
+    }
+
+    fun addDeleteSessionFileRequest(id: String): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("id", id)
+        return listOf(
+                addSetFocusRequest("session_files", user.getLogin()),
+                addRequest("delete_file", requestParams)
+        )
+    }
+
+    fun addGetSessionFileRequest(id: String, limit: Int? = null, offset: Int? = null): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("id", id)
+        if (limit != null)
+            requestParams.addProperty("limit", limit)
+        if (offset != null)
+            requestParams.addProperty("offset", offset)
+        return listOf(
+                addSetFocusRequest("session_files", user.getLogin()),
+                addRequest("get_file", requestParams)
+        )
+    }
+
+    fun addGetSessionFileDownloadUrlRequest(id: String): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("id", id)
+        return listOf(
+                addSetFocusRequest("session_files", user.getLogin()),
+                addRequest("get_file_download_url", requestParams)
+        )
+    }
+
+    fun addGetSessionFileUploadUrlRequest(name: String): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("name", name)
+        return listOf(
+                addSetFocusRequest("session_files", user.getLogin()),
+                addRequest("get_file_upload_url", requestParams)
+        )
     }
 
 }

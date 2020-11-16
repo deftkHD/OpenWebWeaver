@@ -2,9 +2,10 @@ package de.deftk.lonet.api.model.abstract
 
 import de.deftk.lonet.api.model.feature.board.BoardNotification
 import de.deftk.lonet.api.model.feature.Task
+import de.deftk.lonet.api.model.feature.abstract.ISessionFileHolder
 import de.deftk.lonet.api.model.feature.abstract.ISystemNotificationList
 
-interface IUser: ISystemNotificationList {
+interface IUser: ISystemNotificationList, ISessionFileHolder {
 
     fun getAutoLoginUrl(): String
     fun logout(removeTrust: Boolean = true)
