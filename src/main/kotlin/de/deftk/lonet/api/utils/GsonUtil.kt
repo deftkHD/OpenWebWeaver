@@ -1,6 +1,7 @@
 package de.deftk.lonet.api.utils
 
 import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
 import de.deftk.lonet.api.model.abstract.AbstractOperator
 import de.deftk.lonet.api.model.abstract.IManageable
 import java.util.*
@@ -42,14 +43,18 @@ fun JsonObject.getBoolOrNull(key: String): Boolean? {
         val obj = get(key)
         if (obj.isJsonNull)
             return null
-        return try {
-            obj.asBoolean
-        } catch (e: Exception) {
-            try {
-                obj.asString == "true"
-            } catch (e: Exception) {
-                obj.asInt == 1
+        check(obj is JsonPrimitive)
+        return when {
+            obj.isBoolean -> obj.asBoolean
+            obj.isNumber -> obj.asInt == 1
+            obj.isString -> {
+                val str = obj.asString.toLowerCase()
+                if (str.length > 1)
+                    str == "true"
+                else
+                    str == "1"
             }
+            else -> null
         }
     }
     return null
