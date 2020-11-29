@@ -84,7 +84,7 @@ class Email(val id: Int, val subject: String, unread: Boolean?, flagged: Boolean
     private fun readFrom(jsonObject: JsonObject) {
         unread = jsonObject.getBoolOrNull("is_unread")
         flagged = jsonObject.getBoolOrNull("is_flagged")
-        answered = jsonObject.getBoolOrNull("is_flagged")
+        answered = jsonObject.getBoolOrNull("is_answered")
         deleted = jsonObject.getBoolOrNull("is_deleted")
     }
 
