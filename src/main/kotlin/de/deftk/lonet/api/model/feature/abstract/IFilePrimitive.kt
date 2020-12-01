@@ -8,6 +8,7 @@ interface IFilePrimitive {
     fun getName(): String
     fun getFiles(filter: FileFilter? = null): List<OnlineFile>
     fun addFile(name: String, data: ByteArray, description: String? = null): OnlineFile
+    fun addSparseFile(name: String, size: Int, description: String? = null): OnlineFile
     fun addFolder(name: String, description: String? = null): OnlineFile
 
 }

@@ -12,7 +12,7 @@ import java.io.Serializable
 import java.util.*
 
 
-class OnlineFile(id: String, parentId: String?, ordinal: Int?, private var name: String, description: String?, type: FileType?, size: Long, readable: Boolean?, writable: Boolean?, sparse: Boolean?, mine: Boolean?, shared: Boolean?, creationDate: Date, creationMember: IManageable, modificationDate: Date, modificationMember: IManageable, effectiveRead: Boolean?, effectiveWrite: Boolean?, effectiveModify: Boolean?, effectiveDelete: Boolean?, preview: Boolean?, val operator: AbstractOperator) : IFilePrimitive, Serializable {
+class OnlineFile(id: String, parentId: String?, ordinal: Int?, private var name: String, description: String?, type: FileType?, size: Long, readable: Boolean?, writable: Boolean?, sparse: Boolean?, mine: Boolean?, shared: Boolean?, creationDate: Date, creationMember: IManageable, modificationDate: Date, modificationMember: IManageable, effectiveRead: Boolean?, effectiveWrite: Boolean?, effectiveModify: Boolean?, effectiveDelete: Boolean?, preview: Boolean?, sparseKey: String?, val operator: AbstractOperator) : IFilePrimitive, Serializable {
 
     companion object {
         fun fromJson(jsonObject: JsonObject, operator: AbstractOperator): OnlineFile {
@@ -41,6 +41,7 @@ class OnlineFile(id: String, parentId: String?, ordinal: Int?, private var name:
                     effectiveObject?.getBoolOrNull("modify"),
                     effectiveObject?.getBoolOrNull("delete"),
                     jsonObject.getBoolOrNull("preview"),
+                    jsonObject.getStringOrNull("sparse_key"),
                     operator
             )
         }
@@ -85,6 +86,8 @@ class OnlineFile(id: String, parentId: String?, ordinal: Int?, private var name:
     var effectiveModify = effectiveModify
         private set
     var preview = preview
+        private set
+    var sparseKey = sparseKey
         private set
 
     override fun getName(): String {
@@ -147,6 +150,14 @@ class OnlineFile(id: String, parentId: String?, ordinal: Int?, private var name:
         check(type == FileType.FOLDER) { "Uploading is only available for folders" }
         val request = OperatorApiRequest(operator)
         val id = request.addAddFileRequest(Base64.getEncoder().encodeToString(data), id, name, description)[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return fromJson(subResponse.get("file").asJsonObject, operator)
+    }
+
+    override fun addSparseFile(name: String, size: Int, description: String?): OnlineFile {
+        val request = OperatorApiRequest(operator)
+        val id = request.addAddSparseFileRequest(id, name, size, description)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return fromJson(subResponse.get("file").asJsonObject, operator)
@@ -320,6 +331,7 @@ class OnlineFile(id: String, parentId: String?, ordinal: Int?, private var name:
         effectiveDelete = effectiveObject?.getBoolOrNull("delete")
 
         preview = jsonObject.getBoolOrNull("preview")
+        sparseKey = jsonObject.getStringOrNull("sparse_key")
     }
 
     override fun toString(): String {

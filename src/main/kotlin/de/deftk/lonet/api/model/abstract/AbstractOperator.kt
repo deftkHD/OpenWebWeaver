@@ -97,6 +97,14 @@ abstract class AbstractOperator(private val login: String, private val name: Str
         return OnlineFile.fromJson(subResponse.get("file").asJsonObject, this)
     }
 
+    override fun addSparseFile(name: String, size: Int, description: String?): OnlineFile {
+        val request = OperatorApiRequest(this)
+        val id = request.addAddSparseFileRequest("/", name, size, description, login)[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return OnlineFile.fromJson(subResponse.get("file").asJsonObject, this)
+    }
+
     override fun addFolder(name: String, description: String?): OnlineFile {
         val request = OperatorApiRequest(this)
         val id = request.addAddFolderRequest("/", name, description)[1]

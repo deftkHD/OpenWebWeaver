@@ -133,15 +133,47 @@ open class OperatorApiRequest(val operator: AbstractOperator) : ApiRequest() {
     }
 
     fun addAddSparseFileRequest(folderId: String, name: String, size: Int, description: String? = null, login: String = operator.getLogin()): List<Int> {
-        TODO("Not yet implemented")
+        ensureCapacity(2)
+        val requestProperties = JsonObject()
+        requestProperties.addProperty("folder_id", folderId)
+        requestProperties.addProperty("name", name)
+        requestProperties.addProperty("size", size)
+        if (description != null)
+            requestProperties.addProperty("description", description)
+        return listOf(
+                addSetFocusRequest("files", login),
+                addRequest("add_sparse_file", requestProperties)
+        )
     }
 
     fun addImportSessionFileRequest(id: String, createCopy: Boolean? = null, description: String? = null, fileId: String? = null, folderId: String? = null, sparseKey: String? = null, login: String = operator.getLogin()): List<Int> {
-        TODO("Not yet implemented")
+        ensureCapacity(2)
+        val requestProperties = JsonObject()
+        requestProperties.addProperty("id", id)
+        if (createCopy != null)
+            requestProperties.addProperty("create_copy", createCopy)
+        if (description != null)
+            requestProperties.addProperty("description", description)
+        if (fileId != null)
+            requestProperties.addProperty("file_id", fileId)
+        if (folderId != null)
+            requestProperties.addProperty("folder_id", folderId)
+        if (sparseKey != null)
+            requestProperties.addProperty("sparse_key", sparseKey)
+        return listOf(
+                addSetFocusRequest("files", login),
+                addRequest("import_session_file", requestProperties)
+        )
     }
 
     fun addExportSessionFileRequest(id: String, login: String = operator.getLogin()): List<Int> {
-        TODO("Not yet implemented")
+        ensureCapacity(2)
+        val requestProperties = JsonObject()
+        requestProperties.addProperty("id", id)
+        return listOf(
+                addSetFocusRequest("files", login),
+                addRequest("export_session_file", requestProperties)
+        )
     }
 
     fun addDeleteFileRequest(fileId: String, login: String = operator.getLogin()): List<Int> {
