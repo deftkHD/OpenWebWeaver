@@ -9,7 +9,7 @@ import de.deftk.lonet.api.utils.getBoolOrNull
 import java.io.Serializable
 import java.util.*
 
-class Email(val id: Int, val subject: String, unread: Boolean?, flagged: Boolean?, answered: Boolean?, deleted: Boolean?, val date: Date, val size: Long, val from: List<EmailAddress>?, folder: EmailFolder, val operator: AbstractOperator) : Serializable {
+class Email(val id: Int, val subject: String, unread: Boolean?, flagged: Boolean?, answered: Boolean?, deleted: Boolean?, val date: Date, val size: Long, val from: List<EmailAddress>?, val to: List<EmailAddress>?, folder: EmailFolder, val operator: AbstractOperator) : Serializable {
 
     companion object {
         fun fromJson(jsonObject: JsonObject, folder: EmailFolder, operator: AbstractOperator): Email {
@@ -23,6 +23,7 @@ class Email(val id: Int, val subject: String, unread: Boolean?, flagged: Boolean
                     jsonObject.getApiDate("date"),
                     jsonObject.get("size").asLong,
                     jsonObject.get("from")?.asJsonArray?.map { EmailAddress.fromJson(it.asJsonObject) },
+                    jsonObject.get("to")?.asJsonArray?.map { EmailAddress.fromJson(it.asJsonObject) },
                     folder,
                     operator
             )
