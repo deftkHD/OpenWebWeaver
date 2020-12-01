@@ -5,6 +5,7 @@ import de.deftk.lonet.api.model.abstract.AbstractOperator
 import de.deftk.lonet.api.model.abstract.IManageable
 import de.deftk.lonet.api.model.feature.abstract.IFilePrimitive
 import de.deftk.lonet.api.model.feature.files.filters.FileFilter
+import de.deftk.lonet.api.model.feature.files.session.SessionFile
 import de.deftk.lonet.api.request.OperatorApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
 import de.deftk.lonet.api.utils.*
@@ -300,6 +301,15 @@ class OnlineFile(id: String, parentId: String?, ordinal: Int?, private var name:
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         readFrom(subResponse.get("file").asJsonObject)
+    }
+
+    override fun importSessionFile(sessionFile: SessionFile, createCopy: Boolean?, description: String?): OnlineFile {
+        check(type == FileType.FOLDER) { "Function only available for folders" }
+        val request = OperatorApiRequest(operator)
+        val id = request.addImportSessionFileRequest(sessionFile.id, createCopy, description, folderId = id)[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return fromJson(subResponse.get("file").asJsonObject, operator)
     }
 
     private fun readFrom(jsonObject: JsonObject) {

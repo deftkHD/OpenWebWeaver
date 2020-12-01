@@ -10,6 +10,7 @@ import de.deftk.lonet.api.model.feature.contact.Gender
 import de.deftk.lonet.api.model.feature.files.FileStorageSettings
 import de.deftk.lonet.api.model.feature.files.OnlineFile
 import de.deftk.lonet.api.model.feature.files.filters.FileFilter
+import de.deftk.lonet.api.model.feature.files.session.SessionFile
 import de.deftk.lonet.api.model.feature.mailbox.EmailFolder
 import de.deftk.lonet.api.model.feature.mailbox.EmailSignature
 import de.deftk.lonet.api.request.OperatorApiRequest
@@ -100,6 +101,14 @@ abstract class AbstractOperator(private val login: String, private val name: Str
     override fun addSparseFile(name: String, size: Int, description: String?): OnlineFile {
         val request = OperatorApiRequest(this)
         val id = request.addAddSparseFileRequest("/", name, size, description, login)[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return OnlineFile.fromJson(subResponse.get("file").asJsonObject, this)
+    }
+
+    override fun importSessionFile(sessionFile: SessionFile, createCopy: Boolean?, description: String?): OnlineFile {
+        val request = OperatorApiRequest(this)
+        val id = request.addImportSessionFileRequest(sessionFile.id, createCopy, description, folderId = "/")[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return OnlineFile.fromJson(subResponse.get("file").asJsonObject, this)
