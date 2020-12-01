@@ -12,7 +12,7 @@ import java.io.Serializable
 import java.util.*
 
 
-class OnlineFile(id: String, parentId: String?, ordinal: Int?, name: String, description: String?, type: FileType?, size: Long, readable: Boolean?, writable: Boolean?, sparse: Boolean?, mine: Boolean?, shared: Boolean?, creationDate: Date, creationMember: IManageable, modificationDate: Date, modificationMember: IManageable, effectiveRead: Boolean?, effectiveWrite: Boolean?, effectiveModify: Boolean?, effectiveDelete: Boolean?, preview: Boolean?, val operator: AbstractOperator) : IFilePrimitive, Serializable {
+class OnlineFile(id: String, parentId: String?, ordinal: Int?, private var name: String, description: String?, type: FileType?, size: Long, readable: Boolean?, writable: Boolean?, sparse: Boolean?, mine: Boolean?, shared: Boolean?, creationDate: Date, creationMember: IManageable, modificationDate: Date, modificationMember: IManageable, effectiveRead: Boolean?, effectiveWrite: Boolean?, effectiveModify: Boolean?, effectiveDelete: Boolean?, preview: Boolean?, val operator: AbstractOperator) : IFilePrimitive, Serializable {
 
     companion object {
         fun fromJson(jsonObject: JsonObject, operator: AbstractOperator): OnlineFile {
@@ -52,8 +52,6 @@ class OnlineFile(id: String, parentId: String?, ordinal: Int?, name: String, des
         private set
     var ordinal = ordinal
         private set
-    var name = name
-        private set
     var description = description
         private set
     var type = type
@@ -88,6 +86,10 @@ class OnlineFile(id: String, parentId: String?, ordinal: Int?, name: String, des
         private set
     var preview = preview
         private set
+
+    override fun getName(): String {
+        return name
+    }
 
     override fun getFiles(filter: FileFilter?): List<OnlineFile> {
         check(type == FileType.FOLDER) { "File can't have children!" }
@@ -141,7 +143,7 @@ class OnlineFile(id: String, parentId: String?, ordinal: Int?, name: String, des
         return FileProxyNonce.fromJson(subResponse.get("file").asJsonObject)
     }
 
-    fun addFile(name: String, data: ByteArray, description: String? = null): OnlineFile {
+    override fun addFile(name: String, data: ByteArray, description: String?): OnlineFile {
         check(type == FileType.FOLDER) { "Uploading is only available for folders" }
         val request = OperatorApiRequest(operator)
         val id = request.addAddFileRequest(Base64.getEncoder().encodeToString(data), id, name, description)[1]
@@ -318,14 +320,6 @@ class OnlineFile(id: String, parentId: String?, ordinal: Int?, name: String, des
         effectiveDelete = effectiveObject?.getBoolOrNull("delete")
 
         preview = jsonObject.getBoolOrNull("preview")
-    }
-
-    override fun getTrash(limit: Int?): List<OnlineFile> {
-        val request = OperatorApiRequest(operator)
-        val id = request.addGetTrashRequest(limit)[1]
-        val response = request.fireRequest()
-        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return subResponse.get("files").asJsonArray.map { fromJson(it.asJsonObject, operator) }
     }
 
     override fun toString(): String {
