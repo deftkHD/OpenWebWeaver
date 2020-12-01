@@ -4,6 +4,7 @@ import com.google.gson.JsonObject
 import de.deftk.lonet.api.model.Feature
 import de.deftk.lonet.api.model.Locale
 import de.deftk.lonet.api.model.User
+import de.deftk.lonet.api.model.abstract.IUser
 import java.io.Serializable
 import java.util.*
 
@@ -162,6 +163,38 @@ class UserApiRequest(private val user: User) : OperatorApiRequest(user), Seriali
         return listOf(
                 addSetFocusRequest("session_files", user.getLogin()),
                 addRequest("get_file_upload_url", requestParams)
+        )
+    }
+
+    fun addRegisterServiceRequest(type: IUser.ServiceType, token: String, application: String? = null, generateSecret: String? = null, isOnline: Boolean? = null, managedObjects: String? = null, unmanagedPriority: Int? = null): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("service", type.id)
+        requestParams.addProperty("token", token)
+        if (application != null)
+            requestParams.addProperty("application", application)
+        if (generateSecret != null)
+            requestParams.addProperty("generate_secret", generateSecret)
+        if (isOnline != null)
+            requestParams.addProperty("is_online", isOnline)
+        if (managedObjects != null)
+            requestParams.addProperty("managed_objects", managedObjects)
+        if (unmanagedPriority != null)
+            requestParams.addProperty("unmanaged_priority", unmanagedPriority)
+        return listOf(
+                addSetFocusRequest("settings", user.getLogin()),
+                addRequest("register_service", requestParams)
+        )
+    }
+
+    fun addUnregisterServiceRequest(type: IUser.ServiceType, token: String): List<Int> {
+        ensureCapacity(2)
+        val requestParams = JsonObject()
+        requestParams.addProperty("service", type.id)
+        requestParams.addProperty("token", token)
+        return listOf(
+                addSetFocusRequest("settings", user.getLogin()),
+                addRequest("unregister_service", requestParams)
         )
     }
 

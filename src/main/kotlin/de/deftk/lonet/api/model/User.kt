@@ -161,6 +161,20 @@ class User(login: String, name: String, type: ManageableType, val baseUser: IMan
         return runCatching { ResponseUtil.checkSuccess(response.toJson()) }.isSuccess
     }
 
+    override fun registerService(type: IUser.ServiceType, token: String, application: String?, generateSecret: String?, isOnline: Boolean?, managedObjects: String?, unmanagedPriority: Int?) {
+        val request = UserApiRequest(this)
+        request.addRegisterServiceRequest(type, token, application, generateSecret, isOnline, managedObjects, unmanagedPriority)[1]
+        val response = request.fireRequest()
+        ResponseUtil.checkSuccess(response.toJson())
+    }
+
+    override fun unregisterService(type: IUser.ServiceType, token: String) {
+        val request = UserApiRequest(this)
+        request.addUnregisterServiceRequest(type, token)[1]
+        val response = request.fireRequest()
+        ResponseUtil.checkSuccess(response.toJson())
+    }
+
     override fun addSessionFile(name: String, data: ByteArray): SessionFile {
         val request = UserApiRequest(this)
         val id = request.addAddSessionFileRequest(name, data)[1]
