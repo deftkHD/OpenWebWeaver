@@ -119,22 +119,22 @@ class OnlineFile(id: String, parentId: String?, ordinal: Int?, private var name:
         return FileChunk.fromJson(subResponse.get("file").asJsonObject)
     }
 
-    fun getPreviewDownloadUrl(): FileDownloadUrl {
+    fun getPreviewDownloadUrl(): FileUrl {
         check(type == FileType.FILE) { "Preview only available for files" }
         val request = OperatorApiRequest(operator)
         val id = request.addGetPreviewDownloadUrlRequest(id)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return FileDownloadUrl.fromPreviewJson(subResponse.get("file").asJsonObject)
+        return FileUrl.fromPreviewJson(subResponse.get("file").asJsonObject)
     }
 
-    fun getTempDownloadUrl(): FileDownloadUrl {
+    fun getTempDownloadUrl(): FileUrl {
         check(type == FileType.FILE) { "Download urls are only available for files" }
         val request = OperatorApiRequest(operator)
         val id = request.addGetFileDownloadUrlRequest(id)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return FileDownloadUrl.fromJson(subResponse.get("file").asJsonObject)
+        return FileUrl.fromDownloadJson(subResponse.get("file").asJsonObject)
     }
 
     fun getFileProxyNonce(): FileProxyNonce {

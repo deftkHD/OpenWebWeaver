@@ -3,6 +3,7 @@ package de.deftk.lonet.api.model.feature.files.session
 import com.google.gson.JsonObject
 import de.deftk.lonet.api.model.User
 import de.deftk.lonet.api.model.feature.files.FileChunk
+import de.deftk.lonet.api.model.feature.files.FileUrl
 import de.deftk.lonet.api.request.UserApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
 
@@ -46,6 +47,22 @@ class SessionFile(val id: String, val name: String, size: Int, downloadUrl: Stri
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return FileChunk.fromJson(subResponse.get("file").asJsonObject)
+    }
+
+    fun getDownloadUrl(): FileUrl {
+        val request = UserApiRequest(user)
+        val id = request.addGetSessionFileDownloadUrlRequest(id)[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return FileUrl.fromDownloadJson(subResponse.get("file").asJsonObject)
+    }
+
+    fun getUploadUrl(): FileUrl {
+        val request = UserApiRequest(user)
+        val id = request.addGetSessionFileUploadUrlRequest(id)[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return FileUrl.fromUploadJson(subResponse.get("file").asJsonObject)
     }
 
     private fun readFrom(jsonObject: JsonObject) {
