@@ -1,6 +1,7 @@
 package de.deftk.lonet.api.model.feature.files
 
 import com.google.gson.JsonObject
+import de.deftk.lonet.api.model.User
 import de.deftk.lonet.api.model.abstract.AbstractOperator
 import de.deftk.lonet.api.model.abstract.IManageable
 import de.deftk.lonet.api.model.feature.abstract.IFilePrimitive
@@ -310,6 +311,15 @@ class OnlineFile(id: String, parentId: String?, ordinal: Int?, private var name:
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return fromJson(subResponse.get("file").asJsonObject, operator)
+    }
+
+    fun exportSessionFile(user: User): SessionFile {
+        check(type == FileType.FILE) { "Function only available for files" }
+        val request = OperatorApiRequest(operator)
+        val id = request.addExportSessionFileRequest(id)[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return SessionFile.fromJson(subResponse.get("file").asJsonObject, user)
     }
 
     private fun readFrom(jsonObject: JsonObject) {

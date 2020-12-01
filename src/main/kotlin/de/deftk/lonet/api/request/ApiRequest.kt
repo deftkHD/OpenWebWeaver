@@ -51,15 +51,6 @@ open class ApiRequest(): Serializable {
         return addRequest(requestName, obj)
     }
 
-    fun addExportSessionFileRequest(id: String, str2: String?): Int {
-        val obj = JsonObject()
-        obj.addProperty("id", id)
-        if (str2?.isNotEmpty() == true) {
-            obj.addProperty("", str2) // FontsContractCompat.Column
-        }
-        return addRequest("export_session_file", obj)
-    }
-
     fun addGetInformationRequest(): Int {
         return addRequest("get_information", 999, JsonObject())
     }

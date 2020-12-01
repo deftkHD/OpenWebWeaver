@@ -101,7 +101,7 @@ user.logout(true)
 - [x] Trash
 ---
 - [x] Session files
-- [ ] Session files and file storage
+- [x] Session files and file storage
 ---
 - [x] Read system notifications
 - [x] Delete system notifications
