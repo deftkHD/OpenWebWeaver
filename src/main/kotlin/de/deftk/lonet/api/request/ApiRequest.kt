@@ -2,12 +2,11 @@ package de.deftk.lonet.api.request
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import de.deftk.lonet.api.LoNet
 import de.deftk.lonet.api.model.abstract.IContext
 import de.deftk.lonet.api.response.ApiResponse
 import java.io.Serializable
 
-open class ApiRequest(): Serializable {
+open class ApiRequest: Serializable {
 
     companion object {
         const val SUB_REQUESTS_PER_REQUEST = 30
@@ -65,7 +64,7 @@ open class ApiRequest(): Serializable {
                 currentRequest().addAll(request)
             }
         }
-        return LoNet.requestHandler.performRequest(this, context)
+        return context.getRequestHandler().performRequest(this, context)
     }
 
     protected fun asApiBoolean(boolean: Boolean): Int {

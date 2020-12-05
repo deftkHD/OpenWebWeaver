@@ -9,6 +9,8 @@ import de.deftk.lonet.api.model.feature.board.BoardNotification
 import de.deftk.lonet.api.model.feature.board.BoardType
 import de.deftk.lonet.api.model.feature.files.session.SessionFile
 import de.deftk.lonet.api.request.UserApiRequest
+import de.deftk.lonet.api.request.handler.IRequestHandler
+import de.deftk.lonet.api.request.handler.DefaultRequestHandler
 import de.deftk.lonet.api.response.ApiResponse
 import de.deftk.lonet.api.response.ResponseUtil
 import java.io.Serializable
@@ -190,6 +192,7 @@ class User(login: String, name: String, type: ManageableType, val baseUser: IMan
     class UserContext(private var sessionId: String, private val requestUrl: String): IContext {
 
         internal lateinit var user: User
+        private var requestHandler: IRequestHandler = DefaultRequestHandler()
 
         override fun getSessionId(): String {
             return sessionId
@@ -219,6 +222,15 @@ class User(login: String, name: String, type: ManageableType, val baseUser: IMan
         override fun getRequestUrl(): String {
             return requestUrl
         }
+
+        override fun getRequestHandler(): IRequestHandler {
+            return requestHandler
+        }
+
+        override fun setRequestHandler(requestHandler: IRequestHandler) {
+            this.requestHandler = requestHandler
+        }
+
     }
 
 }
