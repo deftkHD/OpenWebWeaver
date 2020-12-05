@@ -130,6 +130,20 @@ abstract class AbstractOperator(private val login: String, private val name: Str
         return subResponse.get("files").asJsonArray.map { OnlineFile.fromJson(it.asJsonObject, this) }
     }
 
+    override fun setReadable(readable: Boolean) {
+        val request = OperatorApiRequest(this)
+        request.addSetFolderRequest("/", readable = readable)
+        val response = request.fireRequest()
+        ResponseUtil.checkSuccess(response.toJson())
+    }
+
+    override fun setWritable(writable: Boolean) {
+        val request = OperatorApiRequest(this)
+        request.addSetFolderRequest("/", writable = writable)
+        val response = request.fireRequest()
+        ResponseUtil.checkSuccess(response.toJson())
+    }
+
     override fun getTasks(): List<Task> {
         val request = OperatorApiRequest(this)
         val id = request.addGetTasksRequest()[1]

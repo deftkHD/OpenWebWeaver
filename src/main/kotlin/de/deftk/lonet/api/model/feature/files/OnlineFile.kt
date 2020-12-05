@@ -280,28 +280,28 @@ class OnlineFile(id: String, parentId: String?, ordinal: Int?, private var name:
         readFrom(subResponse.get("file").asJsonObject)
     }
 
-    fun setReadable(readable: Boolean) {
+    override fun setReadable(readable: Boolean) {
         check(type == FileType.FOLDER) { "Function only available for folders" }
         val request = OperatorApiRequest(operator)
         val id = when (type) {
-            FileType.FILE -> request.addSetFolderRequest(id, readable = readable)[1]
+            FileType.FOLDER -> request.addSetFolderRequest(id, readable = readable)[1]
             else -> error("Can't update readable state")
         }
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        readFrom(subResponse.get("file").asJsonObject)
+        readFrom(subResponse.get("folder").asJsonObject)
     }
 
-    fun setWritable(writable: Boolean) {
+    override fun setWritable(writable: Boolean) {
         check(type == FileType.FOLDER) { "Function only available for folders" }
         val request = OperatorApiRequest(operator)
         val id = when (type) {
-            FileType.FILE -> request.addSetFolderRequest(id, writable = writable)[1]
+            FileType.FOLDER -> request.addSetFolderRequest(id, writable = writable)[1]
             else -> error("Can't update writable state")
         }
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        readFrom(subResponse.get("file").asJsonObject)
+        readFrom(subResponse.get("folder").asJsonObject)
     }
 
     override fun importSessionFile(sessionFile: SessionFile, createCopy: Boolean?, description: String?): OnlineFile {

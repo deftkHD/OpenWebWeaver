@@ -13,4 +13,7 @@ interface IFilePrimitive {
     fun importSessionFile(sessionFile: SessionFile, createCopy: Boolean? = null, description: String? = null): OnlineFile
     fun addFolder(name: String, description: String? = null): OnlineFile
 
+    fun setReadable(readable: Boolean)
+    fun setWritable(writable: Boolean)
+
 }
