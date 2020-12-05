@@ -12,6 +12,14 @@ import javax.net.ssl.HttpsURLConnection
 
 object LoNet {
 
+    fun login(credentials: Credentials): User {
+        return when {
+            credentials.password != null -> login(credentials.username, credentials.password)
+            credentials.token != null -> loginToken(credentials.username, credentials.token)
+            else -> throw IllegalArgumentException("Password or token must be set")
+        }
+    }
+
     fun login(username: String, password: String): User {
         val responsibleHost = getApiUrl(username)
         val authRequest = AuthRequest(responsibleHost)
