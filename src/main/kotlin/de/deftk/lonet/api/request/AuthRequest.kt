@@ -6,6 +6,8 @@ import de.deftk.lonet.api.model.User
 import de.deftk.lonet.api.model.abstract.AbstractOperator
 import de.deftk.lonet.api.model.abstract.IContext
 import de.deftk.lonet.api.model.abstract.IManageable
+import de.deftk.lonet.api.request.handler.DefaultRequestHandler
+import de.deftk.lonet.api.request.handler.IRequestHandler
 import de.deftk.lonet.api.response.ApiResponse
 import java.io.Serializable
 import java.security.MessageDigest
@@ -113,6 +115,8 @@ open class AuthRequest(val requestUrl: String) : ApiRequest(), Serializable {
 
     class AuthContext(private val apiUrl: String) : IContext {
 
+        private var requestHandler: IRequestHandler = DefaultRequestHandler()
+
         override fun getSessionId(): String {
             error("Operation not supported!")
         }
@@ -139,6 +143,14 @@ open class AuthRequest(val requestUrl: String) : ApiRequest(), Serializable {
 
         override fun getRequestUrl(): String {
             return apiUrl
+        }
+
+        override fun getRequestHandler(): IRequestHandler {
+            return requestHandler
+        }
+
+        override fun setRequestHandler(requestHandler: IRequestHandler) {
+            this.requestHandler = requestHandler
         }
     }
 
