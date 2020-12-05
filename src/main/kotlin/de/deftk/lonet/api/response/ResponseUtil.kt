@@ -6,6 +6,7 @@ import de.deftk.lonet.api.exception.ApiException
 
 object ResponseUtil {
 
+    @Throws(ApiException::class)
     fun getSubResponse(response: JsonElement, id: Int): JsonObject {
         checkSuccess(response)
         response.asJsonArray.map { it.asJsonObject }.forEach { subResponse ->
@@ -19,6 +20,7 @@ object ResponseUtil {
         return getSubResponse(response, id).get("result").asJsonObject
     }
 
+    @Throws(ApiException::class)
     fun getSubResponseResultByMethod(response: JsonElement, method: String): JsonObject {
         checkSuccess(response)
         response.asJsonArray.map { it.asJsonObject }.forEach { subResponse ->
@@ -30,6 +32,7 @@ object ResponseUtil {
         throw ApiException("invalid response (expecting sub response with method $method): $response")
     }
 
+    @Throws(ApiException::class)
     fun checkSuccess(response: JsonElement) {
         response.asJsonArray.map { it.asJsonObject }.forEach { subResponse ->
             val result = subResponse.get("result").asJsonObject
