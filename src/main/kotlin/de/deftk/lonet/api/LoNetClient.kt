@@ -89,7 +89,7 @@ object LoNetClient {
     }
 
     @Throws(ApiException::class)
-    fun <T : IApiContext> loginCreateToken(username: String, password: String, title: String, identity: String, contextClass: Class<T>): T {
+    fun <T : IApiContext> loginCreateToken(username: String, password: String, title: String, identity: String, contextClass: Class<T>): Pair<T, String> {
         val requestUrl = getRequestUrl(username)
         val request = AuthRequest(requestUrl, DefaultRequestHandler())
         request.addLoginRequest(AuthRequest.LoginRequest(username, password = password, getMiniature = true))
@@ -98,8 +98,9 @@ object LoNetClient {
         request.addGetInformationRequest()
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
+        val token = ResponseUtil.getSubResponseResultByMethod(response.toJson(), "register_master")["trust"]?.jsonObject?.get("token")?.jsonPrimitive?.content ?: throw ApiException("Failed to parse token")
         val factory = apiContextFactories[contextClass] ?: defaultApiContextFactory
-        return factory.createApiContext(response, requestUrl) as T
+        return Pair(factory.createApiContext(response, requestUrl) as T, token)
     }
 
     @Throws(ApiException::class)
