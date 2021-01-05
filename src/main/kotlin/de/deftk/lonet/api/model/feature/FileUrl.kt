@@ -4,10 +4,34 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class FileDownloadUrl(val id: String? = null, val name: String, val size: Long? = null, @SerialName("download_url") val url: String)
+data class FileDownloadUrl(
+    override val id: String? = null,
+    override val name: String,
+    override val size: Long? = null,
+    @SerialName("download_url") override val url: String
+) : FileUrl
 
 @Serializable
-data class FileUploadUrl(val id: String? = null, val name: String, val size: Long? = null, @SerialName("upload_url") val url: String)
+data class FileUploadUrl(
+    override val id: String? = null,
+    override val name: String,
+    override val size: Long? = null,
+    @SerialName("upload_url") override val url: String
+) : FileUrl
 
 @Serializable
-data class FilePreviewUrl(val id: String? = null, val name: String, val size: Long? = null, @SerialName("preview_url") val url: String)
+data class FilePreviewUrl(
+    override val id: String? = null,
+    override val name: String,
+    override val size: Long? = null,
+    @SerialName("preview_url") override val url: String
+) : FileUrl
+
+interface FileUrl {
+
+    val id: String?
+    val name: String?
+    val size: Long?
+    val url: String
+
+}
