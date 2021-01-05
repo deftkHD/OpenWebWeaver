@@ -11,7 +11,8 @@ interface IApiContext {
 
     fun getUser(): IUser
 
-    fun findScope(scope: RemoteScope): IScope
+    fun findOperatingScope(login: String): IScope?
+    fun mapOperatingScope(scope: RemoteScope): IScope
 
     fun getRequestURL(): String
 

@@ -21,8 +21,12 @@ class ApiContext(
 
     override fun getUser(): User = user
 
-    override fun findScope(scope: RemoteScope): IScope {
-        return groups.firstOrNull { it.login == scope.login } ?: if (scope.login == user.login) user else scope
+    override fun findOperatingScope(login: String): IScope? {
+        return groups.firstOrNull { it.login == login } ?: if (login == user.login) user else null
+    }
+
+    override fun mapOperatingScope(scope: RemoteScope): IScope {
+        return findOperatingScope(scope.login) ?: scope
     }
 
     override fun getRequestURL(): String = requestUrl
