@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'de.deftk.lonet'
-version '0.1.0-beta6'
+version '0.1.0-beta7'
 
 repositories {
     mavenCentral()
