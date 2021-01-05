@@ -1,19 +1,26 @@
 package de.deftk.lonet.api.model.feature.forum
 
-import java.io.Serializable
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-enum class ForumPostIcon(val id: Int) : Serializable {
-    INFORMATION(0),
-    HUMOR(1),
-    QUESTION(2),
-    ANSWER(3),
-    UP_VOTE(4),
-    DOWN_VOTE(5);
+@Serializable
+enum class ForumPostIcon {
+    @SerialName("0")
+    INFORMATION,
 
-    companion object {
-        fun getById(id: Int?): ForumPostIcon? {
-            return values().firstOrNull { it.id == id }
-        }
-    }
+    @SerialName("1")
+    HUMOR,
+
+    @SerialName("2")
+    QUESTION,
+
+    @SerialName("3")
+    ANSWER,
+
+    @SerialName("4")
+    UPVOTE,
+
+    @SerialName("5")
+    DOWNVOTE
 
 }

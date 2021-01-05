@@ -1,10 +1,8 @@
 package de.deftk.lonet.api.model
 
-import java.io.Serializable
-
 import de.deftk.lonet.api.model.Permission.*
 
-enum class Feature(val permissions: List<Permission>): Serializable {
+enum class Feature(val permissions: List<Permission>) {
     STATISTICS(listOf(SYSADMIN)),
 
     ADMINISTRATION_GROUP(listOf(ADMIN, ADMIN_WRITE, ADMIN_ADMIN)),
@@ -49,7 +47,7 @@ enum class Feature(val permissions: List<Permission>): Serializable {
     PASSWORD(listOf(Permission.PASSWORD)),
     CLIENT(listOf(Permission.CLIENT));
 
-    fun isAvailable(permissions: List<Permission>): Boolean {
+    fun isAvailable(permissions: List<Permission?>): Boolean {
         this.permissions.forEach { permission ->
             if (permissions.contains(permission))
                 return true
@@ -58,7 +56,6 @@ enum class Feature(val permissions: List<Permission>): Serializable {
     }
 
     companion object {
-        @JvmStatic
         fun getAvailableFeatures(permission: Permission): List<Feature> {
             return values().filter { it.permissions.contains(permission) }
         }

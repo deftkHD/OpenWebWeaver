@@ -1,100 +1,73 @@
 package de.deftk.lonet.api.request
 
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
-import de.deftk.lonet.api.model.abstract.IContext
+import de.deftk.lonet.api.model.IOperatingScope
+import de.deftk.lonet.api.model.IRequestContext
 import de.deftk.lonet.api.response.ApiResponse
-import java.io.Serializable
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 
-open class ApiRequest: Serializable {
+open class ApiRequest {
 
     companion object {
-        const val SUB_REQUESTS_PER_REQUEST = 30
+        const val METHODS_PER_REQUEST = 30
     }
 
-    var requests = mutableListOf(JsonArray())
+    var requests = mutableListOf(mutableListOf<JsonObject>())
 
-    private fun addRequest(requestName: String, id: Int, request: JsonObject): Int {
-        //TODO try to avoid double setFocus, setSession, ... requests
-        val obj = JsonObject()
-        obj.addProperty("jsonrpc", "2.0")
-        obj.addProperty("method", requestName)
-        obj.addProperty("id", id)
-        obj.add("params", request)
-        currentRequest().add(obj)
-        return (requests.size - 1) * (SUB_REQUESTS_PER_REQUEST + 1) + id
+    open fun fireRequest(context: IRequestContext): ApiResponse {
+        return context.requestHandler.performRequest(this, context)
     }
 
-    fun addRequest(requestName: String, request: JsonObject?): Int {
-        return addRequest(requestName, currentRequest().size() + 2 /* place holder for setSession request */, request ?: JsonObject())
+    fun addSetFocusRequest(focusable: Focusable, scope: IOperatingScope?): Int {
+        return addSetFocusRequest(focusable, scope?.login)
     }
 
-    private fun addSetSessionRequest(sessionId: String): Int {
-        val obj = JsonObject()
-        obj.addProperty("session_id", sessionId)
-        return addRequest("set_session", currentRequest().size() + 1, obj)
+    fun addSetFocusRequest(focusable: Focusable, scope: String?): Int {
+        val params = buildJsonObject {
+            put("object", Json.encodeToJsonElement(Focusable.serializer(), focusable))
+            if (scope != null)
+                put("login", scope)
+        }
+        return addRequest("set_focus", params)
     }
 
-    fun addSetFocusRequest(scope: String?, login: String?): Int {
-        val obj = JsonObject()
-        if (scope != null)
-            obj.addProperty("object", scope)
-        if (login != null)
-            obj.addProperty("login", login)
-        return addRequest("set_focus", obj)
-    }
-
-    fun addIdRequest(id: String, requestName: String): Int {
-        val obj = JsonObject()
-        obj.addProperty("id", id)
-        return addRequest(requestName, obj)
+    fun addIdRequest(method: String, id: String): Int {
+        val params = buildJsonObject {
+            put("id", id)
+        }
+        return addRequest(method, params)
     }
 
     fun addGetInformationRequest(): Int {
-        return addRequest("get_information", 999, JsonObject())
+        return addRequest("get_information", 999, null)
     }
 
-    open fun fireRequest(context: IContext): ApiResponse {
-        if (context !is AuthRequest.AuthContext) {
-            val requests = this.requests
-            this.requests = mutableListOf()
-            requests.forEach { request ->
-                this.requests.add(JsonArray())
-                addSetSessionRequest(context.getSessionId())
-                currentRequest().addAll(request)
-            }
-        }
-        return context.getRequestHandler().performRequest(this, context)
+    fun addRequest(method: String, params: JsonObject?): Int {
+        return addRequest(method, currentRequest().size + 2, params)
     }
+
+    protected fun ensureCapacity(size: Int) {
+        if (currentRequest().size + size > METHODS_PER_REQUEST)
+            requests.add(mutableListOf())
+    }
+
+    protected fun addRequest(method: String, id: Int, params: JsonObject?): Int {
+        val obj = buildJsonObject {
+            put("jsonrpc", "2.0")
+            put("method", method)
+            put("id", id)
+            put("params", params ?: JsonObject(emptyMap()))
+        }
+        currentRequest().add(obj)
+        return (requests.size - 1) * (METHODS_PER_REQUEST + 1) + id
+    }
+
+    protected fun currentRequest() = requests.last()
 
     protected fun asApiBoolean(boolean: Boolean): Int {
         return if (boolean) 1 else 0
     }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as ApiRequest
-
-        if (requests != other.requests) return false
-
-        return true
-    }
-
-    private fun currentRequest(): JsonArray  {
-        return requests.last()
-    }
-
-    protected fun ensureCapacity(size: Int) {
-        if (currentRequest().size() + size > SUB_REQUESTS_PER_REQUEST) {
-            requests.add(JsonArray())
-        }
-    }
-
-    override fun hashCode(): Int {
-        return requests.hashCode()
-    }
-
 
 }

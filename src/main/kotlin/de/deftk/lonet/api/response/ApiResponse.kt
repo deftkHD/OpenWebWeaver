@@ -1,18 +1,13 @@
 package de.deftk.lonet.api.response
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonElement
-import java.io.Serializable
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 
-class ApiResponse(val raw: String, val code: Int): Serializable {
+@Serializable
+data class ApiResponse(val text: String, val code: Int) {
 
-    companion object {
-        val gson: Gson = GsonBuilder().create()
-    }
-
-    fun toJson(): JsonElement {
-        return gson.fromJson(raw, JsonElement::class.java)
-    }
+    fun toJson(): JsonElement = Json.decodeFromString(text)
 
 }

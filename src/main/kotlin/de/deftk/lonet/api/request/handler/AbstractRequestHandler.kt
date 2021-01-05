@@ -1,76 +1,54 @@
 package de.deftk.lonet.api.request.handler
 
-import com.google.gson.JsonArray
 import de.deftk.lonet.api.exception.ApiException
-import de.deftk.lonet.api.model.abstract.IContext
+import de.deftk.lonet.api.model.IRequestContext
 import de.deftk.lonet.api.request.ApiRequest
 import de.deftk.lonet.api.response.ApiResponse
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
+import de.deftk.lonet.api.utils.PlatformUtil
+import kotlinx.serialization.json.*
 
 abstract class AbstractRequestHandler: IRequestHandler {
 
-    protected fun performJsonApiRequestIntern(request: ApiRequest, context: IContext): ApiResponse {
+    protected fun performApiRequestIntern(request: ApiRequest, context: IRequestContext): ApiResponse {
         val responses = mutableListOf<ApiResponse>()
         request.requests.forEach { requestBlock ->
-            val serverUrl = context.getRequestUrl()
-            val requestStr = requestBlock.toString()
-            val url = URL(serverUrl)
-            val connection = url.openConnection() as HttpURLConnection
-            connection.connectTimeout = 15000
-            connection.readTimeout = 15000
-            connection.requestMethod = "POST"
-            connection.addRequestProperty("Content-Type", "application/json")
-            connection.doOutput = true
-            val outputStream = connection.outputStream
-            val requestData = requestStr.toByteArray(Charsets.UTF_8)
-
-            var offset = 0
-            while (true) {
-                if (offset >= requestData.size) break
-                if (requestData.size - offset < 1024) {
-                    outputStream.write(requestData, offset, requestData.size - offset)
-                } else {
-                    outputStream.write(requestData, offset, 1024)
-                }
-                offset += 1024
-            }
-            outputStream.flush()
-            outputStream.close()
-
-            val sb = StringBuilder()
-            val responseCode = connection.responseCode
-            val br = BufferedReader(InputStreamReader(connection.inputStream, "UTF-8"))
-            while (true) {
-                val ln = br.readLine() ?: break
-                sb.append(ln)
-            }
-            responses.add(ApiResponse(sb.toString(), responseCode))
+            val response = PlatformUtil.postRequest(
+                context.requestUrl,
+                15000,
+                "application/json",
+                JsonArray(requestBlock).toString().toByteArray()
+            )
+            responses.add(response)
         }
         val remappedResponses = responses.withIndex().map { (index, response) ->
             val responseJson = response.toJson()
-            if (!responseJson.isJsonArray) {
-                val errorObject = responseJson.asJsonObject.get("error")?.asJsonObject
+            if (responseJson !is JsonArray) {
+                val errorObject = responseJson.jsonObject["error"]?.jsonObject
                 if (errorObject != null) {
-                    throw ApiException("Internal error (${errorObject.get("code").asInt}): ${errorObject.get("message").asString}")
+                    throw ApiException("Internal error (${errorObject["code"]?.jsonPrimitive?.int}): ${errorObject["message"]?.jsonPrimitive}")
                 } else {
                     throw ApiException("Internal error: No error object, but failure")
                 }
             }
-            responseJson.asJsonArray.map { json ->
+            JsonArray(responseJson.jsonArray.map { json ->
                 // remap id
-                val obj = json.asJsonObject
-                val newId = index * (ApiRequest.SUB_REQUESTS_PER_REQUEST + 1) + obj.get("id").asInt
-                obj.remove("id")
-                obj.addProperty("id", newId)
-                json
-            }
+                val obj = json.jsonObject
+                val newId = index * (ApiRequest.METHODS_PER_REQUEST + 1) + obj["id"]!!.jsonPrimitive.int
+                buildJsonObject {
+                    obj.forEach { (key, value) ->
+                        if (key != "id") {
+                            put(key, value)
+                        } else {
+                            put("id", newId)
+                        }
+                    }
+                }
+            })
         }.flatten()
-        val dstResponse = JsonArray()
-        remappedResponses.forEach { response ->
-            dstResponse.add(response)
+        val dstResponse = buildJsonArray {
+            remappedResponses.forEach { response ->
+                add(response)
+            }
         }
         return ApiResponse(dstResponse.toString(), responses.last().code)
     }

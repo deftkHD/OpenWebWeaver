@@ -1,12 +1,11 @@
 package de.deftk.lonet.api.request.handler
 
-import de.deftk.lonet.api.model.abstract.IContext
+import de.deftk.lonet.api.model.IRequestContext
 import de.deftk.lonet.api.request.ApiRequest
 import de.deftk.lonet.api.response.ApiResponse
-import java.io.Serializable
 
-interface IRequestHandler: Serializable {
+interface IRequestHandler {
 
-    fun performRequest(request: ApiRequest, context: IContext): ApiResponse
+    fun performRequest(request: ApiRequest, context: IRequestContext): ApiResponse
 
 }

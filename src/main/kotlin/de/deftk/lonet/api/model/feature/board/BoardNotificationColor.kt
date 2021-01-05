@@ -1,15 +1,22 @@
 package de.deftk.lonet.api.model.feature.board
 
-import java.io.Serializable
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-enum class BoardNotificationColor(val id: Int) : Serializable {
+@Serializable
+enum class BoardNotificationColor(val serialId: Int) {
+    @SerialName("0")
     BLUE(0),
-    GREEN(1),
-    RED(2),
-    YELLOW(3),
-    WHITE(4);
 
-    companion object {
-        fun getById(id: Int?) = values().firstOrNull { it.id == id }
-    }
+    @SerialName("1")
+    GREEN(1),
+
+    @SerialName("2")
+    RED(2),
+
+    @SerialName("3")
+    YELLOW(3),
+
+    @SerialName("4")
+    WHITE(4);
 }

@@ -1,6 +1,13 @@
 package de.deftk.lonet.api.model.feature.courselets
 
-enum class TemplatePackage(val id: String) {
-    OFFLINE("offline"),
-    SCORM("scorm")
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+enum class TemplatePackage {
+    @SerialName("offline")
+    OFFLINE,
+
+    @SerialName("scorm")
+    SCORM
 }

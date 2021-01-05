@@ -1,31 +1,31 @@
 package de.deftk.lonet.api.response
 
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 import de.deftk.lonet.api.exception.ApiException
+import kotlinx.serialization.json.*
 
 object ResponseUtil {
 
     @Throws(ApiException::class)
     fun getSubResponse(response: JsonElement, id: Int): JsonObject {
         checkSuccess(response)
-        response.asJsonArray.map { it.asJsonObject }.forEach { subResponse ->
-            if (subResponse.get("id").asInt == id)
+        response.jsonArray.map { it.jsonObject }.forEach { subResponse ->
+            if (subResponse["id"]?.jsonPrimitive?.intOrNull == id)
                 return subResponse
         }
         throw ApiException("invalid response (expecting sub response with id $id): $response")
     }
 
+    @Throws(ApiException::class)
     fun getSubResponseResult(response: JsonElement, id: Int): JsonObject {
-        return getSubResponse(response, id).get("result").asJsonObject
+        return getSubResponse(response, id)["result"]!!.jsonObject
     }
 
     @Throws(ApiException::class)
     fun getSubResponseResultByMethod(response: JsonElement, method: String): JsonObject {
         checkSuccess(response)
-        response.asJsonArray.map { it.asJsonObject }.forEach { subResponse ->
-            val result = subResponse.get("result").asJsonObject
-            if (result.get("method")?.asString == method) {
+        response.jsonArray.map { it.jsonObject }.forEach { subResponse ->
+            val result = subResponse["result"]!!.jsonObject
+            if (result["method"]?.jsonPrimitive?.content == method) {
                 return result
             }
         }
@@ -34,10 +34,10 @@ object ResponseUtil {
 
     @Throws(ApiException::class)
     fun checkSuccess(response: JsonElement) {
-        response.asJsonArray.map { it.asJsonObject }.forEach { subResponse ->
-            val result = subResponse.get("result").asJsonObject
-            if (result.has("return") && result.get("return").asString != "OK") {
-                throw ApiException("Server returned error: ${result.get("error").asString}")
+        response.jsonArray.map { it.jsonObject }.forEach { subResponse ->
+            val result = subResponse["result"]!!.jsonObject
+            if (result.containsKey("return") && result["return"]!!.jsonPrimitive.content != "OK") {
+                throw ApiException("Server returned error: ${result["error"]?.jsonPrimitive}")
             }
         }
     }

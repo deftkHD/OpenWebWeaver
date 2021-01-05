@@ -1,43 +1,54 @@
 package de.deftk.lonet.api.request.handler
 
-import de.deftk.lonet.api.Credentials
-import de.deftk.lonet.api.LoNet
+import de.deftk.lonet.api.LoNetClient
+import de.deftk.lonet.api.auth.Credentials
 import de.deftk.lonet.api.exception.ApiException
-import de.deftk.lonet.api.model.User
-import de.deftk.lonet.api.model.abstract.IContext
+import de.deftk.lonet.api.implementation.ApiContext
+import de.deftk.lonet.api.model.IRequestContext
+import de.deftk.lonet.api.model.IUser
 import de.deftk.lonet.api.request.ApiRequest
 import de.deftk.lonet.api.response.ApiResponse
 import de.deftk.lonet.api.response.ResponseUtil
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 class AutoLoginRequestHandler(private val handler: LoginHandler) : AbstractRequestHandler() {
 
-    override fun performRequest(request: ApiRequest, context: IContext): ApiResponse {
+    override fun performRequest(request: ApiRequest, context: IRequestContext): ApiResponse {
         return try {
-            val response = performJsonApiRequestIntern(request, context)
+            val response = performApiRequestIntern(request, context)
             ResponseUtil.checkSuccess(response.toJson())
             response
         } catch (e: ApiException) {
             if (e.message?.contains("Session key not valid") == true) {
-                val user = LoNet.login(handler.getCredentials())
+                val apiContext = LoNetClient.login(handler.getCredentials(), ApiContext::class.java)
+                handler.onLogin(apiContext.getUser())
 
                 // replace old session id
-                request.requests.forEach { methodList ->
-                    val targetMethods = methodList.filter { it.asJsonObject.get("method")?.asString == "set_session" }
-                    targetMethods.forEach { setSessionMethod ->
-                        val params = setSessionMethod.asJsonObject.get("params").asJsonObject
-                        params.remove("session_id")
-                        params.addProperty("session_id", user.getContext().getSessionId())
+                request.requests.forEach { requestContent ->
+                    requestContent.withIndex().forEach { (index, method) ->
+                        if (method.jsonObject["method"]?.jsonPrimitive?.content == "set_session") {
+                            val methodEntries = method.entries.map { Pair(it.key, it.value) }.toMap().toMutableMap()
+                            val params = methodEntries["params"]!!.jsonObject
+                            val paramEntries = params.entries.map { Pair(it.key, it.value) }.toMap().toMutableMap()
+                            paramEntries.remove("session_id")
+                            paramEntries["session_id"] = JsonPrimitive(apiContext.getSessionId())
+                            methodEntries["params"] = JsonObject(paramEntries)
+                            requestContent[index] = JsonObject(methodEntries)
+                        }
                     }
                 }
-
-                performJsonApiRequestIntern(request, user.getContext())
+                context.sessionId = apiContext.getSessionId()
+                performApiRequestIntern(request, context)
             } else throw e
         }
     }
 
     interface LoginHandler {
         fun getCredentials(): Credentials
-        fun onLogin(user: User)
+        fun onLogin(user: IUser)
     }
 
 }

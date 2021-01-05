@@ -1,10 +1,25 @@
 package de.deftk.lonet.api.model
 
-enum class Locale(val code: String) {
-    ENGLISH("en"),
-    GERMAN("de"),
-    FRANCE("fr"),
-    SPANISH("es"),
-    ITALIAN("it"),
-    TURKEY("tr")
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+enum class Locale() {
+    @SerialName("en")
+    ENGLISH,
+
+    @SerialName("de")
+    GERMAN,
+
+    @SerialName("fr")
+    FRANCE,
+
+    @SerialName("es")
+    SPANISH,
+
+    @SerialName("it")
+    ITALIAN,
+
+    @SerialName("tr")
+    TURKEY
 }
