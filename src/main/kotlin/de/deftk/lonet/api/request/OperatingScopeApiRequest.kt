@@ -687,4 +687,28 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
         )
     }
 
+    fun addGetTeacherBoardNotificationsRequest(login: String = context.login): List<Int> {
+        ensureCapacity(2)
+        return listOf(
+            addSetFocusRequest(Focusable.BOARD_TEACHER, login),
+            addRequest("get_entries", null)
+        )
+    }
+
+    fun addGetPupilBoardNotificationsRequest(login: String = context.login): List<Int> {
+        ensureCapacity(2)
+        return listOf(
+            addSetFocusRequest(Focusable.BOARD_PUPIL, login),
+            addRequest("get_entries", null)
+        )
+    }
+
+    fun addGetBoardNotificationsRequest(login: String = context.login): List<Int> {
+        ensureCapacity(2)
+        return listOf(
+            addSetFocusRequest(Focusable.BOARD, login),
+            addRequest("get_entries", null)
+        )
+    }
+
 }

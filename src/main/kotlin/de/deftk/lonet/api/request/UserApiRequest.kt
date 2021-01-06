@@ -1,6 +1,8 @@
 package de.deftk.lonet.api.request
 
+import de.deftk.lonet.api.model.Feature
 import de.deftk.lonet.api.model.IRequestContext
+import de.deftk.lonet.api.model.IUser
 import de.deftk.lonet.api.model.Locale
 import de.deftk.lonet.api.model.feature.ServiceType
 import de.deftk.lonet.api.utils.PlatformUtil
@@ -153,6 +155,54 @@ class UserApiRequest(context: IRequestContext): OperatingScopeApiRequest(context
             addSetFocusRequest(Focusable.SETTINGS, context.login),
             addRequest("unregister_service", requestParams)
         )
+    }
+
+    fun addGetAllTasksRequest(user: IUser): List<Int> {
+        val ids = mutableListOf<Int>()
+        if (Feature.TASKS.isAvailable(user.effectiveRights)) {
+            ids.addAll(addGetTasksRequest())
+        }
+        user.getGroups().filter { Feature.TASKS.isAvailable(it.effectiveRights) }.forEach { group ->
+            ids.addAll(addGetTasksRequest(group.login))
+        }
+
+        return ids
+    }
+
+    fun addGetAllBoardNotificationsRequest(user: IUser): List<Int> {
+        val ids = mutableListOf<Int>()
+        if (Feature.BOARD.isAvailable(user.effectiveRights)) {
+            ids.addAll(addGetBoardNotificationsRequest())
+        }
+        user.getGroups().filter { Feature.BOARD.isAvailable(it.effectiveRights) }.forEach { group ->
+            ids.addAll(addGetBoardNotificationsRequest(group.login))
+        }
+
+        return ids
+    }
+
+    fun addGetAllPupilBoardNotificationsRequest(user: IUser): List<Int> {
+        val ids = mutableListOf<Int>()
+        if (Feature.BOARD_PUPIL.isAvailable(user.effectiveRights)) {
+            ids.addAll(addGetPupilBoardNotificationsRequest())
+        }
+        user.getGroups().filter { Feature.BOARD_PUPIL.isAvailable(it.effectiveRights) }.forEach { group ->
+            ids.addAll(addGetPupilBoardNotificationsRequest(group.login))
+        }
+
+        return ids
+    }
+
+    fun addGetAllTeacherBoardNotificationsRequest(user: IUser): List<Int> {
+        val ids = mutableListOf<Int>()
+        if (Feature.BOARD_TEACHER.isAvailable(user.effectiveRights)) {
+            ids.addAll(addGetTeacherBoardNotificationsRequest())
+        }
+        user.getGroups().filter { Feature.BOARD_TEACHER.isAvailable(it.effectiveRights) }.forEach { group ->
+            ids.addAll(addGetTeacherBoardNotificationsRequest(group.login))
+        }
+
+        return ids
     }
 
 }
