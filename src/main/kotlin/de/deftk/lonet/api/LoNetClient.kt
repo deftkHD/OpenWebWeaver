@@ -10,12 +10,15 @@ import de.deftk.lonet.api.request.auth.AuthRequest
 import de.deftk.lonet.api.request.handler.DefaultRequestHandler
 import de.deftk.lonet.api.response.ResponseUtil
 import de.deftk.lonet.api.utils.PlatformUtil
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import java.util.*
 
 object LoNetClient {
+
+    val json = Json {}
 
     private val apiContextFactories = mutableMapOf<Class<out IApiContext>, IApiContextFactory>()
     private val defaultApiContextFactory = DefaultApiContextFactory()

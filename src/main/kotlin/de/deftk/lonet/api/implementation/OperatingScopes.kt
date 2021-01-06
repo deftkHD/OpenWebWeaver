@@ -61,7 +61,7 @@ sealed class OperatingScope : IOperatingScope {
         val id = request.addGetAppointmentsRequest()[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return subResponse["entries"]!!.jsonArray.map { Json.decodeFromJsonElement(it) }
+        return subResponse["entries"]!!.jsonArray.map { LoNetClient.json.decodeFromJsonElement(it) }
     }
 
     override fun addAppointment(appointment: IAppointment, context: IRequestContext): Appointment {
@@ -84,7 +84,7 @@ sealed class OperatingScope : IOperatingScope {
         val id = request.addAddAppointmentRequest(title, description, endDate?.time, endDateIso, location, rrule, startDate?.time, startDateIso, login)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Json.decodeFromJsonElement(subResponse["entry"]!!)
+        return LoNetClient.json.decodeFromJsonElement(subResponse["entry"]!!)
     }
 
     override fun getContacts(context: IRequestContext): List<Contact> {
@@ -92,7 +92,7 @@ sealed class OperatingScope : IOperatingScope {
         val id = request.addGetContactsRequest()[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return subResponse["entries"]?.jsonArray?.map { Json.decodeFromJsonElement(it) } ?: emptyList()
+        return subResponse["entries"]?.jsonArray?.map { LoNetClient.json.decodeFromJsonElement(it) } ?: emptyList()
     }
 
     override fun addContact(contact: IContact, context: IRequestContext): Contact {
@@ -149,7 +149,7 @@ sealed class OperatingScope : IOperatingScope {
         val id = request.addAddContactRequest(birthday, businessCity, businessCoords, businessCountry, businessFax, businessPhone, businessPostalCode, businessState, businessStreet, businessStreet2, businessStreet3, categories, company, companyType, email2Address, email3Address, emailAddress, firstName, fullName, gender, hobby, homeCity, homeCoords, homeCountry, homeFax, homePhone, homePostalCode, homeState, homeStreet, homeStreet2, homeStreet3, jobTitle, jobTitle2, lastName, middleName, mobilePhone, nickName, notes, subjects, suffix, title, uid, webPage, login)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Json.decodeFromJsonElement(subResponse["entry"]!!)
+        return LoNetClient.json.decodeFromJsonElement(subResponse["entry"]!!)
     }
 
     override fun getFiles(limit: Int?, offset: Int?, filter: FileFilter?, context: IRequestContext): List<RemoteFile> {
@@ -164,7 +164,7 @@ sealed class OperatingScope : IOperatingScope {
         )[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return subResponse["entries"]?.jsonArray?.map { Json.decodeFromJsonElement(it) } ?: emptyList()
+        return subResponse["entries"]?.jsonArray?.map { LoNetClient.json.decodeFromJsonElement(it) } ?: emptyList()
     }
 
     override fun addFile(name: String, data: ByteArray, description: String?, context: IRequestContext): RemoteFile {
@@ -172,7 +172,7 @@ sealed class OperatingScope : IOperatingScope {
         val id = request.addAddFileRequest(PlatformUtil.base64EncodeToString(data), "/", name, description)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Json.decodeFromJsonElement(subResponse["file"]!!)
+        return LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!)
     }
 
     override fun addSparseFile(name: String, size: Int, description: String?, context: IRequestContext): RemoteFile {
@@ -180,7 +180,7 @@ sealed class OperatingScope : IOperatingScope {
         val id = request.addAddSparseFileRequest("/", name, size, description, login)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Json.decodeFromJsonElement(subResponse["file"]!!)
+        return LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!)
     }
 
     override fun importSessionFile(sessionFile: ISessionFile, createCopy: Boolean?, description: String?, context: IRequestContext): RemoteFile {
@@ -188,7 +188,7 @@ sealed class OperatingScope : IOperatingScope {
         val id = request.addImportSessionFileRequest(sessionFile.getId(), createCopy, description, folderId = "/")[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Json.decodeFromJsonElement(subResponse["file"]!!)
+        return LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!)
     }
 
     override fun addFolder(name: String, description: String?, context: IRequestContext): RemoteFile {
@@ -196,7 +196,7 @@ sealed class OperatingScope : IOperatingScope {
         val id = request.addAddFolderRequest("/", name, description)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Json.decodeFromJsonElement(subResponse["folder"]!!)
+        return LoNetClient.json.decodeFromJsonElement(subResponse["folder"]!!)
     }
 
     override fun setReadable(readable: Boolean, context: IRequestContext) {
@@ -219,8 +219,8 @@ sealed class OperatingScope : IOperatingScope {
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return Pair(
-            Json.decodeFromJsonElement(subResponse["settings"]!!.jsonObject),
-            Json.decodeFromJsonElement(subResponse["quota"]!!.jsonObject)
+            LoNetClient.json.decodeFromJsonElement(subResponse["settings"]!!.jsonObject),
+            LoNetClient.json.decodeFromJsonElement(subResponse["quota"]!!.jsonObject)
         )
     }
 
@@ -229,7 +229,7 @@ sealed class OperatingScope : IOperatingScope {
         val id = request.addGetTrashRequest(limit)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return subResponse["files"]!!.jsonArray.map { Json.decodeFromJsonElement(it) }
+        return subResponse["files"]!!.jsonArray.map { LoNetClient.json.decodeFromJsonElement(it) }
     }
 
     override fun getTasks(context: IRequestContext): List<Task> {
@@ -237,7 +237,7 @@ sealed class OperatingScope : IOperatingScope {
         val id = request.addGetTasksRequest()[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return subResponse["entries"]?.jsonArray?.map { Json.decodeFromJsonElement(it) } ?: emptyList()
+        return subResponse["entries"]?.jsonArray?.map { LoNetClient.json.decodeFromJsonElement(it) } ?: emptyList()
     }
 
     override fun addTask(task: ITask, context: IRequestContext): ITask {
@@ -249,7 +249,7 @@ sealed class OperatingScope : IOperatingScope {
         val id = request.addAddTaskRequest(title, completed, description, dueDate, startDate)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Json.decodeFromJsonElement(subResponse["entry"]!!)
+        return LoNetClient.json.decodeFromJsonElement(subResponse["entry"]!!)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -300,7 +300,7 @@ data class User(
         val id = request.addGetSystemNotificationsRequest()[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return subResponse["messages"]?.jsonArray?.map { Json.decodeFromJsonElement(it) } ?: emptyList()
+        return subResponse["messages"]?.jsonArray?.map { LoNetClient.json.decodeFromJsonElement(it) } ?: emptyList()
     }
 
     override fun addSessionFile(name: String, data: ByteArray, context: IRequestContext): SessionFile {
@@ -308,7 +308,7 @@ data class User(
         val id = request.addAddSessionFileRequest(name, data)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Json.decodeFromJsonElement(subResponse["file"]!!)
+        return LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!)
     }
 
     override fun getGroups(): List<Group> = groups
@@ -365,7 +365,7 @@ data class User(
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return Pair(
-            Json.decodeFromJsonElement(subResponse["quota"]!!.jsonObject),
+            LoNetClient.json.decodeFromJsonElement(subResponse["quota"]!!.jsonObject),
             subResponse["unread_messages"]!!.jsonPrimitive.int
         )
     }
@@ -383,7 +383,7 @@ data class User(
         val id = request.addGetEmailFoldersRequest()[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return subResponse["folders"]!!.jsonArray.map { Json.decodeFromJsonElement(it) }
+        return subResponse["folders"]!!.jsonArray.map { LoNetClient.json.decodeFromJsonElement(it) }
     }
 
     override fun addEmailFolder(name: String, context: IRequestContext) {
@@ -417,7 +417,7 @@ data class User(
         val request = OperatingScopeApiRequest(context)
         val id = request.addGetEmailSignatureRequest()[1]
         val response = request.fireRequest()
-        return Json.decodeFromJsonElement(ResponseUtil.getSubResponseResult(response.toJson(), id)["signature"]!!)
+        return LoNetClient.json.decodeFromJsonElement(ResponseUtil.getSubResponseResult(response.toJson(), id)["signature"]!!)
     }
 
     override fun getAllTasks(context: IApiContext): List<Pair<ITask, IOperatingScope>> {
@@ -551,7 +551,7 @@ class Group(
         val id = request.addGetMembersRequest()[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return subResponse["users"]?.jsonArray?.map { Json.decodeFromJsonElement(it) } ?: emptyList()
+        return subResponse["users"]?.jsonArray?.map { LoNetClient.json.decodeFromJsonElement(it) } ?: emptyList()
     }
 
     override fun getBoardNotifications(context: IRequestContext): List<BoardNotification> {
@@ -559,7 +559,7 @@ class Group(
         val id = request.addGetBoardNotificationsRequest()[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return subResponse["entries"]?.jsonArray?.map { Json.decodeFromJsonElement(it) } ?: emptyList()
+        return subResponse["entries"]?.jsonArray?.map { LoNetClient.json.decodeFromJsonElement(it) } ?: emptyList()
     }
 
     override fun addBoardNotification(notification: IBoardNotification, context: IRequestContext): BoardNotification {
@@ -571,7 +571,7 @@ class Group(
         val id = request.addAddBoardNotificationRequest(title, text, color, killDate?.time)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Json.decodeFromJsonElement(subResponse["entry"]!!)
+        return LoNetClient.json.decodeFromJsonElement(subResponse["entry"]!!)
     }
 
     override fun getTeacherBoardNotifications(context: IRequestContext): List<BoardNotification> {
@@ -579,7 +579,7 @@ class Group(
         val id = request.addGetTeacherBoardNotificationsRequest()[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return subResponse["entries"]?.jsonArray?.map { Json.decodeFromJsonElement(it) } ?: emptyList()
+        return subResponse["entries"]?.jsonArray?.map { LoNetClient.json.decodeFromJsonElement(it) } ?: emptyList()
     }
 
     override fun addTeacherBoardNotification(notification: IBoardNotification, context: IRequestContext): BoardNotification {
@@ -591,7 +591,7 @@ class Group(
         val id = request.addAddTeacherBoardNotificationRequest(title, text, color, killDate?.time)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Json.decodeFromJsonElement(subResponse["entry"]!!)
+        return LoNetClient.json.decodeFromJsonElement(subResponse["entry"]!!)
     }
 
     override fun getPupilBoardNotifications(context: IRequestContext): List<BoardNotification> {
@@ -599,7 +599,7 @@ class Group(
         val id = request.addGetPupilBoardNotificationsRequest()[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return subResponse["entries"]?.jsonArray?.map { Json.decodeFromJsonElement(it) } ?: emptyList()
+        return subResponse["entries"]?.jsonArray?.map { LoNetClient.json.decodeFromJsonElement(it) } ?: emptyList()
     }
 
     override fun addPupilBoardNotification(notification: IBoardNotification, context: IRequestContext): BoardNotification {
@@ -611,7 +611,7 @@ class Group(
         val id = request.addAddPupilBoardNotificationRequest(title, text, color, killDate?.time)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Json.decodeFromJsonElement(subResponse["entry"]!!)
+        return LoNetClient.json.decodeFromJsonElement(subResponse["entry"]!!)
     }
 
     override fun getForumState(context: IRequestContext): Pair<Quota, ForumSettings> {
@@ -619,7 +619,7 @@ class Group(
         val id = request.addGetForumStateRequest()[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Pair(Json.decodeFromJsonElement(subResponse["quota"]!!.jsonObject), Json.decodeFromJsonElement(subResponse["settings"]!!.jsonObject))
+        return Pair(Json.decodeFromJsonElement(subResponse["quota"]!!.jsonObject), LoNetClient.json.decodeFromJsonElement(subResponse["settings"]!!.jsonObject))
     }
 
     override fun getForumPosts(parentId: String?, context: IRequestContext): List<ForumPost> {
@@ -627,7 +627,7 @@ class Group(
         val id = request.addGetForumPostsRequest(parentId = parentId)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        val allPosts = subResponse["entries"]!!.jsonArray.map { Json.decodeFromJsonElement<ForumPost>(it) }
+        val allPosts = subResponse["entries"]!!.jsonArray.map { LoNetClient.json.decodeFromJsonElement<ForumPost>(it) }
         // build tree structure
         val rootPosts = mutableListOf<ForumPost>()
         val tmpPosts = mutableMapOf<String, ForumPost>()
@@ -648,7 +648,7 @@ class Group(
         val id = request.addAddForumPostRequest(title, text, icon, parent?.getId() ?: "0", importSessionFile, importSessionFiles, replyNotificationMe)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Json.decodeFromJsonElement(subResponse["entry"]!!)
+        return LoNetClient.json.decodeFromJsonElement(subResponse["entry"]!!)
     }
 
     override fun getWikiPage(name: String?, context: IRequestContext): WikiPage? {
@@ -656,7 +656,7 @@ class Group(
         val id = request.addGetWikiPageRequest(name)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Json.decodeFromJsonElement(subResponse["page"]!!)
+        return LoNetClient.json.decodeFromJsonElement(subResponse["page"]!!)
     }
 
     override fun getCourseletState(context: IRequestContext): Pair<Quota, String> {
@@ -665,7 +665,7 @@ class Group(
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return Pair(
-            Json.decodeFromJsonElement(subResponse["quota"]!!.jsonObject),
+            LoNetClient.json.decodeFromJsonElement(subResponse["quota"]!!.jsonObject),
             subResponse["runtime_version_hash"]!!.jsonPrimitive.content
         )
     }
@@ -683,7 +683,7 @@ class Group(
         val id = request.addGetCourseletsRequest()[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return subResponse["courselets"]!!.jsonArray.map { Json.decodeFromJsonElement(it) }
+        return subResponse["courselets"]!!.jsonArray.map { LoNetClient.json.decodeFromJsonElement(it) }
     }
 
     override fun getCourseletMappings(context: IRequestContext): List<CourseletMapping> {
@@ -691,7 +691,7 @@ class Group(
         val id = request.addGetCourseletMappingsRequest()[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return subResponse["mappings"]!!.jsonArray.map { Json.decodeFromJsonElement(it) }
+        return subResponse["mappings"]!!.jsonArray.map { LoNetClient.json.decodeFromJsonElement(it) }
     }
 
     override fun addCourseletMapping(name: String, context: IRequestContext): CourseletMapping {
@@ -699,7 +699,7 @@ class Group(
         val id = request.addAddCourseletMappingRequest(name)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Json.decodeFromJsonElement(subResponse["mapping"]!!)
+        return LoNetClient.json.decodeFromJsonElement(subResponse["mapping"]!!)
     }
 
     override fun exportCourseletRuntime(context: IRequestContext): FileDownloadUrl {
@@ -707,6 +707,6 @@ class Group(
         val id = request.addExportCourseletRuntimeRequest()[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Json.decodeFromJsonElement(subResponse["file"]!!.jsonObject)
+        return LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!.jsonObject)
     }
 }

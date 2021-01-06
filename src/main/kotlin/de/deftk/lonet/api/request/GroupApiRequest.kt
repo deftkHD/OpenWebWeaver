@@ -1,5 +1,6 @@
 package de.deftk.lonet.api.request
 
+import de.deftk.lonet.api.LoNetClient
 import de.deftk.lonet.api.model.IRequestContext
 import de.deftk.lonet.api.model.feature.board.BoardNotificationColor
 import de.deftk.lonet.api.model.feature.courselets.TemplatePackage
@@ -53,7 +54,7 @@ class GroupApiRequest(context: IRequestContext): OperatingScopeApiRequest(contex
         val requestParams = buildJsonObject {
             put("title", title)
             put("text", text)
-            put("icon", Json.encodeToJsonElement(icon))
+            put("icon", LoNetClient.json.encodeToJsonElement(icon))
             put("parent_id", parentId)
             if (importSessionFile != null) put("import_session_file", importSessionFile)
             if (importSessionFiles != null) {
@@ -237,7 +238,7 @@ class GroupApiRequest(context: IRequestContext): OperatingScopeApiRequest(contex
         val requestParams = buildJsonObject {
             put("id", id)
             if (pkg != null)
-                put("package", Json.encodeToString(pkg))
+                put("package", LoNetClient.json.encodeToString(pkg))
         }
         return listOf(
             addSetFocusRequest(Focusable.COURSELETS, login),
@@ -315,7 +316,7 @@ class GroupApiRequest(context: IRequestContext): OperatingScopeApiRequest(contex
         val requestParams = buildJsonObject {
             put("id", id)
             if (pkg != null)
-                put("pkg", Json.encodeToString(pkg))
+                put("pkg", LoNetClient.json.encodeToString(pkg))
         }
 
         return listOf(

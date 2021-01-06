@@ -1,5 +1,6 @@
 package de.deftk.lonet.api.implementation.feature.mailbox
 
+import de.deftk.lonet.api.LoNetClient
 import de.deftk.lonet.api.model.IRequestContext
 import de.deftk.lonet.api.model.feature.FileDownloadUrl
 import de.deftk.lonet.api.model.feature.mailbox.IAttachment
@@ -8,7 +9,6 @@ import de.deftk.lonet.api.model.feature.mailbox.IEmailFolder
 import de.deftk.lonet.api.request.OperatingScopeApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 
 @Serializable
@@ -27,7 +27,7 @@ class Attachment(
         val id = request.addExportEmailSessionFileRequest(id, folder.getId(), email.getId())[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Json.decodeFromJsonElement(subResponse["file"]!!)
+        return LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!)
     }
 
     override fun equals(other: Any?): Boolean {

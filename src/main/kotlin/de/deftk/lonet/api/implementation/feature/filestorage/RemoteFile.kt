@@ -1,5 +1,6 @@
 package de.deftk.lonet.api.implementation.feature.filestorage
 
+import de.deftk.lonet.api.LoNetClient
 import de.deftk.lonet.api.implementation.feature.filestorage.session.SessionFile
 import de.deftk.lonet.api.model.IRequestContext
 import de.deftk.lonet.api.model.IUser
@@ -86,7 +87,7 @@ class RemoteFile(
         val id = request.addGetFileRequest(id, limit, offset)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Json.decodeFromJsonElement(subResponse["file"]!!.jsonObject)
+        return LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!.jsonObject)
     }
 
     override fun getPreviewUrl(context: IRequestContext): FilePreviewUrl {
@@ -95,7 +96,7 @@ class RemoteFile(
         val id = request.addGetPreviewDownloadUrlRequest(id)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Json.decodeFromJsonElement(subResponse["file"]!!)
+        return LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!)
     }
 
     override fun getDownloadUrl(context: IRequestContext): FileDownloadUrl {
@@ -104,7 +105,7 @@ class RemoteFile(
         val id = request.addGetFileDownloadUrlRequest(id)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Json.decodeFromJsonElement(subResponse["file"]!!)
+        return LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!)
     }
 
     override fun getProxyNonce(context: IRequestContext): ProxyNonce {
@@ -113,7 +114,7 @@ class RemoteFile(
         val id = request.addGetFileProxyNonceRequest(id)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Json.decodeFromJsonElement(subResponse["file"]!!.jsonObject)
+        return LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!.jsonObject)
     }
 
     override fun delete(context: IRequestContext) {
@@ -226,7 +227,7 @@ class RemoteFile(
         val id = request.addExportSessionFileRequest(id)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Json.decodeFromJsonElement(subResponse["file"]!!)
+        return LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!)
     }
 
     override fun getFiles(limit: Int?, offset: Int?, filter: FileFilter?, context: IRequestContext): List<RemoteFile> {
@@ -242,7 +243,7 @@ class RemoteFile(
         )[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return subResponse["entries"]?.jsonArray?.map { Json.decodeFromJsonElement(it) } ?: emptyList()
+        return subResponse["entries"]?.jsonArray?.map { LoNetClient.json.decodeFromJsonElement(it) } ?: emptyList()
     }
 
     override fun addFile(name: String, data: ByteArray, description: String?, context: IRequestContext): RemoteFile {
@@ -251,7 +252,7 @@ class RemoteFile(
         val id = request.addAddFileRequest(PlatformUtil.base64EncodeToString(data), id, name, description)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Json.decodeFromJsonElement(subResponse["file"]!!)
+        return LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!)
     }
 
     override fun addSparseFile(name: String, size: Int, description: String?, context: IRequestContext): RemoteFile {
@@ -260,7 +261,7 @@ class RemoteFile(
         val id = request.addAddSparseFileRequest(id, name, size, description)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Json.decodeFromJsonElement(subResponse["file"]!!)
+        return LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!)
     }
 
     override fun importSessionFile(sessionFile: ISessionFile, createCopy: Boolean?, description: String?, context: IRequestContext): RemoteFile {
@@ -269,7 +270,7 @@ class RemoteFile(
         val id = request.addImportSessionFileRequest(sessionFile.getId(), createCopy, description, folderId = id)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Json.decodeFromJsonElement(subResponse["file"]!!)
+        return LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!)
     }
 
     override fun addFolder(name: String, description: String?, context: IRequestContext): RemoteFile {
@@ -278,7 +279,7 @@ class RemoteFile(
         val id = request.addAddFolderRequest(id, name, description)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Json.decodeFromJsonElement(subResponse["folder"]!!)
+        return LoNetClient.json.decodeFromJsonElement(subResponse["folder"]!!)
     }
 
     override fun setReadable(readable: Boolean, context: IRequestContext) {

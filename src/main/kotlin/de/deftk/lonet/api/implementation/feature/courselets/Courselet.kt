@@ -1,5 +1,6 @@
 package de.deftk.lonet.api.implementation.feature.courselets
 
+import de.deftk.lonet.api.LoNetClient
 import de.deftk.lonet.api.model.IRequestContext
 import de.deftk.lonet.api.model.feature.FileDownloadUrl
 import de.deftk.lonet.api.model.feature.Modification
@@ -9,7 +10,6 @@ import de.deftk.lonet.api.request.GroupApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 
 @Serializable
@@ -50,7 +50,7 @@ class Courselet(
         val id = request.addGetCourseletResultsRequest(id)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Json.decodeFromJsonElement(subResponse["courselet"]!!)
+        return LoNetClient.json.decodeFromJsonElement(subResponse["courselet"]!!)
     }
 
     override fun deleteResults(context: IRequestContext) {
@@ -79,7 +79,7 @@ class Courselet(
         val id = request.addExportCourseletRequest(id.toString(), pkg)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return Json.decodeFromJsonElement(subResponse["file"]!!)
+        return LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!)
     }
 
     override fun delete(context: IRequestContext) {

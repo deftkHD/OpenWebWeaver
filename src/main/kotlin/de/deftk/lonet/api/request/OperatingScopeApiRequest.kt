@@ -1,11 +1,11 @@
 package de.deftk.lonet.api.request
 
+import de.deftk.lonet.api.LoNetClient
 import de.deftk.lonet.api.model.IRequestContext
 import de.deftk.lonet.api.model.feature.contacts.Gender
 import de.deftk.lonet.api.model.feature.filestorage.filter.SearchMode
 import de.deftk.lonet.api.model.feature.mailbox.SignaturePosition
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.put
@@ -66,7 +66,7 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
             if (recursive != null)
                 put("recursive", asApiBoolean(recursive))
             if (searchMode != null)
-                put("search_option", Json.encodeToString(searchMode))
+                put("search_option", LoNetClient.json.encodeToString(searchMode))
             if (searchString != null)
                 put("search_string", searchString)
         }
@@ -436,9 +436,9 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
         val requestParams = buildJsonObject {
             put("text", text)
             if (positionAnswer != null)
-                put("position_answer", Json.encodeToJsonElement(positionAnswer))
+                put("position_answer", LoNetClient.json.encodeToJsonElement(positionAnswer))
             if (positionForward != null)
-                put("position_forward", Json.encodeToJsonElement(positionForward))
+                put("position_forward", LoNetClient.json.encodeToJsonElement(positionForward))
         }
         return listOf(
             addSetFocusRequest(Focusable.MAILBOX, login),
@@ -535,7 +535,7 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
             if (email3Address != null) put("email3address", email3Address)
             if (firstName != null) put("firstname", firstName)
             if (fullName != null) put("fullname", fullName)
-            if (gender != null) put("gender", Json.encodeToString(gender))
+            if (gender != null) put("gender", LoNetClient.json.encodeToString(gender))
             if (hobby != null) put("hobby", hobby)
             if (homeCity != null) put("homecity", homeCity)
             if (homeCoords != null) put("homecoords", homeCoords)
@@ -589,7 +589,7 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
             if (email3Address != null) put("email3address", email3Address)
             if (firstName != null) put("firstname", firstName)
             if (fullName != null) put("fullname", fullName)
-            if (gender != null) put("gender", Json.encodeToString(gender))
+            if (gender != null) put("gender", LoNetClient.json.encodeToString(gender))
             if (hobby != null) put("hobby", hobby)
             if (homeCity != null) put("homecity", homeCity)
             if (homeCoords != null) put("homecoords", homeCoords)

@@ -1,12 +1,16 @@
 package de.deftk.lonet.api.request.auth
 
+import de.deftk.lonet.api.LoNetClient
 import de.deftk.lonet.api.model.IRequestContext
 import de.deftk.lonet.api.request.ApiRequest
 import de.deftk.lonet.api.request.handler.IRequestHandler
 import de.deftk.lonet.api.response.ApiResponse
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.encodeToJsonElement
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.put
 
 class AuthRequest(private val requestUrl: String, private val requestHandler: IRequestHandler) : ApiRequest() {
 
@@ -26,11 +30,11 @@ class AuthRequest(private val requestUrl: String, private val requestHandler: IR
     }
 
     fun addLoginRequest(request: LoginRequest): Int {
-        return addRequest("login", Json.encodeToJsonElement(request).jsonObject)
+        return addRequest("login", LoNetClient.json.encodeToJsonElement(request).jsonObject)
     }
 
     fun addRegisterMasterRequest(request: RegisterMasterRequest): Int {
-        return addRequest("register_master", Json.encodeToJsonElement(request).jsonObject)
+        return addRequest("register_master", LoNetClient.json.encodeToJsonElement(request).jsonObject)
     }
 
     fun addUnregisterMasterRequest(): Int {

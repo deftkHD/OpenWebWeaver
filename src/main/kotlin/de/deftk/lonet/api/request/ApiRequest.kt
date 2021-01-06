@@ -1,9 +1,9 @@
 package de.deftk.lonet.api.request
 
+import de.deftk.lonet.api.LoNetClient
 import de.deftk.lonet.api.model.IOperatingScope
 import de.deftk.lonet.api.model.IRequestContext
 import de.deftk.lonet.api.response.ApiResponse
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
@@ -26,7 +26,7 @@ open class ApiRequest {
 
     fun addSetFocusRequest(focusable: Focusable, scope: String?): Int {
         val params = buildJsonObject {
-            put("object", Json.encodeToJsonElement(Focusable.serializer(), focusable))
+            put("object", LoNetClient.json.encodeToJsonElement(Focusable.serializer(), focusable))
             if (scope != null)
                 put("login", scope)
         }

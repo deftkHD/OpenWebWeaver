@@ -1,12 +1,16 @@
 package de.deftk.lonet.api.request
 
+import de.deftk.lonet.api.LoNetClient
 import de.deftk.lonet.api.model.Feature
 import de.deftk.lonet.api.model.IRequestContext
 import de.deftk.lonet.api.model.IUser
 import de.deftk.lonet.api.model.Locale
 import de.deftk.lonet.api.model.feature.ServiceType
 import de.deftk.lonet.api.utils.PlatformUtil
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.encodeToJsonElement
+import kotlinx.serialization.json.put
 
 class UserApiRequest(context: IRequestContext): OperatingScopeApiRequest(context) {
 
@@ -16,7 +20,7 @@ class UserApiRequest(context: IRequestContext): OperatingScopeApiRequest(context
             if (disableLogout != null) put("disable_logout", disableLogout)
             if (disableReceptionOfQuickMessages != null) put("disable_reception_of_quick_messages", disableReceptionOfQuickMessages)
             if (enslaveSession != null) put("enslave_session", enslaveSession)
-            if (locale != null) put("locale", Json.encodeToJsonElement(locale))
+            if (locale != null) put("locale", LoNetClient.json.encodeToJsonElement(locale))
             if (pingMaster != null) put("ping_master", pingMaster)
             if (sessionTimeout != null) put("session_timeout", sessionTimeout)
             if (targetData != null) put("target_data", targetData)
@@ -126,7 +130,7 @@ class UserApiRequest(context: IRequestContext): OperatingScopeApiRequest(context
     fun addRegisterServiceRequest(type: ServiceType, token: String, application: String? = null, generateSecret: String? = null, isOnline: Boolean? = null, managedObjects: String? = null, unmanagedPriority: Int? = null): List<Int> {
         ensureCapacity(2)
         val requestParams = buildJsonObject {
-            put("service", Json.encodeToJsonElement(type))
+            put("service", LoNetClient.json.encodeToJsonElement(type))
             put("token", token)
             if (application != null)
                 put("application", application)
@@ -148,7 +152,7 @@ class UserApiRequest(context: IRequestContext): OperatingScopeApiRequest(context
     fun addUnregisterServiceRequest(type: ServiceType, token: String): List<Int> {
         ensureCapacity(2)
         val requestParams = buildJsonObject {
-            put("service", Json.encodeToJsonElement(type))
+            put("service", LoNetClient.json.encodeToJsonElement(type))
             put("token", token)
         }
         return listOf(
