@@ -24,7 +24,7 @@ data class FilePreviewUrl(
     override val id: String? = null,
     override val name: String,
     override val size: Long? = null,
-    @SerialName("preview_url") override val url: String
+    @SerialName("preview_download_url") override val url: String
 ) : FileUrl
 
 interface FileUrl {
