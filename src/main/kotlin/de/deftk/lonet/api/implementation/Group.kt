@@ -30,7 +30,9 @@ class Group(
     @SerialName("name_hr")
     override val name: String,
     override val type: Int,
+    @SerialName("base_rights")
     override val baseRights: List<Permission> = emptyList(),
+    @SerialName("effective_rights")
     override val effectiveRights: List<Permission> = emptyList(),
     @SerialName("reduced_rights")
     private val reducedRights: List<Permission> = emptyList(),
