@@ -21,7 +21,7 @@ class ApiContext(
 
     override fun getUser(): User = user
 
-    override fun findOperatingScope(login: String): IScope? {
+    override fun findOperatingScope(login: String): OperatingScope? {
         return groups.firstOrNull { it.login == login } ?: if (login == user.login) user else null
     }
 
