@@ -18,7 +18,10 @@ import java.util.*
 
 object LoNetClient {
 
-    val json = Json {}
+    val json = Json {
+        classDiscriminator = "class_type"
+        ignoreUnknownKeys = true //FIXME this option should be set to false, but doing so will cause conflicts with the option above
+    }
 
     private val apiContextFactories = mutableMapOf<Class<out IApiContext>, IApiContextFactory>()
     private val defaultApiContextFactory = DefaultApiContextFactory()
