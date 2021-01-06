@@ -14,7 +14,8 @@ interface IForumPost: IModifiable {
     fun getCommentCount(): Int?
     fun isPinned(): Boolean?
     fun isLocked(): Boolean?
-    fun getComments(): MutableList<IForumPost>
+    fun getComments(): List<IForumPost>
+    fun commentLoaded(comment: IForumPost)
 
     fun delete(context: IRequestContext)
 

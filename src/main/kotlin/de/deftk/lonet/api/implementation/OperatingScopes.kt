@@ -618,7 +618,7 @@ class Group(
         allPosts.forEach { post ->
             if (post.getParentId() != "0") {
                 val parent = tmpPosts[post.getParentId()] ?: throw ApiException("Comment has invalid parent!")
-                parent.getComments().add(post)
+                parent.commentLoaded(post)
             } else {
                 rootPosts.add(post)
             }

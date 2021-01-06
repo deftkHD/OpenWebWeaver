@@ -32,7 +32,7 @@ class ForumPost(
     private val modified: Modification
 ): IForumPost {
 
-    private val comments = mutableListOf<IForumPost>()
+    private val comments = mutableListOf<ForumPost>()
 
     var deleted = false
         private set
@@ -48,7 +48,12 @@ class ForumPost(
     override fun getCommentCount(): Int? = commentCount
     override fun isPinned(): Boolean? = pinned
     override fun isLocked(): Boolean? = locked
-    override fun getComments(): MutableList<IForumPost> = comments
+    override fun getComments(): List<IForumPost> = comments
+
+    override fun commentLoaded(comment: IForumPost) {
+        check(comment is ForumPost)
+        comments.add(comment)
+    }
 
     override fun delete(context: IRequestContext) {
         val request = GroupApiRequest(context)
