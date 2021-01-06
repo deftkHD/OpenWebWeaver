@@ -6,9 +6,6 @@ interface IApiContext {
 
     fun getSessionId(): String
 
-    @Deprecated("not sure if this is needed and useful")
-    fun setSessionId(sessionId: String)
-
     fun getUser(): IUser
 
     fun findOperatingScope(login: String): IOperatingScope?

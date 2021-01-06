@@ -6,7 +6,7 @@ import de.deftk.lonet.api.model.RemoteScope
 import de.deftk.lonet.api.request.handler.IRequestHandler
 
 class ApiContext(
-    private var sessionId: String,
+    private val sessionId: String,
     private val user: User,
     private val groups: List<Group>,
     private val requestUrl: String,
@@ -14,10 +14,6 @@ class ApiContext(
 ) : IApiContext {
 
     override fun getSessionId(): String = sessionId
-
-    override fun setSessionId(sessionId: String) {
-        this.sessionId = sessionId
-    }
 
     override fun getUser(): User = user
 
