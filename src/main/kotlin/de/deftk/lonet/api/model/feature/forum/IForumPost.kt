@@ -11,7 +11,6 @@ interface IForumPost: IModifiable {
     fun getText(): String
     fun getIcon(): ForumPostIcon?
     fun getLevel(): Int
-    fun getCommentCount(): Int?
     fun isPinned(): Boolean?
     fun isLocked(): Boolean?
     fun getComments(): List<IForumPost>

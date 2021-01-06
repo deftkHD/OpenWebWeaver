@@ -20,8 +20,6 @@ class ForumPost(
     private val text: String,
     private val icon: ForumPostIcon? = null,
     private val level: Int,
-    @SerialName("comment_count")
-    private val commentCount: Int? = null,
     @Serializable(with = BooleanFromIntSerializer::class)
     private val pinned: Boolean? = null,
     @Serializable(with = BooleanFromIntSerializer::class)
@@ -45,7 +43,6 @@ class ForumPost(
     override fun getText(): String = text
     override fun getIcon(): ForumPostIcon? = icon
     override fun getLevel(): Int = level
-    override fun getCommentCount(): Int? = commentCount
     override fun isPinned(): Boolean? = pinned
     override fun isLocked(): Boolean? = locked
     override fun getComments(): List<IForumPost> = comments
