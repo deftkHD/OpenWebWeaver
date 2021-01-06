@@ -60,6 +60,10 @@ enum class Permission(val id: String) {
     @SerialName("board_pupil_write") BOARD_PUPIL_WRITE("board_pupil_write"),
     @SerialName("board_pupil_admin") BOARD_PUPIL_ADMIN("board_pupil_admin"),
 
+    @SerialName("board_teacher") BOARD_TEACHER("board_teacher"),
+    @SerialName("board_teacher_write") BOARD_TEACHER_WRITE("board_teacher_write"),
+    @SerialName("board_teacher_admin") BOARD_TEACHER_ADMIN("board_teacher_admin"),
+
     @SerialName("tasks") TASKS("tasks"),
     @SerialName("tasks_write") TASKS_WRITE("tasks_write"),
     @SerialName("tasks_admin") TASKS_ADMIN("tasks_admin"),

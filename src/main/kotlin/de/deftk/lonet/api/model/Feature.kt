@@ -17,6 +17,7 @@ enum class Feature(val permissions: List<Permission>) {
     NOTES(listOf(Permission.NOTES, NOTES_WRITE, NOTES_ADMIN)),
     BOARD(listOf(Permission.BOARD, BOARD_WRITE, BOARD_ADMIN)),
     BOARD_PUPIL(listOf(Permission.BOARD_PUPIL, BOARD_PUPIL_WRITE, BOARD_PUPIL_ADMIN)),
+    BOARD_TEACHER(listOf(Permission.BOARD_TEACHER, BOARD_TEACHER_WRITE, BOARD_TEACHER_ADMIN)),
     TASKS(listOf(Permission.TASKS, TASKS_WRITE, TASKS_ADMIN)),
     BOOKS(listOf(Permission.BOOKS, BOOKS_WRITE, BOOKS_ADMIN)),
     BOOKMARKS(listOf(Permission.BOOKMARKS, BOOKMARKS_WRITE , BOOKMARKS_ADMIN)),
