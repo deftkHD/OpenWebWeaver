@@ -1,16 +1,16 @@
 package de.deftk.lonet.api.implementation
 
 import de.deftk.lonet.api.LoNetClient
-import de.deftk.lonet.api.implementation.feature.board.BoardNotification
 import de.deftk.lonet.api.implementation.feature.filestorage.session.SessionFile
 import de.deftk.lonet.api.implementation.feature.mailbox.EmailFolder
 import de.deftk.lonet.api.implementation.feature.mailbox.EmailSignature
 import de.deftk.lonet.api.implementation.feature.systemnotification.SystemNotification
-import de.deftk.lonet.api.implementation.feature.tasks.Task
 import de.deftk.lonet.api.model.*
 import de.deftk.lonet.api.model.feature.Quota
 import de.deftk.lonet.api.model.feature.ServiceType
+import de.deftk.lonet.api.model.feature.board.IBoardNotification
 import de.deftk.lonet.api.model.feature.mailbox.ReferenceMode
+import de.deftk.lonet.api.model.feature.tasks.ITask
 import de.deftk.lonet.api.request.OperatingScopeApiRequest
 import de.deftk.lonet.api.request.UserApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
@@ -169,12 +169,12 @@ data class User(
         return Json.decodeFromJsonElement(ResponseUtil.getSubResponseResult(response.toJson(), id)["signature"]!!)
     }
 
-    override fun getAllTasks(context: IApiContext): List<Pair<Task, OperatingScope>> {
+    override fun getAllTasks(context: IApiContext): List<Pair<ITask, IOperatingScope>> {
         check(context is ApiContext)
         val request = UserApiRequest(getRequestContext(context))
         val taskIds = request.addGetAllTasksRequest(this)
         val response = request.fireRequest().toJson().jsonArray
-        val tasks = mutableListOf<Pair<Task, OperatingScope>>()
+        val tasks = mutableListOf<Pair<ITask, IOperatingScope>>()
         val responses = response.filter { taskIds.contains(it.jsonObject["id"]!!.jsonPrimitive.int) }.map { it.jsonObject }
         responses.withIndex().forEach { (index, subResponse) ->
             if (index % 2 == 1) {
@@ -190,19 +190,19 @@ data class User(
         return tasks
     }
 
-    override fun getAllBoardNotifications(context: IApiContext): List<Pair<BoardNotification, OperatingScope>> {
+    override fun getAllBoardNotifications(context: IApiContext): List<Pair<IBoardNotification, IGroup>> {
         check(context is ApiContext)
         val request = UserApiRequest(getRequestContext(context))
         val taskIds = request.addGetAllBoardNotificationsRequest(this)
         val response = request.fireRequest().toJson().jsonArray
-        val notifications = mutableListOf<Pair<BoardNotification, OperatingScope>>()
+        val notifications = mutableListOf<Pair<IBoardNotification, IGroup>>()
         val responses = response.filter { taskIds.contains(it.jsonObject["id"]!!.jsonPrimitive.int) }.map { it.jsonObject }
         responses.withIndex().forEach { (index, subResponse) ->
             if (index % 2 == 1) {
                 val focus = responses[index - 1]["result"]!!.jsonObject
                 assert(focus["method"]?.jsonPrimitive?.content == "set_focus")
                 val memberLogin = focus["user"]!!.jsonObject["login"]!!.jsonPrimitive.content
-                val member = context.findOperatingScope(memberLogin)!!
+                val member = context.findOperatingScope(memberLogin)!! as Group
                 subResponse["result"]!!.jsonObject["entries"]!!.jsonArray.forEach { taskResponse ->
                     notifications.add(Pair(Json.decodeFromJsonElement(taskResponse.jsonObject), member))
                 }
@@ -211,19 +211,19 @@ data class User(
         return notifications
     }
 
-    override fun getAllPupilBoardNotifications(context: IApiContext): List<Pair<BoardNotification, OperatingScope>> {
+    override fun getAllPupilBoardNotifications(context: IApiContext): List<Pair<IBoardNotification, IGroup>> {
         check(context is ApiContext)
         val request = UserApiRequest(getRequestContext(context))
         val taskIds = request.addGetAllPupilBoardNotificationsRequest(this)
         val response = request.fireRequest().toJson().jsonArray
-        val notifications = mutableListOf<Pair<BoardNotification, OperatingScope>>()
+        val notifications = mutableListOf<Pair<IBoardNotification, IGroup>>()
         val responses = response.filter { taskIds.contains(it.jsonObject["id"]!!.jsonPrimitive.int) }.map { it.jsonObject }
         responses.withIndex().forEach { (index, subResponse) ->
             if (index % 2 == 1) {
                 val focus = responses[index - 1]["result"]!!.jsonObject
                 assert(focus["method"]?.jsonPrimitive?.content == "set_focus")
                 val memberLogin = focus["user"]!!.jsonObject["login"]!!.jsonPrimitive.content
-                val member = context.findOperatingScope(memberLogin)!!
+                val member = context.findOperatingScope(memberLogin)!! as Group
                 subResponse["result"]!!.jsonObject["entries"]!!.jsonArray.forEach { taskResponse ->
                     notifications.add(Pair(Json.decodeFromJsonElement(taskResponse.jsonObject), member))
                 }
@@ -232,19 +232,19 @@ data class User(
         return notifications
     }
 
-    override fun getAllTeacherBoardNotifications(context: IApiContext): List<Pair<BoardNotification, OperatingScope>> {
+    override fun getAllTeacherBoardNotifications(context: IApiContext): List<Pair<IBoardNotification, IGroup>> {
         check(context is ApiContext)
         val request = UserApiRequest(getRequestContext(context))
         val taskIds = request.addGetAllTeacherBoardNotificationsRequest(this)
         val response = request.fireRequest().toJson().jsonArray
-        val notifications = mutableListOf<Pair<BoardNotification, OperatingScope>>()
+        val notifications = mutableListOf<Pair<IBoardNotification, IGroup>>()
         val responses = response.filter { taskIds.contains(it.jsonObject["id"]!!.jsonPrimitive.int) }.map { it.jsonObject }
         responses.withIndex().forEach { (index, subResponse) ->
             if (index % 2 == 1) {
                 val focus = responses[index - 1]["result"]!!.jsonObject
                 assert(focus["method"]?.jsonPrimitive?.content == "set_focus")
                 val memberLogin = focus["user"]!!.jsonObject["login"]!!.jsonPrimitive.content
-                val member = context.findOperatingScope(memberLogin)!!
+                val member = context.findOperatingScope(memberLogin)!! as Group
                 subResponse["result"]!!.jsonObject["entries"]!!.jsonArray.forEach { taskResponse ->
                     notifications.add(Pair(Json.decodeFromJsonElement(taskResponse.jsonObject), member))
                 }

@@ -28,8 +28,8 @@ interface IUser: IOperatingScope, IMailbox {
     fun unregisterService(type: ServiceType, token: String, context: IRequestContext)
 
     fun getAllTasks(context: IApiContext): List<Pair<ITask, IOperatingScope>>
-    fun getAllBoardNotifications(context: IApiContext): List<Pair<IBoardNotification, IOperatingScope>>
-    fun getAllPupilBoardNotifications(context: IApiContext): List<Pair<IBoardNotification, IOperatingScope>>
-    fun getAllTeacherBoardNotifications(context: IApiContext): List<Pair<IBoardNotification, IOperatingScope>>
+    fun getAllBoardNotifications(context: IApiContext): List<Pair<IBoardNotification, IGroup>>
+    fun getAllPupilBoardNotifications(context: IApiContext): List<Pair<IBoardNotification, IGroup>>
+    fun getAllTeacherBoardNotifications(context: IApiContext): List<Pair<IBoardNotification, IGroup>>
 
 }
