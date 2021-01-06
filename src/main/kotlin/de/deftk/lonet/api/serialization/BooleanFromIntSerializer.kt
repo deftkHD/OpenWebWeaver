@@ -14,7 +14,7 @@ class BooleanFromIntSerializer: KSerializer<Boolean> {
     }
 
     override val descriptor: SerialDescriptor
-        get() = PrimitiveSerialDescriptor("Boolean", PrimitiveKind.BOOLEAN)
+        get() = PrimitiveSerialDescriptor("BooleanFromInt", PrimitiveKind.BOOLEAN)
 
     override fun serialize(encoder: Encoder, value: Boolean) {
         encoder.encodeInt(if (value) 1 else 0)
