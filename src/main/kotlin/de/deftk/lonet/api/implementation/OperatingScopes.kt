@@ -12,6 +12,7 @@ import de.deftk.lonet.api.implementation.feature.filestorage.session.SessionFile
 import de.deftk.lonet.api.implementation.feature.forum.ForumPost
 import de.deftk.lonet.api.implementation.feature.mailbox.EmailFolder
 import de.deftk.lonet.api.implementation.feature.mailbox.EmailSignature
+import de.deftk.lonet.api.implementation.feature.messenger.QuickMessage
 import de.deftk.lonet.api.implementation.feature.systemnotification.SystemNotification
 import de.deftk.lonet.api.implementation.feature.tasks.Task
 import de.deftk.lonet.api.implementation.feature.wiki.WikiPage
@@ -708,5 +709,13 @@ class Group(
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!.jsonObject)
+    }
+
+    override fun readQuickMessages(exportSessionFile: Boolean?, context: IRequestContext): List<QuickMessage> {
+        val request = GroupApiRequest(context)
+        val id = request.addReadQuickMessagesRequest(exportSessionFile)[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return subResponse["messages"]!!.jsonArray.map { LoNetClient.json.decodeFromJsonElement(it) }
     }
 }
