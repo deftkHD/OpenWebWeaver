@@ -1,26 +1,51 @@
 LoNetApi is an API wrapper for the JSON API provided by lo-net².
 It might also work with other instances of WebWeaver, but this is not tested.
 
-## Usage
-### One time login
-```kotlin
-val user = LoNet.login(username, password)
-```
-### Login with token
-```kotlin
-val user = LoNet.loginCreateTrust(username, password, description, identity)
-```
-Note: Description and identity are used in the lo-net² Web App to identify different tokens
+## Getting started
 
-The obtained token will be stored in the variable authKey inside the user object.
-Re-login using this token:
+### Create credentials
+If no token was created:
 ```kotlin
-val user = LoNet.loginToken(username, token)
+val credentials = Credentials.fromPassword("<username>", "<password>")
+```
+Or if you already have a token:
+```kotlin
+val credentials = Credentials.fromToken("<username>", "<token>")
 ```
 
-### Revoke token
+### Simple login
 ```kotlin
-user.logout(true)
+val apiContext = LoNetClient.login(credentials)
+```
+
+### Login and create token
+```kotlin
+val (apiContext, token) = LoNetClient.loginCreateToken("<username>", "<password>", "<title>", "<identity>")
+```
+Note: Title and identity are used in the lo-net² Web App to identify different tokens
+
+### Obtain user object
+```kotlin
+val user = apiContext.getUser()
+```
+
+### Obtain groups
+```kotlin
+val groups = user.getGroups()
+```
+
+### Obtain request context
+Each request made (except login) needs a request context. Classes implementing the IOperatingScope interface (IUser and IGroup) are able to create a request context from the IApiContext (obtained during login).
+```kotlin
+val requestContext = user.getRequestContext(apiContext)
+```
+```kotlin
+val requestContext = group.getRequestContext(apiContext)
+```
+
+### Revoke token (and logout)
+```kotlin
+user.logoutDestroyToken("<token>", requestContext)
 ```
 
 ## Status
@@ -34,11 +59,12 @@ user.logout(true)
 - [ ] User management (admin)
 ---
 - [ ] Messenger
+- [x] Receive quick messages
 ---
 - [x] Read emails
 - [x] Write emails
 - [x] Email quota
-- [ ] Email attachments
+- [x] Email attachments
 - [x] Delete emails
 - [x] Move emails
 - [x] Email signature
