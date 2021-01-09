@@ -3,6 +3,7 @@ package de.deftk.lonet.api
 import de.deftk.lonet.api.auth.Credentials
 import de.deftk.lonet.api.exception.ApiException
 import de.deftk.lonet.api.factory.IApiContextFactory
+import de.deftk.lonet.api.implementation.ApiContext
 import de.deftk.lonet.api.implementation.DefaultApiContextFactory
 import de.deftk.lonet.api.model.IApiContext
 import de.deftk.lonet.api.request.Focusable
@@ -33,12 +34,22 @@ object LoNetClient {
     }
 
     @Throws(ApiException::class)
+    fun login(credentials: Credentials): ApiContext {
+        return login(credentials, ApiContext::class.java)
+    }
+
+    @Throws(ApiException::class)
     fun <T : IApiContext> login(credentials: Credentials, contextClass: Class<T>): T {
         return when {
             credentials.password != null -> login(credentials.username, credentials.password, contextClass)
             credentials.token != null -> loginToken(credentials.username, credentials.token, contextClass = contextClass)
             else -> throw IllegalArgumentException("Password or token must be set")
         }
+    }
+
+    @Throws(ApiException::class)
+    fun login(username: String, password: String): ApiContext {
+        return login(username, password, ApiContext::class.java)
     }
 
     @Throws(ApiException::class)
@@ -51,6 +62,11 @@ object LoNetClient {
         ResponseUtil.checkSuccess(response.toJson())
         val factory = apiContextFactories[contextClass] ?: defaultApiContextFactory
         return factory.createApiContext(response, requestUrl) as T
+    }
+
+    @Throws(ApiException::class)
+    fun loginToken(username: String, token: String, removeTrust: Boolean = false): ApiContext {
+        return loginToken(username, token, removeTrust, ApiContext::class.java)
     }
 
     @Throws(ApiException::class)
@@ -92,6 +108,11 @@ object LoNetClient {
         ResponseUtil.checkSuccess(response.toJson())
         val factory = apiContextFactories[contextClass] ?: defaultApiContextFactory
         return factory.createApiContext(response, requestUrl) as T
+    }
+
+    @Throws(ApiException::class)
+    fun loginCreateToken(username: String, password: String, title: String, identity: String): Pair<ApiContext, String> {
+        return loginCreateToken(username, password, title, identity, ApiContext::class.java)
     }
 
     @Throws(ApiException::class)
