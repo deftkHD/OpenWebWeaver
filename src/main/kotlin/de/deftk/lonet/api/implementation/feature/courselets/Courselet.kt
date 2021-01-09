@@ -14,29 +14,21 @@ import kotlinx.serialization.json.decodeFromJsonElement
 
 @Serializable
 class Courselet(
-    private val id: Int,
-    private val title: String,
-    private val mapping: String,
+    override val id: Int,
+    override val title: String,
+    override val mapping: String,
     @SerialName("is_link")
-    private val isLink: Boolean,
+    override val isLink: Boolean,
     @SerialName("is_visible")
-    private val isVisible: Boolean,
+    override val isVisible: Boolean,
     @SerialName("is_template")
-    private val isTemplate: Boolean,
-    private val size: Int,
-    private val created: Modification,
+    override val isTemplate: Boolean,
+    override val size: Int,
+    override val created: Modification,
     private val modified: Modification
 ): ICourselet {
 
-    override fun getCreated(): Modification = created
     override fun getModified(): Modification = modified
-    override fun getId(): Int = id
-    override fun getTitle(): String = title
-    override fun getMapping(): String = mapping
-    override fun isLink(): Boolean = isLink
-    override fun isVisible(): Boolean = isVisible
-    override fun isTemplate(): Boolean = isTemplate
-    override fun getSize(): Int = size
 
     override fun setSuspendDate(suspendData: String, ifLatest: Int, context: IRequestContext) {
         val request = GroupApiRequest(context)

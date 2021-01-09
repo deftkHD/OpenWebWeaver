@@ -6,7 +6,8 @@ import java.util.*
 
 interface IBoardNotification: IModifiable {
 
-    fun getId(): String
+    val id: String
+
     fun getTitle(): String
     fun getText(): String
     fun getColor(): BoardNotificationColor?

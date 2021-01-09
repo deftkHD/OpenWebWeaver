@@ -17,25 +17,23 @@ import java.util.*
 
 @Serializable
 class BoardNotification(
-    private val id: String,
+    override val id: String,
     private var title: String,
     private var text: String,
     private var color: BoardNotificationColor? = null,
     @Serializable(with = DateSerializer::class)
     private var killDate: Date? = null,
-    private val created: Modification,
+    override val created: Modification,
     private var modified: Modification
 ) : IBoardNotification, IModifiable {
 
     var deleted = false
         private set
 
-    override fun getId(): String = id
     override fun getTitle(): String = title
     override fun getText(): String = text
     override fun getColor(): BoardNotificationColor? = color
     override fun getKillDate(): Date? = killDate
-    override fun getCreated(): Modification = created
     override fun getModified(): Modification = modified
 
     override fun setTitle(title: String, boardType: BoardType, context: IRequestContext) {

@@ -5,9 +5,9 @@ import de.deftk.lonet.api.model.feature.FileDownloadUrl
 
 interface IAttachment {
 
-    fun getId(): String
-    fun getName(): String
-    fun getSize(): Int
+    val id: String
+    val name: String
+    val size: Int
 
     fun exportSessionFile(email: IEmail, folder: IEmailFolder, context: IRequestContext): FileDownloadUrl
 

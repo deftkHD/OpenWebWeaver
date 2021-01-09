@@ -17,7 +17,7 @@ import java.util.*
 
 @Serializable
 class Email(
-    private val id: Int,
+    override val id: Int,
     private var subject: String,
     @SerialName("is_unread")
     @Serializable(with = BooleanFromIntSerializer::class)
@@ -43,7 +43,6 @@ class Email(
     private var files: List<Attachment>? = null
 ) : IEmail {
 
-    override fun getId(): Int = id
     override fun getSubject(): String = subject
     override fun isUnread(): Boolean = unread
     override fun isFlagged(): Boolean = flagged
@@ -60,7 +59,7 @@ class Email(
 
     override fun read(folder: IEmailFolder, peek: Boolean?, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
-        val id = request.addReadEmailRequest(folder.getId(), id, peek)[1]
+        val id = request.addReadEmailRequest(folder.id, id, peek)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         readFrom(Json.decodeFromJsonElement(subResponse["message"]!!))
@@ -68,7 +67,7 @@ class Email(
 
     override fun edit(folder: IEmailFolder, isFlagged: Boolean?, isUnread: Boolean?, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
-        request.addSetEmailRequest(folder.getId(), id, isFlagged, isUnread)
+        request.addSetEmailRequest(folder.id, id, isFlagged, isUnread)
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
         if (isFlagged != null)
@@ -79,14 +78,14 @@ class Email(
 
     override fun move(folder: IEmailFolder, to: IEmailFolder, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
-        request.addMoveEmailRequest(folder.getId(), id, to.getId())
+        request.addMoveEmailRequest(folder.id, id, to.id)
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
     }
 
     override fun delete(folder: IEmailFolder, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
-        request.addDeleteEmailRequest(folder.getId(), id)
+        request.addDeleteEmailRequest(folder.id, id)
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
         deleted = true

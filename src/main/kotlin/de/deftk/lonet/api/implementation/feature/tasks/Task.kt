@@ -15,7 +15,7 @@ import java.util.*
 
 @Serializable
 class Task(
-    private val id: String,
+    override val id: String,
     private var title: String,
     private var description: String? = null,
     @SerialName("start_date")
@@ -26,16 +26,14 @@ class Task(
     private var endDate: Date? = null,
     @Serializable(with = BooleanFromIntSerializer::class)
     private var completed: Boolean,
-    private val created: Modification,
+    override val created: Modification,
     private var modified: Modification
 ): ITask {
 
     var deleted = false
         private set
 
-    override fun getCreated(): Modification = created
     override fun getModified(): Modification = modified
-    override fun getId(): String = id
     override fun getTitle(): String = title
     override fun getDescription(): String? = description
     override fun getStartDate(): Date? = startDate

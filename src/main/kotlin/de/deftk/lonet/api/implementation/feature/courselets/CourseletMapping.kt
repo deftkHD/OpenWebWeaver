@@ -10,11 +10,10 @@ import kotlinx.serialization.json.decodeFromJsonElement
 
 @Serializable
 class CourseletMapping(
-    private val id: Int,
+    override val id: Int,
     private var name: String
 ) : ICourseletMapping {
 
-    override fun getId(): Int = id
     override fun getName(): String = name
 
     override fun setName(name: String, context: IRequestContext) {

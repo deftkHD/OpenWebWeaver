@@ -7,8 +7,9 @@ import de.deftk.lonet.api.model.feature.filestorage.io.FileChunk
 
 interface ISessionFile {
 
-    fun getId(): String
-    fun getName(): String
+    val id: String
+    val name: String
+
     fun getSize(): Int
     fun getDownloadUrl(): String
 

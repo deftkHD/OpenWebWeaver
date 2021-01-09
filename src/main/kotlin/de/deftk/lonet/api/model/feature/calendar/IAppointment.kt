@@ -6,7 +6,8 @@ import java.util.*
 
 interface IAppointment : IModifiable {
 
-    fun getId(): String
+    val id: String
+
     fun getTitle(): String
     fun getDescription(): String?
     fun getEndDate(): Date?

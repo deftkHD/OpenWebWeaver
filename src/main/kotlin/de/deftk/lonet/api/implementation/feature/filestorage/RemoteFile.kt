@@ -27,14 +27,14 @@ import kotlinx.serialization.json.jsonObject
 
 @Serializable
 class RemoteFile(
-    private val id: String,
+    override val id: String,
     @SerialName("parent_id")
     private val parentId: String? = null,
     private var ordinal: Int? = null,
     @SerialName("name")
     private var shadowedName: String,
     private var description: String? = null,
-    private val type: FileType,
+    override val type: FileType,
     private var size: Long,
     @Serializable(with = BooleanFromIntSerializer::class)
     private var readable: Boolean? = null,
@@ -46,7 +46,7 @@ class RemoteFile(
     private var mine: Boolean? = null,
     @Serializable(with = BooleanFromIntSerializer::class)
     private var shared: Boolean? = null,
-    private val created: Modification,
+    override val created: Modification,
     private var modified: Modification,
     private var effective: Effectiveness,
     @Serializable(with = BooleanFromIntSerializer::class)
@@ -58,15 +58,12 @@ class RemoteFile(
     private var downloadNotification: DownloadNotification? = null
 ) : IRemoteFile {
 
-    override fun getCreated(): Modification = created
     override fun getModified(): Modification = modified
-    override fun getId(): String = id
     override fun getParentId(): String? = parentId
     override val name: String
         get() = shadowedName
     override fun getOrdinal(): Int? = ordinal
     override fun getDescription(): String? = description
-    override fun getType(): FileType = type
     override fun getSize(): Long = size
     override fun isReadable(): Boolean? = readable
     override fun isWritable(): Boolean? = writable
@@ -267,7 +264,7 @@ class RemoteFile(
     override fun importSessionFile(sessionFile: ISessionFile, createCopy: Boolean?, description: String?, context: IRequestContext): RemoteFile {
         requireFolder()
         val request = OperatingScopeApiRequest(context)
-        val id = request.addImportSessionFileRequest(sessionFile.getId(), createCopy, description, folderId = id)[1]
+        val id = request.addImportSessionFileRequest(sessionFile.id, createCopy, description, folderId = id)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!)

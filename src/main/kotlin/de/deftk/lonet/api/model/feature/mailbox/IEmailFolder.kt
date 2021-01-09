@@ -5,13 +5,14 @@ import java.util.*
 
 interface IEmailFolder {
 
-    fun getId(): String
+    val id: String
+    val isInbox: Boolean
+    val isTrash: Boolean
+    val isDrafts: Boolean
+    val isSent: Boolean
+    val date: Date
+
     fun getName(): String
-    fun isInbox(): Boolean
-    fun isTrash(): Boolean
-    fun isDrafts(): Boolean
-    fun isSent(): Boolean
-    fun getDate(): Date
 
     fun getEmails(limit: Int? = null, offset: Int? = null, context: IRequestContext): List<IEmail>
     fun setName(name: String, context: IRequestContext)

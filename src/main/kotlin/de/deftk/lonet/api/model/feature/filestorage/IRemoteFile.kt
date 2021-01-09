@@ -11,11 +11,12 @@ import de.deftk.lonet.api.model.feature.filestorage.session.ISessionFile
 
 interface IRemoteFile: IRemoteFileProvider, IModifiable {
 
-    fun getId(): String
+    val id: String
+    val type: FileType
+
     fun getParentId(): String?
     fun getOrdinal(): Int?
     fun getDescription(): String?
-    fun getType(): FileType
     fun getSize(): Long
     fun isReadable(): Boolean?
     fun isWritable(): Boolean?

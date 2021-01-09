@@ -1,6 +1,6 @@
 package de.deftk.lonet.api.model.feature
 
 interface IModifiable {
-    fun getCreated(): Modification
+    val created: Modification
     fun getModified(): Modification
 }

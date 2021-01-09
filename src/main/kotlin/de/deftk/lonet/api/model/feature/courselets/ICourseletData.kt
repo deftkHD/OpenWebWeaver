@@ -4,9 +4,9 @@ import de.deftk.lonet.api.model.RemoteScope
 
 interface ICourseletData {
 
-    fun getId(): Int
-    fun getTitle(): String
-    fun getUser(): RemoteScope
-    fun getConnection(): ICourseletConnection
+    val id: Int
+    val title: String
+    val user: RemoteScope
+    val connection: ICourseletConnection
 
 }

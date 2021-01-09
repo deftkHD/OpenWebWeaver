@@ -13,18 +13,14 @@ import kotlinx.serialization.json.decodeFromJsonElement
 
 @Serializable
 class Attachment(
-    private val id: String,
-    private val name: String,
-    private val size: Int
+    override val id: String,
+    override val name: String,
+    override val size: Int
 ) : IAttachment {
-
-    override fun getId(): String = id
-    override fun getName(): String = name
-    override fun getSize(): Int = size
 
     override fun exportSessionFile(email: IEmail, folder: IEmailFolder, context: IRequestContext): FileDownloadUrl {
         val request = OperatingScopeApiRequest(context)
-        val id = request.addExportEmailSessionFileRequest(id, folder.getId(), email.getId())[1]
+        val id = request.addExportEmailSessionFileRequest(id, folder.id, email.id)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!)

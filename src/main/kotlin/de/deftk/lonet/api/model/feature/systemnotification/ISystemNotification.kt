@@ -6,16 +6,16 @@ import java.util.*
 
 interface ISystemNotification {
 
-    fun getId(): String
-    fun getMessageType(): SystemNotificationType
-    fun getDate(): Date
-    fun getMessage(): String
-    fun getData(): String
-    fun getMember(): RemoteScope
-    fun getGroup(): RemoteScope
-    fun getFromId(): Int?
-    fun isRead(): Boolean
-    fun getObj(): String
+    val id: String
+    val messageType: SystemNotificationType
+    val date: Date
+    val message: String
+    val data: String
+    val member: RemoteScope
+    val group: RemoteScope
+    val fromId: Int?
+    val isUnread: Boolean
+    val obj: String
 
     fun delete(context: IRequestContext)
 

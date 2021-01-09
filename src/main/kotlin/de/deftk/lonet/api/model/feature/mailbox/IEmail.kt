@@ -5,7 +5,8 @@ import java.util.*
 
 interface IEmail {
 
-    fun getId(): Int
+    val id: Int
+
     fun getSubject(): String
     fun isUnread(): Boolean
     fun isFlagged(): Boolean

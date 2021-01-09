@@ -5,7 +5,8 @@ import de.deftk.lonet.api.model.feature.IModifiable
 
 interface IContact: IModifiable {
 
-    fun getId(): String
+    val id: Int
+
     fun getBirthday(): String?
     fun getBusinessCity(): String?
     fun getBusinessCoords(): String?

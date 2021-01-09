@@ -5,11 +5,11 @@ import kotlinx.serialization.json.JsonObject
 
 interface ICourseletPage {
 
-    fun getPageId(): String
-    fun getTitle(): String
-    fun exists(): Boolean?
-    fun maxScore(): Int?
-    fun getResult(): JsonObject?
+    val pageId: String
+    val title: String
+    val exists: Boolean?
+    val maxScore: Int?
+    val result: JsonObject?
 
     fun addResult(courselet: ICourselet, score: Int? = null, time: Long? = null, context: IRequestContext)
     fun deleteResults(courselet: ICourselet, context: IRequestContext)

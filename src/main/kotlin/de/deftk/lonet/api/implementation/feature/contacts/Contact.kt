@@ -13,7 +13,7 @@ import kotlinx.serialization.json.decodeFromJsonElement
 
 @Serializable
 class Contact(
-    private val id: Int,
+    override val id: Int,
     private var birthday: String? = null,
     @SerialName("businesscity")
     private var businessCity: String? = null,
@@ -90,14 +90,13 @@ class Contact(
     private var uid: String? = null,
     @SerialName("webpage")
     private var webPage: String? = null,
-    private val created: Modification,
+    override val created: Modification,
     private var modified: Modification
 ) : IContact {
 
     var deleted = false
         private set
 
-    override fun getId(): String = id.toString()
     override fun getBirthday(): String? = birthday
     override fun getBusinessCity(): String? = businessCity
     override fun getBusinessCoords(): String? = businessCoords
@@ -141,7 +140,6 @@ class Contact(
     override fun getTitle(): String? = title
     override fun getUid(): String? = uid
     override fun getWebPage(): String? = webPage
-    override fun getCreated(): Modification = created
     override fun getModified(): Modification = modified
 
     override fun edit(

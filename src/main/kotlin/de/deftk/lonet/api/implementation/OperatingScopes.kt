@@ -186,7 +186,7 @@ sealed class OperatingScope : IOperatingScope {
 
     override fun importSessionFile(sessionFile: ISessionFile, createCopy: Boolean?, description: String?, context: IRequestContext): RemoteFile {
         val request = OperatingScopeApiRequest(context)
-        val id = request.addImportSessionFileRequest(sessionFile.getId(), createCopy, description, folderId = "/")[1]
+        val id = request.addImportSessionFileRequest(sessionFile.id, createCopy, description, folderId = "/")[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!)
@@ -632,10 +632,10 @@ class Group(
         // build tree structure
         val rootPosts = mutableListOf<ForumPost>()
         val tmpPosts = mutableMapOf<String, ForumPost>()
-        allPosts.forEach { post -> tmpPosts[post.getId()] = post }
+        allPosts.forEach { post -> tmpPosts[post.id] = post }
         allPosts.forEach { post ->
-            if (post.getParentId() != "0") {
-                val parent = tmpPosts[post.getParentId()] ?: throw ApiException("Comment has invalid parent!")
+            if (post.parentId != "0") {
+                val parent = tmpPosts[post.parentId] ?: throw ApiException("Comment has invalid parent!")
                 parent.commentLoaded(post)
             } else {
                 rootPosts.add(post)
@@ -646,7 +646,7 @@ class Group(
 
     override fun addForumPost(title: String, text: String, icon: ForumPostIcon, parent: IForumPost?, importSessionFile: String?, importSessionFiles: Array<String>?, replyNotificationMe: Boolean?, context: IRequestContext): ForumPost {
         val request = GroupApiRequest(context)
-        val id = request.addAddForumPostRequest(title, text, icon, parent?.getId() ?: "0", importSessionFile, importSessionFiles, replyNotificationMe)[1]
+        val id = request.addAddForumPostRequest(title, text, icon, parent?.id ?: "0", importSessionFile, importSessionFiles, replyNotificationMe)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return LoNetClient.json.decodeFromJsonElement(subResponse["entry"]!!)

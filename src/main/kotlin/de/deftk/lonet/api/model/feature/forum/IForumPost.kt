@@ -5,14 +5,15 @@ import de.deftk.lonet.api.model.feature.IModifiable
 
 interface IForumPost: IModifiable {
 
-    fun getId(): String
-    fun getParentId(): String
-    fun getTitle(): String
-    fun getText(): String
-    fun getIcon(): ForumPostIcon?
-    fun getLevel(): Int
-    fun isPinned(): Boolean?
-    fun isLocked(): Boolean?
+    val id: String
+    val parentId: String
+    val title: String
+    val text: String
+    val icon: ForumPostIcon?
+    val level: Int
+    val isPinned: Boolean?
+    val isLocked: Boolean?
+
     fun getComments(): List<IForumPost>
     fun commentLoaded(comment: IForumPost)
 

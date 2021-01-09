@@ -5,17 +5,18 @@ import java.util.*
 
 interface ICourseletConnection {
 
-    fun exists(): Boolean
+    val exists: Boolean
+    val lastPageId: String
+    val result: JsonElement
+    val suspendData: String?
+    val isBookmarked: Boolean
+    val isCorrected: Boolean
+    val isConversation: Boolean
+    val isUnread: Boolean
+    val pages: List<ICourseletPage>
+
     fun getCreationDate(): Date
     fun getModificationDate(): Date
     fun getProgressed(): Date
-    fun getLastPageId(): String
-    fun getResult(): JsonElement
-    fun getSuspendData(): String?
-    fun isBookmarked(): Boolean
-    fun isCorrected(): Boolean
-    fun isConversation(): Boolean
-    fun isUnread(): Boolean
-    fun getPages(): List<ICourseletPage>
 
 }

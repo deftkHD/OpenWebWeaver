@@ -6,16 +6,9 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-class CourseletData(
-    private val id: Int,
-    private val title: String,
-    private val user: RemoteScope,
-    private val connection: CourseletConnection
-): ICourseletData {
-
-    override fun getId(): Int = id
-    override fun getTitle(): String = title
-    override fun getUser(): RemoteScope = user
-    override fun getConnection(): CourseletConnection = connection
-
-}
+data class CourseletData(
+    override val id: Int,
+    override val title: String,
+    override val user: RemoteScope,
+    override val connection: CourseletConnection
+): ICourseletData

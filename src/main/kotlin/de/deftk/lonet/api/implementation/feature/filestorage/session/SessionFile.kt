@@ -16,8 +16,8 @@ import kotlinx.serialization.json.jsonObject
 
 @Serializable
 class SessionFile(
-    private val id: String,
-    private val name: String,
+    override val id: String,
+    override val name: String,
     private var size: Int,
     @SerialName("download_url")
     private var downloadUrl: String
@@ -26,8 +26,6 @@ class SessionFile(
     var deleted = false
         private set
 
-    override fun getId(): String = id
-    override fun getName(): String = name
     override fun getSize(): Int = size
     override fun getDownloadUrl(): String = downloadUrl
 

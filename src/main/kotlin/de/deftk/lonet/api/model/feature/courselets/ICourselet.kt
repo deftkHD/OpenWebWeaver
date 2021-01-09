@@ -6,13 +6,13 @@ import de.deftk.lonet.api.model.feature.IModifiable
 
 interface ICourselet: IModifiable {
 
-    fun getId(): Int
-    fun getTitle(): String
-    fun getMapping(): String
-    fun isLink(): Boolean
-    fun isVisible(): Boolean
-    fun isTemplate(): Boolean
-    fun getSize(): Int
+    val id: Int
+    val title: String
+    val mapping: String
+    val isLink: Boolean
+    val isVisible: Boolean
+    val isTemplate: Boolean
+    val size: Int
 
     fun setSuspendDate(suspendData: String, ifLatest: Int, context: IRequestContext)
     fun getResults(context: IRequestContext): ICourseletData

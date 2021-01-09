@@ -14,28 +14,22 @@ import java.util.*
 
 @Serializable
 class EmailFolder(
-    private val id: String,
+    override val id: String,
     private var name: String,
     @SerialName("is_inbox")
-    private val isInbox: Boolean,
+    override val isInbox: Boolean,
     @SerialName("is_trash")
-    private val isTrash: Boolean,
+    override val isTrash: Boolean,
     @SerialName("is_drafts")
-    private val isDrafts: Boolean,
+    override val isDrafts: Boolean,
     @SerialName("is_sent")
-    private val isSent: Boolean,
+    override val isSent: Boolean,
     @SerialName("m_date")
     @Serializable(with = DateSerializer::class)
-    private val date: Date
+    override val date: Date
 ): IEmailFolder {
 
-    override fun getId(): String = id
     override fun getName(): String = name
-    override fun isInbox(): Boolean = isInbox
-    override fun isTrash(): Boolean = isTrash
-    override fun isDrafts(): Boolean = isDrafts
-    override fun isSent(): Boolean = isSent
-    override fun getDate(): Date = date
 
     override fun getEmails(limit: Int?, offset: Int?, context: IRequestContext): List<Email> {
         val request = OperatingScopeApiRequest(context)

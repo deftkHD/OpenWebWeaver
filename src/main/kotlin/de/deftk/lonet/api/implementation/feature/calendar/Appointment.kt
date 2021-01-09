@@ -14,7 +14,7 @@ import java.util.*
 
 @Serializable
 class Appointment(
-    private val id: String,
+    override val id: String,
     private var uid: String? = null,
     private var title: String,
     private var description: String? = null,
@@ -31,16 +31,14 @@ class Appointment(
     private var tzid: String? = null,
     private var location: String? = null,
     private var rrule: String? = null,
-    private val created: Modification,
+    override val created: Modification,
     private var modified: Modification
 ): IAppointment {
 
     var deleted = false
         private set
 
-    override fun getCreated(): Modification = created
     override fun getModified(): Modification = modified
-    override fun getId(): String = id
     override fun getTitle(): String = title
     override fun getDescription(): String? = description
     override fun getEndDate(): Date? = endDate

@@ -13,20 +13,22 @@ import kotlinx.serialization.json.JsonElement
 
 @Serializable
 class ForumPost(
-    private val id: String,
+    override val id: String,
     @SerialName("parent_id")
-    private val parentId: String,
-    private val title: String,
-    private val text: String,
-    private val icon: ForumPostIcon? = null,
-    private val level: Int,
+    override val parentId: String,
+    override val title: String,
+    override val text: String,
+    override val icon: ForumPostIcon? = null,
+    override val level: Int,
     @Serializable(with = BooleanFromIntSerializer::class)
-    private val pinned: Boolean? = null,
+    @SerialName("pinned")
+    override val isPinned: Boolean? = null,
     @Serializable(with = BooleanFromIntSerializer::class)
-    private val locked: Boolean? = null,
+    @SerialName("locked")
+    override val isLocked: Boolean? = null,
     private val children: ChildrenData? = null,
     private val files: List<JsonElement> = emptyList(),
-    private val created: Modification,
+    override val created: Modification,
     private val modified: Modification
 ): IForumPost {
 
@@ -34,17 +36,8 @@ class ForumPost(
 
     var deleted = false
         private set
-
-    override fun getCreated(): Modification = created
+    
     override fun getModified(): Modification = modified
-    override fun getId(): String = id
-    override fun getParentId(): String = parentId
-    override fun getTitle(): String = title
-    override fun getText(): String = text
-    override fun getIcon(): ForumPostIcon? = icon
-    override fun getLevel(): Int = level
-    override fun isPinned(): Boolean? = pinned
-    override fun isLocked(): Boolean? = locked
     override fun getComments(): List<IForumPost> = comments
 
     override fun commentLoaded(comment: IForumPost) {

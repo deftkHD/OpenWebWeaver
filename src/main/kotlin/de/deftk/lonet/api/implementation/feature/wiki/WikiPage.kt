@@ -5,14 +5,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class WikiPage(
-    private val name: String,
-    private val exists: Boolean,
-    private val source: String
+    override val name: String,
+    override val exists: Boolean,
+    override val source: String
 ) : IWikiPage {
-
-    override fun getName(): String = name
-    override fun exists(): Boolean = exists
-    override fun getSource(): String = source
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
