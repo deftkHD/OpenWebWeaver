@@ -68,6 +68,10 @@ class ForumPost(
         return id.hashCode()
     }
 
+    override fun toString(): String {
+        return "ForumPost(title='$title')"
+    }
+
     @Serializable
     data class ChildrenData(val count: Int, val recent: Modification? = null)
 

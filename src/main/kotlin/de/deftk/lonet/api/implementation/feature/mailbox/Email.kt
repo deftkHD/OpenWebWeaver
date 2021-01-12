@@ -122,4 +122,8 @@ class Email(
         return id
     }
 
+    override fun toString(): String {
+        return "Email(subject='$subject')"
+    }
+
 }

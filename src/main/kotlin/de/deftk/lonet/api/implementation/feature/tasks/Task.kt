@@ -86,4 +86,8 @@ class Task(
         return id.hashCode()
     }
 
+    override fun toString(): String {
+        return "Task(title='$title')"
+    }
+
 }

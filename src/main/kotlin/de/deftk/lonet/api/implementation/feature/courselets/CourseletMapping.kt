@@ -50,4 +50,8 @@ class CourseletMapping(
         return id
     }
 
+    override fun toString(): String {
+        return "CourseletMapping(name='$name')"
+    }
+
 }

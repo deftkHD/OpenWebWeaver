@@ -52,4 +52,8 @@ class EmailSignature(
         return text.hashCode()
     }
 
+    override fun toString(): String {
+        return "EmailSignature(text='$text')"
+    }
+
 }

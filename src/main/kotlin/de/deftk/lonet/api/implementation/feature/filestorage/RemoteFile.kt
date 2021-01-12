@@ -346,6 +346,10 @@ class RemoteFile(
         return result
     }
 
+    override fun toString(): String {
+        return "RemoteFile(name='$name')"
+    }
+
 
     @Serializable
     data class Effectiveness(

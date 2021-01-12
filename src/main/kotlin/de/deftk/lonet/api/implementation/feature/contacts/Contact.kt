@@ -309,4 +309,8 @@ class Contact(
         return id
     }
 
+    override fun toString(): String {
+        return "Contact(firstName=$firstName, fullName=$fullName, lastName=$lastName, middleName=$middleName)"
+    }
+
 }

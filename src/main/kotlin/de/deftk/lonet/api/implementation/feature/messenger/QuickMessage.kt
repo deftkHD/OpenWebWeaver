@@ -15,4 +15,9 @@ data class QuickMessage(
     @Serializable(with = DateFromStringSerializer::class)
     override val date: Date,
     override val flags: String
-): IQuickMessage
+): IQuickMessage {
+
+    override fun toString(): String {
+        return "QuickMessage(from=$from, text='$text')"
+    }
+}

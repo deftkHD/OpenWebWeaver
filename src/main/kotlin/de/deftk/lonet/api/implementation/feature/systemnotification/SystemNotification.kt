@@ -56,4 +56,8 @@ class SystemNotification(
         return id.hashCode()
     }
 
+    override fun toString(): String {
+        return "SystemNotification(messageType=$messageType, message='$message')"
+    }
+
 }

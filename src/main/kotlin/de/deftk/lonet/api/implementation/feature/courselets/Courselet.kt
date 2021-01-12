@@ -26,7 +26,7 @@ class Courselet(
     override val size: Int,
     override val created: Modification,
     private val modified: Modification
-): ICourselet {
+) : ICourselet {
 
     override fun getModified(): Modification = modified
 
@@ -94,6 +94,10 @@ class Courselet(
 
     override fun hashCode(): Int {
         return id
+    }
+
+    override fun toString(): String {
+        return "Courselet(title='$title')"
     }
 
 }

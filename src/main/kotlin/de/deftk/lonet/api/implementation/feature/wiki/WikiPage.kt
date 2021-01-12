@@ -25,4 +25,9 @@ data class WikiPage(
         return name.hashCode()
     }
 
+    override fun toString(): String {
+        return "WikiPage(name='$name')"
+    }
+
+
 }

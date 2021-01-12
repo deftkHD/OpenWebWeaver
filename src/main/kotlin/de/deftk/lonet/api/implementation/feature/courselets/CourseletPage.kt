@@ -34,4 +34,8 @@ class CourseletPage(
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
     }
+
+    override fun toString(): String {
+        return "CourseletPage(title='$title')"
+    }
 }

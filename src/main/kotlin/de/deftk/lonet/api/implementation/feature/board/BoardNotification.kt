@@ -100,4 +100,8 @@ class BoardNotification(
         return id.hashCode()
     }
 
+    override fun toString(): String {
+        return "BoardNotification(title='$title')"
+    }
+
 }

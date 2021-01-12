@@ -11,4 +11,9 @@ data class CourseletData(
     override val title: String,
     override val user: RemoteScope,
     override val connection: CourseletConnection
-): ICourseletData
+) : ICourseletData {
+
+    override fun toString(): String {
+        return "CourseletData(title='$title')"
+    }
+}

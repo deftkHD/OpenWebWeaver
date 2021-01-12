@@ -89,4 +89,8 @@ class SessionFile(
         return id.hashCode()
     }
 
+    override fun toString(): String {
+        return "SessionFile(name='$name')"
+    }
+
 }

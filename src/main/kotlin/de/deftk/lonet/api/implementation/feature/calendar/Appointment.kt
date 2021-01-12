@@ -105,4 +105,8 @@ class Appointment(
         return id.hashCode()
     }
 
+    override fun toString(): String {
+        return "Appointment(title='$title')"
+    }
+
 }

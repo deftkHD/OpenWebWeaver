@@ -41,4 +41,8 @@ class Attachment(
         return id.hashCode()
     }
 
+    override fun toString(): String {
+        return "Attachment(name='$name')"
+    }
+
 }
