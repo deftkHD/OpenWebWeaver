@@ -332,12 +332,8 @@ data class User(
     }
 
     override fun logoutDestroyToken(token: String, context: IRequestContext) {
-        val request = UserApiRequest(context)
-        request.addRequest("logout", null)
-        val tmpContext = LoNetClient.loginToken(login, token, true, ApiContext::class.java)
-        tmpContext.getUser().logout(context)
-        val response = request.fireRequest()
-        ResponseUtil.checkSuccess(response.toJson())
+        logout(context)
+        LoNetClient.loginToken(login, token, true, ApiContext::class.java)
     }
 
     override fun checkSession(context: IRequestContext): Boolean {
