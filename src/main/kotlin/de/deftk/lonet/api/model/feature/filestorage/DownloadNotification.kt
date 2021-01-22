@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class DownloadNotification(
-    val users: List<RemoteScope>,
+    val users: List<RemoteScope> = emptyList(),
     @Serializable(with = BooleanFromIntSerializer::class)
     val me: Boolean
 )
