@@ -32,7 +32,7 @@ class SystemNotification(
     @Serializable(with = BooleanFromIntSerializer::class)
     override val isUnread: Boolean,
     @SerialName("object")
-    override val obj: String
+    override val obj: String?
 ): ISystemNotification {
 
     override fun delete(context: IRequestContext) {

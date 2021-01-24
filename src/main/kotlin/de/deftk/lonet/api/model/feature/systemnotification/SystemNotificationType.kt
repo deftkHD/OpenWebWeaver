@@ -21,7 +21,7 @@ enum class SystemNotificationType {
     UNKNOWN_4,
 
     @SerialName("5")
-    UNKNOWN_5,
+    PASSWORD_CHANGED,
 
     @SerialName("6")
     UNKNOWN_6,

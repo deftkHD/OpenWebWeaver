@@ -15,7 +15,7 @@ interface ISystemNotification {
     val group: RemoteScope
     val fromId: Int?
     val isUnread: Boolean
-    val obj: String
+    val obj: String?
 
     fun delete(context: IRequestContext)
 
