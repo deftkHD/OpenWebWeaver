@@ -3,7 +3,6 @@ package de.deftk.lonet.api.request.handler
 import de.deftk.lonet.api.LoNetClient
 import de.deftk.lonet.api.auth.Credentials
 import de.deftk.lonet.api.exception.ApiException
-import de.deftk.lonet.api.implementation.ApiContext
 import de.deftk.lonet.api.model.IApiContext
 import de.deftk.lonet.api.model.IRequestContext
 import de.deftk.lonet.api.request.ApiRequest
@@ -14,7 +13,7 @@ import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 
-class AutoLoginRequestHandler(private val handler: LoginHandler) : AbstractRequestHandler() {
+class AutoLoginRequestHandler<T : IApiContext>(private val handler: LoginHandler<T>, private val contextClass: Class<T>) : AbstractRequestHandler() {
 
     override fun performRequest(request: ApiRequest, context: IRequestContext): ApiResponse {
         return try {
@@ -23,7 +22,7 @@ class AutoLoginRequestHandler(private val handler: LoginHandler) : AbstractReque
             response
         } catch (e: ApiException) {
             if (e.message?.contains("Session key not valid") == true) {
-                val apiContext = LoNetClient.login(handler.getCredentials(), ApiContext::class.java)
+                val apiContext = LoNetClient.login(handler.getCredentials(), contextClass)
                 handler.onLogin(apiContext)
 
                 // replace old session id
@@ -46,9 +45,9 @@ class AutoLoginRequestHandler(private val handler: LoginHandler) : AbstractReque
         }
     }
 
-    interface LoginHandler {
+    interface LoginHandler<T : IApiContext> {
         fun getCredentials(): Credentials
-        fun onLogin(user: IApiContext)
+        fun onLogin(context: T)
     }
 
 }
