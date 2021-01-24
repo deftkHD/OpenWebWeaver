@@ -4,8 +4,8 @@ import de.deftk.lonet.api.LoNetClient
 import de.deftk.lonet.api.auth.Credentials
 import de.deftk.lonet.api.exception.ApiException
 import de.deftk.lonet.api.implementation.ApiContext
+import de.deftk.lonet.api.model.IApiContext
 import de.deftk.lonet.api.model.IRequestContext
-import de.deftk.lonet.api.model.IUser
 import de.deftk.lonet.api.request.ApiRequest
 import de.deftk.lonet.api.response.ApiResponse
 import de.deftk.lonet.api.response.ResponseUtil
@@ -24,7 +24,7 @@ class AutoLoginRequestHandler(private val handler: LoginHandler) : AbstractReque
         } catch (e: ApiException) {
             if (e.message?.contains("Session key not valid") == true) {
                 val apiContext = LoNetClient.login(handler.getCredentials(), ApiContext::class.java)
-                handler.onLogin(apiContext.getUser())
+                handler.onLogin(apiContext)
 
                 // replace old session id
                 request.requests.forEach { requestContent ->
@@ -48,7 +48,7 @@ class AutoLoginRequestHandler(private val handler: LoginHandler) : AbstractReque
 
     interface LoginHandler {
         fun getCredentials(): Credentials
-        fun onLogin(user: IUser)
+        fun onLogin(user: IApiContext)
     }
 
 }
