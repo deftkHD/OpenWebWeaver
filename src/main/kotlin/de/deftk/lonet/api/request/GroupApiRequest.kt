@@ -10,11 +10,17 @@ import kotlinx.serialization.json.*
 
 class GroupApiRequest(context: IRequestContext): OperatingScopeApiRequest(context) {
 
-    fun addGetMembersRequest(login: String = context.login): List<Int> {
+    fun addGetMembersRequest(miniatures: Boolean? = null, onlineOnly: Boolean? = null, login: String = context.login): List<Int> {
         ensureCapacity(2)
+        val requestParams = buildJsonObject {
+            if (miniatures != null)
+                put("get_miniatures", asApiBoolean(miniatures))
+            if (onlineOnly != null)
+                put("only_online", asApiBoolean(onlineOnly))
+        }
         return listOf(
             addSetFocusRequest(Focusable.MEMBERS, login),
-            addRequest("get_users", null)
+            addRequest("get_users", requestParams)
         )
     }
 

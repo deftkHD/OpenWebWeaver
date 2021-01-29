@@ -543,9 +543,9 @@ class Group(
 
     override fun getMemberRights(): List<Permission> = memberRights
 
-    override fun getMembers(context: IRequestContext): List<RemoteScope> {
+    override fun getMembers(miniatures: Boolean?, onlineOnly: Boolean?, context: IRequestContext): List<RemoteScope> {
         val request = GroupApiRequest(context)
-        val id = request.addGetMembersRequest()[1]
+        val id = request.addGetMembersRequest(miniatures, onlineOnly)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return subResponse["users"]?.jsonArray?.map { LoNetClient.json.decodeFromJsonElement(it) } ?: emptyList()

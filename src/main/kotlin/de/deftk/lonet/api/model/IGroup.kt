@@ -11,6 +11,6 @@ interface IGroup: IOperatingScope, IBoard, IForum, IWiki, ICourselets, IMessenge
     fun getReducedRights(): List<Permission>
     fun getMemberRights(): List<Permission>
 
-    fun getMembers(context: IRequestContext): List<RemoteScope>
+    fun getMembers(miniatures: Boolean? = null, onlineOnly: Boolean? = null, context: IRequestContext): List<RemoteScope>
 
 }
