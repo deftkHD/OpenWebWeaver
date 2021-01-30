@@ -7,10 +7,7 @@ import de.deftk.lonet.api.request.handler.IRequestHandler
 import de.deftk.lonet.api.response.ApiResponse
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.encodeToJsonElement
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.put
+import kotlinx.serialization.json.*
 
 class AuthRequest(private val requestUrl: String, private val requestHandler: IRequestHandler) : ApiRequest() {
 
@@ -27,6 +24,16 @@ class AuthRequest(private val requestUrl: String, private val requestHandler: IR
             put("password", newPassword)
         }
         return addRequest("change_password", params)
+    }
+
+    fun addRegisterSubstituteRequest(service: SubstituteService, timeout: Int, name: String? = null): Int {
+        val params = buildJsonObject {
+            put("service", Json.encodeToJsonElement(service))
+            put("timeout", timeout)
+            if (name != null)
+                put("name", name)
+        }
+        return addRequest("register_substitute", params)
     }
 
     fun addLoginRequest(request: LoginRequest): Int {
@@ -84,6 +91,21 @@ class AuthRequest(private val requestUrl: String, private val requestHandler: IR
 
         @SerialName("sha512")
         SHA512
+    }
+
+    @Serializable
+    enum class SubstituteService {
+        @SerialName("webdav")
+        WEBDAV,
+
+        @SerialName("imap")
+        IMAP,
+
+        @SerialName("smtp")
+        SMTP,
+
+        @SerialName("pop3")
+        POP3
     }
 
 }

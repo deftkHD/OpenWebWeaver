@@ -1,6 +1,7 @@
 package de.deftk.lonet.api
 
 import de.deftk.lonet.api.auth.Credentials
+import de.deftk.lonet.api.auth.Substitute
 import de.deftk.lonet.api.exception.ApiException
 import de.deftk.lonet.api.factory.IApiContextFactory
 import de.deftk.lonet.api.implementation.ApiContext
@@ -11,10 +12,7 @@ import de.deftk.lonet.api.request.auth.AuthRequest
 import de.deftk.lonet.api.request.handler.DefaultRequestHandler
 import de.deftk.lonet.api.response.ResponseUtil
 import de.deftk.lonet.api.utils.PlatformUtil
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonArray
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.*
 import java.util.*
 
 object LoNetClient {
@@ -108,6 +106,46 @@ object LoNetClient {
         ResponseUtil.checkSuccess(response.toJson())
         val factory = apiContextFactories[contextClass] ?: defaultApiContextFactory
         return factory.createApiContext(response, requestUrl) as T
+    }
+
+    @Throws(ApiException::class)
+    fun <T : IApiContext> loginTokenCreateSubstitute(username: String, token: String, service: AuthRequest.SubstituteService, substituteTimeout: Int, substituteName: String? = null, contextClass: Class<T>): Pair<T, Substitute> {
+        val requestUrl = getRequestUrl(username)
+        val nonceRequest = AuthRequest(requestUrl, DefaultRequestHandler())
+        nonceRequest.addGetNonceRequest()
+        val nonceResponse = nonceRequest.fireRequest()
+        val nonceJson = nonceResponse.toJson().jsonArray[0].jsonObject["result"]!!.jsonObject["nonce"]!!.jsonObject
+        val nonceId = nonceJson["id"]!!.jsonPrimitive.content
+        val nonceKey = nonceJson["key"]!!.jsonPrimitive.content
+
+        // generate salt
+        val chars = "0123456789qwertyuiopasdfghjklzxcvbnmABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray()
+        val random = Random()
+        val salt = StringBuilder()
+        val size = random.nextInt(5) + 8
+        for (i in 0 until size) {
+            salt.append(chars[random.nextInt(62)])
+        }
+
+        val authRequest = AuthRequest(requestUrl, DefaultRequestHandler())
+        authRequest.addLoginRequest(
+            AuthRequest.LoginRequest(
+                username,
+                application = "wwa",
+                hash = PlatformUtil.sha256Hash("$nonceKey$salt$token"),
+                salt=salt.toString(),
+                nonceId = nonceId,
+                algorithm = AuthRequest.Algorithm.SHA256,
+                getMiniature = true
+            ))
+        authRequest.addSetFocusRequest(Focusable.TRUSTS, null as? String?)
+        authRequest.addRegisterSubstituteRequest(service, substituteTimeout, substituteName)
+        authRequest.addSetFocusRequest(Focusable.TRUSTS, null as? String?)
+        authRequest.addGetInformationRequest()
+        val response = authRequest.fireRequest()
+        ResponseUtil.checkSuccess(response.toJson())
+        val factory = apiContextFactories[contextClass] ?: defaultApiContextFactory
+        return Pair(factory.createApiContext(response, requestUrl) as T, json.decodeFromJsonElement(ResponseUtil.getSubResponseResultByMethod(response.toJson(), "register_substitute")["substitute"]!!))
     }
 
     @Throws(ApiException::class)
