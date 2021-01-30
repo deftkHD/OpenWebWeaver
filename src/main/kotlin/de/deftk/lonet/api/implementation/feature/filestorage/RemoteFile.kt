@@ -26,7 +26,7 @@ import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 
 @Serializable
-class RemoteFile(
+open class RemoteFile(
     override val id: String,
     @SerialName("parent_id")
     private val parentId: String? = null,
