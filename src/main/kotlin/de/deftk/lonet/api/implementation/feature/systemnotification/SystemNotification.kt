@@ -21,7 +21,7 @@ class SystemNotification(
     override val date: Date,
     @SerialName("message_hr")
     override val message: String,
-    override val data: String,
+    override val data: String?,
     @SerialName("from_user")
     override val member: RemoteScope,
     @SerialName("from_group")

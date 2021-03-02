@@ -10,7 +10,7 @@ interface ISystemNotification {
     val messageType: SystemNotificationType
     val date: Date
     val message: String
-    val data: String
+    val data: String?
     val member: RemoteScope
     val group: RemoteScope
     val fromId: Int?
