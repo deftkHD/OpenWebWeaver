@@ -63,7 +63,7 @@ enum class SystemNotificationType {
     UNKNOWN_18,
 
     @SerialName("19")
-    UNKNOWN_19,
+    NEW_POLL,
 
     @SerialName("20")
     UNKNOWN_20,
