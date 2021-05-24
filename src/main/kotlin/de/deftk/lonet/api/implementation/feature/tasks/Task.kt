@@ -6,7 +6,7 @@ import de.deftk.lonet.api.model.feature.tasks.ITask
 import de.deftk.lonet.api.request.OperatingScopeApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
 import de.deftk.lonet.api.serialization.BooleanFromIntSerializer
-import de.deftk.lonet.api.serialization.DateFromStringSerializer
+import de.deftk.lonet.api.serialization.NullableDateFromStringSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -19,10 +19,10 @@ class Task(
     private var title: String,
     private var description: String? = null,
     @SerialName("start_date")
-    @Serializable(with = DateFromStringSerializer::class)
+    @Serializable(with = NullableDateFromStringSerializer::class)
     private var startDate: Date? = null,
     @SerialName("due_date")
-    @Serializable(with = DateFromStringSerializer::class)
+    @Serializable(with = NullableDateFromStringSerializer::class)
     private var endDate: Date? = null,
     @Serializable(with = BooleanFromIntSerializer::class)
     private var completed: Boolean,
