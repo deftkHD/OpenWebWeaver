@@ -10,7 +10,6 @@ import de.deftk.lonet.api.request.UserApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.jsonObject
 
@@ -34,7 +33,7 @@ class SessionFile(
         val id = request.addAppendSessionFileRequest(id, data)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        readFrom(Json.decodeFromJsonElement(subResponse["file"]!!))
+        readFrom(LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!))
     }
 
     override fun download(limit: Int?, offset: Int?, context: IRequestContext): FileChunk {

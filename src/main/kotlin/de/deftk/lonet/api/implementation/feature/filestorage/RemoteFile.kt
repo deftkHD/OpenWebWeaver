@@ -20,7 +20,6 @@ import de.deftk.lonet.api.serialization.BooleanFromIntSerializer
 import de.deftk.lonet.api.utils.PlatformUtil
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
@@ -132,7 +131,7 @@ open class RemoteFile(
         }
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        readFrom(Json.decodeFromJsonElement(subResponse["file"]!!))
+        readFrom(LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!))
     }
 
     override fun setDescription(description: String, context: IRequestContext) {
@@ -143,7 +142,7 @@ open class RemoteFile(
         }
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        readFrom(Json.decodeFromJsonElement(subResponse["file"]!!))
+        readFrom(LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!))
     }
 
     override fun setDownloadNotificationAddLogin(login: String, context: IRequestContext) {
@@ -155,7 +154,7 @@ open class RemoteFile(
         }
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        readFrom(Json.decodeFromJsonElement(subResponse["file"]!!))
+        readFrom(LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!))
     }
 
     override fun setDownloadNotificationDeleteLogin(login: String, context: IRequestContext) {
@@ -167,7 +166,7 @@ open class RemoteFile(
         }
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        readFrom(Json.decodeFromJsonElement(subResponse["file"]!!))
+        readFrom(LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!))
     }
 
     override fun setDownloadNotificationMe(receive: Boolean, context: IRequestContext) {
@@ -179,7 +178,7 @@ open class RemoteFile(
         }
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        readFrom(Json.decodeFromJsonElement(subResponse["file"]!!))
+        readFrom(LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!))
     }
 
     override fun setUploadNotificationAddLogin(login: String, context: IRequestContext) {
@@ -191,7 +190,7 @@ open class RemoteFile(
         }
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        readFrom(Json.decodeFromJsonElement(subResponse["file"]!!))
+        readFrom(LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!))
     }
 
     override fun setUploadNotificationDeleteLogin(login: String, context: IRequestContext) {
@@ -203,7 +202,7 @@ open class RemoteFile(
         }
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        readFrom(Json.decodeFromJsonElement(subResponse["file"]!!))
+        readFrom(LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!))
     }
 
     override fun setUploadNotificationMe(receive: Boolean, context: IRequestContext) {
@@ -215,7 +214,7 @@ open class RemoteFile(
         }
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        readFrom(Json.decodeFromJsonElement(subResponse["file"]!!))
+        readFrom(LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!))
     }
 
     override fun exportSessionFile(user: IUser, context: IRequestContext): SessionFile {
@@ -288,7 +287,7 @@ open class RemoteFile(
         }
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        readFrom(Json.decodeFromJsonElement(subResponse["folder"]!!))
+        readFrom(LoNetClient.json.decodeFromJsonElement(subResponse["folder"]!!))
     }
 
     override fun setWritable(writable: Boolean, context: IRequestContext) {
@@ -300,7 +299,7 @@ open class RemoteFile(
         }
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        readFrom(Json.decodeFromJsonElement(subResponse["folder"]!!))
+        readFrom(LoNetClient.json.decodeFromJsonElement(subResponse["folder"]!!))
     }
 
     private fun readFrom(file: RemoteFile) {

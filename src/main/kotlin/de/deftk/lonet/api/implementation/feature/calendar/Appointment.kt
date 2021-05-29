@@ -1,5 +1,6 @@
 package de.deftk.lonet.api.implementation.feature.calendar
 
+import de.deftk.lonet.api.LoNetClient
 import de.deftk.lonet.api.model.IRequestContext
 import de.deftk.lonet.api.model.feature.Modification
 import de.deftk.lonet.api.model.feature.calendar.IAppointment
@@ -8,7 +9,6 @@ import de.deftk.lonet.api.response.ResponseUtil
 import de.deftk.lonet.api.serialization.DateSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 import java.util.*
 
@@ -65,7 +65,7 @@ class Appointment(
         val id = request.addSetAppointmentRequest(id, title, description, endDate?.time, endDateIso, location, rrule, startDate?.time, startDateIso)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        readFrom(Json.decodeFromJsonElement(subResponse["entry"]!!))
+        readFrom(LoNetClient.json.decodeFromJsonElement(subResponse["entry"]!!))
     }
 
     override fun delete(context: IRequestContext) {

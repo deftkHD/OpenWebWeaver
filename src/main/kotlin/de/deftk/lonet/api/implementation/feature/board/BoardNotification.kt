@@ -1,5 +1,6 @@
 package de.deftk.lonet.api.implementation.feature.board
 
+import de.deftk.lonet.api.LoNetClient
 import de.deftk.lonet.api.model.IRequestContext
 import de.deftk.lonet.api.model.feature.IModifiable
 import de.deftk.lonet.api.model.feature.Modification
@@ -10,7 +11,6 @@ import de.deftk.lonet.api.request.GroupApiRequest
 import de.deftk.lonet.api.response.ResponseUtil
 import de.deftk.lonet.api.serialization.DateSerializer
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.jsonObject
 import java.util.*
@@ -62,7 +62,7 @@ class BoardNotification(
         }
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        readFrom(Json.decodeFromJsonElement(subResponse["entry"]!!.jsonObject))
+        readFrom(LoNetClient.json.decodeFromJsonElement(subResponse["entry"]!!.jsonObject))
     }
 
     override fun delete(board: BoardType, context: IRequestContext) {

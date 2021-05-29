@@ -1,5 +1,6 @@
 package de.deftk.lonet.api.implementation.feature.mailbox
 
+import de.deftk.lonet.api.LoNetClient
 import de.deftk.lonet.api.model.IRequestContext
 import de.deftk.lonet.api.model.feature.mailbox.EmailAddress
 import de.deftk.lonet.api.model.feature.mailbox.IAttachment
@@ -11,7 +12,6 @@ import de.deftk.lonet.api.serialization.BooleanFromIntSerializer
 import de.deftk.lonet.api.serialization.DateSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 import java.util.*
 
@@ -62,7 +62,7 @@ class Email(
         val id = request.addReadEmailRequest(folder.id, id, peek)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        readFrom(Json.decodeFromJsonElement(subResponse["message"]!!))
+        readFrom(LoNetClient.json.decodeFromJsonElement(subResponse["message"]!!))
     }
 
     override fun edit(folder: IEmailFolder, isFlagged: Boolean?, isUnread: Boolean?, context: IRequestContext) {
