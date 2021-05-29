@@ -19,6 +19,7 @@ object LoNetClient {
 
     val json = Json {
         classDiscriminator = "class_type"
+        isLenient = true
         ignoreUnknownKeys = true //FIXME this option should be set to false, but doing so will cause conflicts with the option above
     }
 
