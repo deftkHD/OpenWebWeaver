@@ -12,7 +12,8 @@ data class RemoteScope(
     override val type: Int,
     @SerialName("is_online")
     @Serializable(with = BooleanFromIntSerializer::class)
-    val isOnline: Boolean = false
+    val isOnline: Boolean = false,
+    val alias: String? = null
 ) : IScope {
 
     override fun equals(other: Any?): Boolean {
