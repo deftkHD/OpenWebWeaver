@@ -51,7 +51,7 @@ enum class SystemNotificationType {
     UNKNOWN_14,
 
     @SerialName("15")
-    UNKNOWN_15,
+    REQUEST_PASSWORD_RESET_CODE,
 
     @SerialName("16")
     UNKNOWN_16,
