@@ -120,28 +120,33 @@ enum class Permission(val id: String) {
     @SerialName("meta_write") META_WRITE("meta_write"),
     @SerialName("meta_admin") META_ADMIN("meta_admin"),
 
-    @SerialName("learning_log_read") LEARNING_LOG_READ("leaning_log_read"),
+    @SerialName("learning_log") LEARNING_LOG("leaning_log"),
     @SerialName("learning_log_write") LEARNING_LOG_WRITE("leaning_log_write"),
     @SerialName("learning_log_admin") LEARNING_LOG_ADMIN("leaning_log_admin"),
 
-    @SerialName("wall_read") WALL_READ("wall_read"),
+    @SerialName("wall") WALL("wall"),
     @SerialName("wall_write") WALL_WRITE("wall_write"),
     @SerialName("wall_admin") WALL_ADMIN("wall_admin"),
 
-    @SerialName("substitution_plan_read") SUBSTITUTION_PLAN_READ("substitution_plan_read"),
+    @SerialName("substitution_plan") SUBSTITUTION_PLAN("substitution_plan"),
     @SerialName("substitution_plan_write") SUBSTITUTION_PLAN_WRITE("substitution_plan_write"),
     @SerialName("substitution_plan_admin") SUBSTITUTION_PLAN_ADMIN("substitution_plan_admin"),
 
-    @SerialName("resource_management_read") RESOURCE_MANAGEMENT_READ("resource_management_read"),
+    @SerialName("resource_management") RESOURCE_MANAGEMENT("resource_management"),
     @SerialName("resource_management_write") RESOURCE_MANAGEMENT_WRITE("resource_management_write"),
     @SerialName("resource_management_admin") RESOURCE_MANAGEMENT_ADMIN("resource_management_admin"),
 
-    @SerialName("consultation_hours_read") CONSULTATION_HOURS_READ("consultation_hours_read"),
+    @SerialName("consultation_hours") CONSULTATION_HOURS("consultation_hours"),
     @SerialName("consultation_hours_write") CONSULTATION_HOURS_WRITE("consultation_hours_write"),
     @SerialName("consultation_hours_admin") CONSULTATION_HOURS_ADMIN("consultation_hours_admin"),
 
     @SerialName("images") IMAGES("images"),
+    @SerialName("images_write") IMAGES_WRITE("images_write"),
+    @SerialName("images_admin") IMAGES_ADMIN("images_admin"),
+
     @SerialName("forms") FORMS("forms"),
+    @SerialName("forms_write") FORMS_WRITE("forms_write"),
+    @SerialName("forms_admin") FORMS_ADMIN("forms_admin"),
 
     @SerialName("client") CLIENT("client"),
 
