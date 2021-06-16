@@ -7,6 +7,7 @@ import de.deftk.lonet.api.model.IUser
 import de.deftk.lonet.api.model.Locale
 import de.deftk.lonet.api.model.feature.ServiceType
 import de.deftk.lonet.api.model.feature.filestorage.session.ISessionFile
+import de.deftk.lonet.api.model.feature.notes.NoteColor
 import de.deftk.lonet.api.utils.PlatformUtil
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.buildJsonObject
@@ -272,6 +273,56 @@ class UserApiRequest(context: IRequestContext): OperatingScopeApiRequest(context
         return listOf(
             addSetFocusRequest(Focusable.MESSENGER, context.login),
             addRequest("get_history", params)
+        )
+    }
+
+    fun addGetNotesRequest(): List<Int> {
+        ensureCapacity(2)
+        return listOf(
+            addSetFocusRequest(Focusable.NOTES, context.login),
+            addRequest("get_entries", null)
+        )
+    }
+
+    fun addAddNoteRequest(text: String, title: String, color: NoteColor? = null): List<Int> {
+        ensureCapacity(2)
+        val params = buildJsonObject {
+            put("text", text)
+            put("title", title)
+            if (color != null)
+                put("color", LoNetClient.json.encodeToJsonElement(color))
+        }
+        return listOf(
+            addSetFocusRequest(Focusable.NOTES, context.login),
+            addRequest("add_entry", params)
+        )
+    }
+
+    fun addSetNoteRequest(id: String, text: String?, title: String?, color: NoteColor?): List<Int> {
+        ensureCapacity(2)
+        val params = buildJsonObject {
+            put("id", id)
+            if (text != null)
+                put("text", text)
+            if (title != null)
+                put("title", title)
+            if (color != null)
+                put("color", LoNetClient.json.encodeToJsonElement(color))
+        }
+        return listOf(
+            addSetFocusRequest(Focusable.NOTES, context.login),
+            addRequest("set_entry", params)
+        )
+    }
+
+    fun addDeleteNoteRequest(id: String): List<Int> {
+        ensureCapacity(2)
+        val params = buildJsonObject {
+            put("id", id)
+        }
+        return listOf(
+            addSetFocusRequest(Focusable.NOTES, context.login),
+            addRequest("delete_entry", params)
         )
     }
 

@@ -13,6 +13,7 @@ import de.deftk.lonet.api.implementation.feature.forum.ForumPost
 import de.deftk.lonet.api.implementation.feature.mailbox.EmailFolder
 import de.deftk.lonet.api.implementation.feature.mailbox.EmailSignature
 import de.deftk.lonet.api.implementation.feature.messenger.QuickMessage
+import de.deftk.lonet.api.implementation.feature.notes.Note
 import de.deftk.lonet.api.implementation.feature.systemnotification.SystemNotification
 import de.deftk.lonet.api.implementation.feature.tasks.Task
 import de.deftk.lonet.api.implementation.feature.wiki.WikiPage
@@ -33,6 +34,8 @@ import de.deftk.lonet.api.model.feature.forum.ForumPostIcon
 import de.deftk.lonet.api.model.feature.forum.ForumSettings
 import de.deftk.lonet.api.model.feature.forum.IForumPost
 import de.deftk.lonet.api.model.feature.mailbox.ReferenceMode
+import de.deftk.lonet.api.model.feature.notes.INote
+import de.deftk.lonet.api.model.feature.notes.NoteColor
 import de.deftk.lonet.api.model.feature.tasks.ITask
 import de.deftk.lonet.api.request.GroupApiRequest
 import de.deftk.lonet.api.request.OperatingScopeApiRequest
@@ -544,6 +547,25 @@ data class User(
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return subResponse["messages"]?.jsonArray?.map { LoNetClient.json.decodeFromJsonElement(it) } ?: emptyList()
+    }
+
+    override fun getNotes(context: IRequestContext): List<Note> {
+        val request = UserApiRequest(context)
+        val id = request.addGetNotesRequest()[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return subResponse["entries"]?.jsonArray?.map { LoNetClient.json.decodeFromJsonElement(it) } ?: emptyList()
+    }
+
+    override fun addNote(note: INote, context: IRequestContext): Note {
+        return addNote(note.getText(), note.getTitle(), note.getColor(), context)
+    }
+
+    override fun addNote(text: String, title: String, color: NoteColor?, context: IRequestContext): Note {
+        val request = UserApiRequest(context)
+        val id = request.addAddNoteRequest(text, title, color)[1]
+        val response = request.fireRequest()
+        return LoNetClient.json.decodeFromJsonElement(ResponseUtil.getSubResponseResult(response.toJson(), id)["entry"]!!)
     }
 
     @Serializable
