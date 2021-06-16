@@ -480,16 +480,4 @@ class GroupApiRequest(context: IRequestContext): OperatingScopeApiRequest(contex
         )
     }
 
-    fun addReadQuickMessagesRequest(exportSessionFile: Boolean? = null, login: String = context.login): List<Int> {
-        ensureCapacity(2)
-        val requestParams = buildJsonObject {
-            if (exportSessionFile != null)
-                put("export_session_file", exportSessionFile)
-        }
-        return listOf(
-            addSetFocusRequest(Focusable.MESSENGER, login),
-            addRequest("read_quick_messages", requestParams)
-        )
-    }
-
 }

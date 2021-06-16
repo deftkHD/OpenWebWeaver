@@ -4,11 +4,12 @@ import de.deftk.lonet.api.model.feature.ServiceType
 import de.deftk.lonet.api.model.feature.board.IBoardNotification
 import de.deftk.lonet.api.model.feature.filestorage.session.ISessionFile
 import de.deftk.lonet.api.model.feature.mailbox.IMailbox
+import de.deftk.lonet.api.model.feature.messenger.IMessenger
 import de.deftk.lonet.api.model.feature.systemnotification.ISystemNotification
 import de.deftk.lonet.api.model.feature.tasks.ITask
 import kotlinx.serialization.json.JsonElement
 
-interface IUser: IOperatingScope, IMailbox {
+interface IUser: IOperatingScope, IMailbox, IMessenger {
 
     fun getBaseUser(): RemoteScope
     fun getFullName(): String

@@ -47,7 +47,6 @@ class EmailFolder(
         this.name = name
     }
 
-    //FIXME fails for whatever reason
     override fun delete(context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
         request.addDeleteEmailFolderRequest(id)

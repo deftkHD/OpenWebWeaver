@@ -36,7 +36,7 @@ enum class SystemNotificationType {
     UNKNOWN_9,
 
     @SerialName("10")
-    UNKNOWN_10,
+    ADDED_TO_MESSENGER,
 
     @SerialName("11")
     UNKNOWN_11,

@@ -6,6 +6,7 @@ import de.deftk.lonet.api.model.IRequestContext
 import de.deftk.lonet.api.model.IUser
 import de.deftk.lonet.api.model.Locale
 import de.deftk.lonet.api.model.feature.ServiceType
+import de.deftk.lonet.api.model.feature.filestorage.session.ISessionFile
 import de.deftk.lonet.api.utils.PlatformUtil
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.buildJsonObject
@@ -207,6 +208,71 @@ class UserApiRequest(context: IRequestContext): OperatingScopeApiRequest(context
         }
 
         return ids
+    }
+
+    fun addGetMessengerUsersRequest(getMiniatures: Boolean? = null, onlineOnly: Boolean? = null): List<Int> {
+        ensureCapacity(2)
+        val params = buildJsonObject {
+            if (getMiniatures != null)
+                put("get_miniatures", asApiBoolean(getMiniatures))
+            if (onlineOnly != null)
+                put("only_online", asApiBoolean(onlineOnly))
+        }
+        return listOf(
+            addSetFocusRequest(Focusable.MESSENGER, context.login),
+            addRequest("get_users", params)
+        )
+    }
+
+    fun addSendQuickMessageRequest(login: String, importSessionFile: ISessionFile? = null, text: String? = null): List<Int> {
+        ensureCapacity(2)
+        val params = buildJsonObject {
+            put("login", login)
+            if (importSessionFile != null)
+                put("import_session_file", importSessionFile.id)
+            if (text != null)
+                put("text", text)
+        }
+        return listOf(
+            addSetFocusRequest(Focusable.MESSENGER, context.login),
+            addRequest("send_quick_message", params)
+        )
+    }
+
+    fun addAddChatRequest(login: String): List<Int> {
+        ensureCapacity(2)
+        val params = buildJsonObject {
+            put("login", login)
+        }
+        return listOf(
+            addSetFocusRequest(Focusable.MESSENGER, context.login),
+            addRequest("join_user", params)
+        )
+    }
+
+    fun addRemoveChatRequest(login: String): List<Int> {
+        ensureCapacity(2)
+        val params = buildJsonObject {
+            put("login", login)
+        }
+        return listOf(
+            addSetFocusRequest(Focusable.MESSENGER, context.login),
+            addRequest("leave_user", params)
+        )
+    }
+
+    fun addGetHistoryRequest(exportSessionFile: Boolean? = null, startId: Int? = null): List<Int> {
+        ensureCapacity(2)
+        val params = buildJsonObject {
+            if (exportSessionFile != null)
+                put("export_session_file", asApiBoolean(exportSessionFile))
+            if (startId != null)
+                put("start_id", startId)
+        }
+        return listOf(
+            addSetFocusRequest(Focusable.MESSENGER, context.login),
+            addRequest("get_history", params)
+        )
     }
 
 }

@@ -253,6 +253,14 @@ sealed class OperatingScope : IOperatingScope {
         return LoNetClient.json.decodeFromJsonElement(subResponse["entry"]!!)
     }
 
+    override fun readQuickMessages(exportSessionFile: Boolean?, context: IRequestContext): List<QuickMessage> {
+        val request = GroupApiRequest(context)
+        val id = request.addReadQuickMessagesRequest(exportSessionFile)[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return subResponse["messages"]!!.jsonArray.map { LoNetClient.json.decodeFromJsonElement(it) }
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -501,6 +509,43 @@ data class User(
         return notifications
     }
 
+    override fun getUsers(getMiniatures: Boolean?, onlineOnly: Boolean?, context: IRequestContext): List<RemoteScope> {
+        val request = UserApiRequest(context)
+        val id = request.addGetMessengerUsersRequest(getMiniatures, onlineOnly)[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return subResponse["users"]?.jsonArray?.map { LoNetClient.json.decodeFromJsonElement(it) } ?: emptyList()
+    }
+
+    override fun sendQuickMessage(login: String, importSessionFile: ISessionFile?, text: String?, context: IRequestContext): QuickMessage {
+        val request = UserApiRequest(context)
+        val id = request.addSendQuickMessageRequest(login, importSessionFile, text)[1]
+        val response = request.fireRequest()
+        return LoNetClient.json.decodeFromJsonElement(ResponseUtil.getSubResponseResult(response.toJson(), id)["message"]!!)
+    }
+
+    override fun addChat(login: String, context: IRequestContext): RemoteScope {
+        val request = UserApiRequest(context)
+        val id = request.addAddChatRequest(login)[1]
+        val response = request.fireRequest()
+        return LoNetClient.json.decodeFromJsonElement(ResponseUtil.getSubResponseResult(response.toJson(), id)["user"]!!)
+    }
+
+    override fun removeChat(login: String, context: IRequestContext): RemoteScope {
+        val request = UserApiRequest(context)
+        val id = request.addRemoveChatRequest(login)[1]
+        val response = request.fireRequest()
+        return LoNetClient.json.decodeFromJsonElement(ResponseUtil.getSubResponseResult(response.toJson(), id)["user"]!!)
+    }
+
+    override fun getHistory(exportSessionFile: Boolean?, startId: Int?, context: IRequestContext): List<QuickMessage> {
+        val request = UserApiRequest(context)
+        val id = request.addGetHistoryRequest(exportSessionFile, startId)[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return subResponse["messages"]?.jsonArray?.map { LoNetClient.json.decodeFromJsonElement(it) } ?: emptyList()
+    }
+
     @Serializable
     data class UserData(
         val login: String,
@@ -705,13 +750,5 @@ class Group(
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return LoNetClient.json.decodeFromJsonElement(subResponse["file"]!!.jsonObject)
-    }
-
-    override fun readQuickMessages(exportSessionFile: Boolean?, context: IRequestContext): List<QuickMessage> {
-        val request = GroupApiRequest(context)
-        val id = request.addReadQuickMessagesRequest(exportSessionFile)[1]
-        val response = request.fireRequest()
-        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        return subResponse["messages"]!!.jsonArray.map { LoNetClient.json.decodeFromJsonElement(it) }
     }
 }
