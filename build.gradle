@@ -3,7 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.serialization' version '1.4.21'
 }
 
-group 'de.deftk.lonet'
+group 'de.deftk.openww.api'
 version '0.1.0-beta10'
 
 repositories {

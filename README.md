@@ -1,5 +1,4 @@
-LoNetApi is an API wrapper for the JSON API provided by lo-net².
-It might also work with other instances of WebWeaver, but this is not tested.
+OpenWebWeaver is an API wrapper for the JSON API provided by websites using WebWeaver®.
 
 ## Getting started
 
@@ -15,14 +14,14 @@ val credentials = Credentials.fromToken("<username>", "<token>")
 
 ### Simple login
 ```kotlin
-val apiContext = LoNetClient.login(credentials)
+val apiContext = WebWeaverClient.login(credentials)
 ```
 
 ### Login and create token
 ```kotlin
-val (apiContext, token) = LoNetClient.loginCreateToken("<username>", "<password>", "<title>", "<identity>")
+val (apiContext, token) = WebWeaverClient.loginCreateToken("<username>", "<password>", "<title>", "<identity>")
 ```
-Note: Title and identity are used in the lo-net² Web App to identify different tokens
+Note: Title and identity are used in the web app to identify different tokens
 
 ### Obtain user object
 ```kotlin
@@ -58,7 +57,7 @@ user.logoutDestroyToken("<token>", requestContext)
 - [ ] Statistics (admin)
 - [ ] User management (admin)
 ---
-- [ ] Messenger
+- [x] Messenger
 - [x] Receive quick messages
 ---
 - [x] Read emails
@@ -71,7 +70,7 @@ user.logoutDestroyToken("<token>", requestContext)
 - [ ] Answer emails
 ---
 - [x] Get group members
-- [ ] Send quick messages
+- [x] Send quick messages
 ---
 - [x] Get contacts
 - [x] Add contacts
@@ -83,10 +82,10 @@ user.logoutDestroyToken("<token>", requestContext)
 - [x] Edit appointments
 - [x] Delete appointments
 ---
-- [ ] Get notes
-- [ ] Add notes
-- [ ] Edit notes
-- [ ] Delete notes
+- [x] Get notes
+- [x] Add notes
+- [x] Edit notes
+- [x] Delete notes
 ---
 - [x] Read group notifications
 - [x] Add group notifications
@@ -133,4 +132,4 @@ user.logoutDestroyToken("<token>", requestContext)
 - [x] Delete system notifications
 
 ## Disclaimer
-This project is neither authorized nor endorsed by Cornelsen Verlag (lo-net²) or DigiOnline GmbH (WebWeaver).
+This project is neither authorized nor endorsed by DigiOnline GmbH (WebWeaver®).
