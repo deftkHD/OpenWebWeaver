@@ -13,7 +13,7 @@ data class QuickMessage(
     override val id: Int,
     override val from: RemoteScope,
     override val to: RemoteScope,
-    override val text: String,
+    override val text: String?,
     @Serializable(with = DateFromStringSerializer::class)
     override val date: Date,
     override val flags: String,

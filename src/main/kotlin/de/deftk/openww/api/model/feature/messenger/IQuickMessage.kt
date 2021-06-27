@@ -9,7 +9,7 @@ interface IQuickMessage {
     val id: Int
     val from: RemoteScope
     val to: RemoteScope
-    val text: String
+    val text: String?
     val date: Date
     val flags: String
     val fileName: String?
