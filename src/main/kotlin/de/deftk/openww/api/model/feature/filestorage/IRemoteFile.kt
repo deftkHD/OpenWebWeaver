@@ -14,22 +14,23 @@ interface IRemoteFile: IRemoteFileProvider, IModifiable {
     val id: String
     val type: FileType
 
-    fun getParentId(): String?
-    fun getOrdinal(): Int?
-    fun getDescription(): String?
-    fun getSize(): Long
-    fun isReadable(): Boolean?
-    fun isWritable(): Boolean?
-    fun isSparseFile(): Boolean?
-    fun getSparseKey(): String?
-    fun hasPreview(): Boolean?
-    fun isMine(): Boolean?
-    fun isShared(): Boolean?
-    fun effectiveRead(): Boolean?
-    fun effectiveCreate(): Boolean?
-    fun effectiveModify(): Boolean?
-    fun effectiveDelete(): Boolean?
-    fun getDownloadNotification(): DownloadNotification?
+    val parentId: String?
+    val ordinal: Int?
+    val description: String?
+    val size: Long
+    val readable: Boolean?
+    val writable: Boolean?
+    val sparse: Boolean?
+    val sparseKey: String?
+    val preview: Boolean?
+    val mine: Boolean?
+    val shared: Boolean?
+    val empty: Boolean?
+    val effectiveRead: Boolean?
+    val effectiveCreate: Boolean?
+    val effectiveModify: Boolean?
+    val effectiveDelete: Boolean?
+    val downloadNotification: DownloadNotification?
 
     fun download(limit: Int? = null, offset: Int? = null, context: IRequestContext): FileChunk
     fun getPreviewUrl(context: IRequestContext): FilePreviewUrl

@@ -25,10 +25,13 @@ class Courselet(
     override val isTemplate: Boolean,
     override val size: Int,
     override val created: Modification,
-    private val modified: Modification
+    @SerialName("modified")
+    private val _modified: Modification
 ) : ICourselet {
 
-    override fun getModified(): Modification = modified
+    @SerialName("_modified")
+    override var modified: Modification = _modified
+        private set
 
     override fun setSuspendDate(suspendData: String, ifLatest: Int, context: IRequestContext) {
         val request = GroupApiRequest(context)

@@ -10,6 +10,7 @@ import de.deftk.openww.api.model.feature.board.IBoardNotification
 import de.deftk.openww.api.request.GroupApiRequest
 import de.deftk.openww.api.response.ResponseUtil
 import de.deftk.openww.api.serialization.DateSerializer
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.jsonObject
@@ -18,23 +19,43 @@ import java.util.*
 @Serializable
 class BoardNotification(
     override val id: String,
-    private var title: String,
-    private var text: String,
-    private var color: BoardNotificationColor? = null,
+    @SerialName("title")
+    private val _title: String,
+    @SerialName("text")
+    private val _text: String,
+    @SerialName("color")
+    private val _color: BoardNotificationColor? = null,
+    @SerialName("killDate")
     @Serializable(with = DateSerializer::class)
-    private var killDate: Date? = null,
+    private val _killDate: Date? = null,
     override val created: Modification,
-    private var modified: Modification
+    @SerialName("modified")
+    private var _modified: Modification
 ) : IBoardNotification, IModifiable {
 
     var deleted = false
         private set
 
-    override fun getTitle(): String = title
-    override fun getText(): String = text
-    override fun getColor(): BoardNotificationColor? = color
-    override fun getKillDate(): Date? = killDate
-    override fun getModified(): Modification = modified
+    @SerialName("_title")
+    override var title: String = _title
+        private set
+
+    @SerialName("_text")
+    override var text: String = _text
+        private set
+
+    @SerialName("_color")
+    override var color: BoardNotificationColor? = _color
+        private set
+
+    @SerialName("_killDate")
+    @Serializable(with = DateSerializer::class)
+    override var killDate: Date? = _killDate
+        private set
+
+    @SerialName("_modified")
+    override var modified: Modification = _modified
+            private set
 
     override fun setTitle(title: String, boardType: BoardType, context: IRequestContext) {
         edit(title = title, boardType = boardType, context = context)

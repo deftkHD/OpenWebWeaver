@@ -6,16 +6,12 @@ import de.deftk.openww.api.model.RemoteScope
 import de.deftk.openww.api.request.handler.IRequestHandler
 
 class ApiContext(
-    private val sessionId: String,
-    private val user: User,
+    override val sessionId: String,
+    override val user: User,
     private val groups: List<Group>,
-    private val requestUrl: String,
-    private var requestHandler: IRequestHandler
+    override val requestUrl: String,
+    override var requestHandler: IRequestHandler
 ) : IApiContext {
-
-    override fun getSessionId(): String = sessionId
-
-    override fun getUser(): User = user
 
     override fun findOperatingScope(login: String): OperatingScope? {
         return groups.firstOrNull { it.login == login } ?: if (login == user.login) user else null
@@ -23,13 +19,5 @@ class ApiContext(
 
     override fun mapOperatingScope(scope: RemoteScope): IScope {
         return findOperatingScope(scope.login) ?: scope
-    }
-
-    override fun getRequestURL(): String = requestUrl
-
-    override fun getRequestHandler(): IRequestHandler = requestHandler
-
-    override fun setRequestHandler(requestHandler: IRequestHandler) {
-        this.requestHandler = requestHandler
     }
 }

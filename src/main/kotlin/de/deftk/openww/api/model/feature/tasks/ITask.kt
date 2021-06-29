@@ -8,11 +8,11 @@ interface ITask: IModifiable {
 
     val id: String
 
-    fun getTitle(): String
-    fun getDescription(): String?
-    fun getStartDate(): Date?
-    fun getEndDate(): Date?
-    fun isCompleted(): Boolean
+    val title: String
+    val description: String?
+    val startDate: Date?
+    val dueDate: Date?
+    val completed: Boolean
 
     fun setTitle(title: String, context: IRequestContext)
     fun setDescription(description: String, context: IRequestContext)

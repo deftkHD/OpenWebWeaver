@@ -29,15 +29,19 @@ class ForumPost(
     private val children: ChildrenData? = null,
     private val files: List<JsonElement> = emptyList(),
     override val created: Modification,
-    private val modified: Modification
+    @SerialName("modified")
+    private val _modified: Modification
 ): IForumPost {
 
     private val comments = mutableListOf<ForumPost>()
 
     var deleted = false
         private set
-    
-    override fun getModified(): Modification = modified
+
+    @SerialName("_modified")
+    override var modified: Modification = _modified
+        private set
+
     override fun getComments(): List<IForumPost> = comments
 
     override fun commentLoaded(comment: IForumPost) {

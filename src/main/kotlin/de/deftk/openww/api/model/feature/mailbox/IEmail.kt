@@ -7,19 +7,19 @@ interface IEmail {
 
     val id: Int
 
-    fun getSubject(): String
-    fun isUnread(): Boolean
-    fun isFlagged(): Boolean
-    fun isAnswered(): Boolean
-    fun isDeleted(): Boolean
-    fun getDate(): Date
-    fun getSize(): Int
-    fun getFrom(): List<EmailAddress>?
-    fun getTo(): List<EmailAddress>?
-    fun getCC(): List<EmailAddress>?
-    fun getPlainBody(): String?
-    fun getText(): String?
-    fun getAttachments(): List<IAttachment>?
+    val subject: String
+    val unread: Boolean
+    val flagged: Boolean
+    val answered: Boolean
+    val deleted: Boolean
+    val date: Date
+    val size: Int
+    val from: List<EmailAddress>?
+    val to: List<EmailAddress>?
+    val cc: List<EmailAddress>?
+    val plainBody: String?
+    val text: String?
+    val attachments: List<IAttachment>?
 
     fun read(folder: IEmailFolder, peek: Boolean? = null, context: IRequestContext)
     fun edit(folder: IEmailFolder, isFlagged: Boolean? = null, isUnread: Boolean? = null, context: IRequestContext)

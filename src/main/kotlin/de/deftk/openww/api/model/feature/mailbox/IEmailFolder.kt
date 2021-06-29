@@ -12,7 +12,7 @@ interface IEmailFolder {
     val isSent: Boolean
     val date: Date
 
-    fun getName(): String
+    val name: String
 
     fun getEmails(limit: Int? = null, offset: Int? = null, context: IRequestContext): List<IEmail>
     fun setName(name: String, context: IRequestContext)

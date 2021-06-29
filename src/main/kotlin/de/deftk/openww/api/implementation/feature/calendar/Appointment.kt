@@ -15,40 +15,81 @@ import java.util.*
 @Serializable
 class Appointment(
     override val id: String,
-    private var uid: String? = null,
-    private var title: String,
-    private var description: String? = null,
+    @SerialName("uid")
+    private var _uid: String? = null,
+    @SerialName("title")
+    private var _title: String,
+    @SerialName("description")
+    private var _description: String? = null,
     @SerialName("start_date")
     @Serializable(with = DateSerializer::class)
-    private var startDate: Date? = null,
+    private var _startDate: Date? = null,
     @SerialName("start_date_iso")
-    private var startDateIso: String? = null,
+    private var _startDateIso: String? = null,
     @SerialName("end_date")
     @Serializable(with = DateSerializer::class)
-    private var endDate: Date? = null,
+    private var _endDate: Date? = null,
     @SerialName("end_date_iso")
-    private var endDateIso: String? = null,
-    private var tzid: String? = null,
-    private var location: String? = null,
-    private var rrule: String? = null,
+    private var _endDateIso: String? = null,
+    @SerialName("tzid")
+    private var _tzid: String? = null,
+    @SerialName("location")
+    private var _location: String? = null,
+    @SerialName("rrule")
+    private var _rrule: String? = null,
     override val created: Modification,
-    private var modified: Modification
+    @SerialName("modified")
+    private var _modified: Modification
 ): IAppointment {
 
     var deleted = false
         private set
 
-    override fun getModified(): Modification = modified
-    override fun getTitle(): String = title
-    override fun getDescription(): String? = description
-    override fun getEndDate(): Date? = endDate
-    override fun getEndDateIso(): String? = endDateIso
-    override fun getTzid(): String? = tzid
-    override fun getLocation(): String? = location
-    override fun getRrule(): String? = rrule
-    override fun getStartDate(): Date? = startDate
-    override fun getStartDateIso(): String? = startDateIso
-    override fun getUid(): String? = uid
+    @SerialName("_modified")
+    override var modified: Modification = _modified
+        private set
+
+    @SerialName("_title")
+    override var title: String = _title
+        private set
+
+    @SerialName("_description")
+    override var description: String? = _description
+        private set
+
+    @SerialName("_end_date")
+    @Serializable(with = DateSerializer::class)
+    override var endDate: Date? = _endDate
+        private set
+
+    @SerialName("_end_date_iso")
+    override var endDateIso: String? = _endDateIso
+        private set
+
+    @SerialName("_tzid")
+    override var tzid: String? = _tzid
+        private set
+
+    @SerialName("_location")
+    override var location: String? = _location
+        private set
+
+    @SerialName("_rrule")
+    override var rrule: String? = _rrule
+        private set
+
+    @SerialName("_start_date")
+    @Serializable(with = DateSerializer::class)
+    override var startDate: Date? = _startDate
+        private set
+
+    @SerialName("_start_date_iso")
+    override var startDateIso: String? = _startDateIso
+        private set
+
+    @SerialName("_uid")
+    override var uid: String? = _uid
+        private set
 
     override fun setTitle(title: String, context: IRequestContext) = edit(title = title, context = context)
     override fun setDescription(description: String, context: IRequestContext) = edit(description = description, context = context)

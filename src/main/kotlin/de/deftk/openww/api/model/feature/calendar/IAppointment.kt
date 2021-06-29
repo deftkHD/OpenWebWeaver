@@ -8,16 +8,16 @@ interface IAppointment : IModifiable {
 
     val id: String
 
-    fun getTitle(): String
-    fun getDescription(): String?
-    fun getEndDate(): Date?
-    fun getEndDateIso(): String?
-    fun getTzid(): String?
-    fun getLocation(): String?
-    fun getRrule(): String?
-    fun getStartDate(): Date?
-    fun getStartDateIso(): String?
-    fun getUid(): String?
+    val title: String
+    val description: String?
+    val endDate: Date?
+    val endDateIso: String?
+    val tzid: String?
+    val location: String?
+    val rrule: String?
+    val startDate: Date?
+    val startDateIso: String?
+    val uid: String?
 
     fun setTitle(title: String, context: IRequestContext)
     fun setDescription(description: String, context: IRequestContext)

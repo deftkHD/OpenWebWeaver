@@ -28,54 +28,122 @@ import kotlinx.serialization.json.jsonObject
 open class RemoteFile(
     override val id: String,
     @SerialName("parent_id")
-    private val parentId: String? = null,
-    private var ordinal: Int? = null,
+    private val _parentId: String? = null,
+    @SerialName("ordinal")
+    private var _ordinal: Int? = null,
     @SerialName("name")
-    private var shadowedName: String,
-    private var description: String? = null,
+    private var _name: String,
+    @SerialName("description")
+    private var _description: String? = null,
     override val type: FileType,
-    private var size: Long,
+    @SerialName("size")
+    private var _size: Long,
+    @SerialName("readable")
     @Serializable(with = BooleanFromIntSerializer::class)
-    private var readable: Boolean? = null,
+    private var _readable: Boolean? = null,
+    @SerialName("writable")
     @Serializable(with = BooleanFromIntSerializer::class)
-    private var writable: Boolean? = null,
+    private var _writable: Boolean? = null,
+    @SerialName("sparse")
     @Serializable(with = BooleanFromIntSerializer::class)
-    private var sparse: Boolean? = null,
+    private var _sparse: Boolean? = null,
+    @SerialName("mine")
     @Serializable(with = BooleanFromIntSerializer::class)
-    private var mine: Boolean? = null,
+    private var _mine: Boolean? = null,
+    @SerialName("shared")
     @Serializable(with = BooleanFromIntSerializer::class)
-    private var shared: Boolean? = null,
+    private var _shared: Boolean? = null,
     override val created: Modification,
-    private var modified: Modification,
+    @SerialName("modified")
+    private var _modified: Modification,
     private var effective: Effectiveness,
+    @SerialName("preview")
     @Serializable(with = BooleanFromIntSerializer::class)
-    private var preview: Boolean? = null,
+    private var _preview: Boolean? = null,
+    @SerialName("empty")
     @Serializable(with = BooleanFromIntSerializer::class)
-    private var empty: Boolean? = null,
-    private var sparseKey: String? = null,
+    private var _empty: Boolean? = null,
+    @SerialName("sparseKey")
+    private var _sparseKey: String? = null,
     @SerialName("download_notification")
-    private var downloadNotification: DownloadNotification? = null
+    private var _downloadNotification: DownloadNotification? = null
 ) : IRemoteFile {
 
-    override fun getModified(): Modification = modified
-    override fun getParentId(): String? = parentId
-    override val name: String
-        get() = shadowedName
-    override fun getOrdinal(): Int? = ordinal
-    override fun getDescription(): String? = description
-    override fun getSize(): Long = size
-    override fun isReadable(): Boolean? = readable
-    override fun isWritable(): Boolean? = writable
-    override fun isSparseFile(): Boolean? = sparse
-    override fun getSparseKey(): String? = sparseKey
-    override fun hasPreview(): Boolean? = preview
-    override fun isMine(): Boolean? = mine
-    override fun isShared(): Boolean? = shared
-    override fun effectiveRead(): Boolean? = effective.read
-    override fun effectiveCreate(): Boolean? = effective.create
-    override fun effectiveModify(): Boolean? = effective.modify
-    override fun effectiveDelete(): Boolean? = effective.delete
-    override fun getDownloadNotification(): DownloadNotification? = downloadNotification
+    @SerialName("_modified")
+    override var modified: Modification = _modified
+        protected set
+
+    @SerialName("_parent_id")
+    override var parentId: String? = _parentId
+        protected set
+
+    @SerialName("_ordinal")
+    override var ordinal: Int? = _ordinal
+        protected set
+
+    @SerialName("_description")
+    override var description: String? = _description
+        protected set
+
+    @SerialName("_size")
+    override var size: Long = _size
+        protected set
+
+    @SerialName("_readable")
+    override var readable: Boolean? = _readable
+        protected set
+
+    @SerialName("_writable")
+    override var writable: Boolean? = _writable
+        protected set
+
+    @SerialName("_sparse_file")
+    override var sparse: Boolean? = _sparse
+        protected set
+
+    @SerialName("_is_empty")
+    override var empty: Boolean? = _empty
+        protected set
+
+    @SerialName("_sparse_key")
+    override var sparseKey: String? = _sparseKey
+        protected set
+
+    @SerialName("_preview")
+    override var preview: Boolean? = _preview
+        protected set
+
+    @SerialName("_mine")
+    override var mine: Boolean? = _mine
+        protected set
+
+    @SerialName("_shared")
+    override var shared: Boolean? = _shared
+        protected set
+
+    @SerialName("_effective_read")
+    override var effectiveRead: Boolean? = effective.read
+        protected set
+
+    @SerialName("_effective_create")
+    override var effectiveCreate: Boolean? = effective.create
+        protected set
+
+    @SerialName("_effective_modify")
+    override var effectiveModify: Boolean? = effective.modify
+        protected set
+
+    @SerialName("_effective_delete")
+    override var effectiveDelete: Boolean? = effective.delete
+        protected set
+
+    @SerialName("_download_notification")
+    override var downloadNotification: DownloadNotification? = _downloadNotification
+        protected set
+
+    @SerialName("_name")
+    override var name: String = _name
+        protected set
 
     override fun download(limit: Int?, offset: Int?, context: IRequestContext): FileChunk {
         requireFile()
@@ -304,7 +372,7 @@ open class RemoteFile(
 
     private fun readFrom(file: RemoteFile) {
         ordinal = file.ordinal
-        shadowedName = file.shadowedName
+        _name = file._name
         description = file.description
         size = file.size
         readable = file.readable

@@ -17,16 +17,22 @@ import kotlinx.serialization.json.jsonObject
 class SessionFile(
     override val id: String,
     override val name: String,
-    private var size: Int,
+    @SerialName("size")
+    private var _size: Int,
     @SerialName("download_url")
-    private var downloadUrl: String
+    private var _downloadUrl: String
 ): ISessionFile {
 
     var deleted = false
         private set
 
-    override fun getSize(): Int = size
-    override fun getDownloadUrl(): String = downloadUrl
+    @SerialName("_size")
+    override var size: Int = _size
+        private set
+
+    @SerialName("_download_url")
+    override var downloadUrl: String = _downloadUrl
+        private set
 
     override fun append(data: ByteArray, context: IRequestContext) {
         val request = UserApiRequest(context)

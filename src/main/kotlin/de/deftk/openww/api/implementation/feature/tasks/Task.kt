@@ -16,29 +16,52 @@ import java.util.*
 @Serializable
 class Task(
     override val id: String,
-    private var title: String,
-    private var description: String? = null,
+    @SerialName("title")
+    private var _title: String,
+    @SerialName("description")
+    private var _description: String? = null,
     @SerialName("start_date")
     @Serializable(with = NullableDateFromStringSerializer::class)
-    private var startDate: Date? = null,
+    private var _startDate: Date? = null,
     @SerialName("due_date")
     @Serializable(with = NullableDateFromStringSerializer::class)
-    private var endDate: Date? = null,
+    private var _dueDate: Date? = null,
+    @SerialName("completed")
     @Serializable(with = BooleanFromIntSerializer::class)
-    private var completed: Boolean,
+    private var _completed: Boolean,
     override val created: Modification,
-    private var modified: Modification
+    @SerialName("modified")
+    private var _modified: Modification
 ): ITask {
 
     var deleted = false
         private set
 
-    override fun getModified(): Modification = modified
-    override fun getTitle(): String = title
-    override fun getDescription(): String? = description
-    override fun getStartDate(): Date? = startDate
-    override fun getEndDate(): Date? = endDate
-    override fun isCompleted(): Boolean = completed
+    @SerialName("_modified")
+    override var modified: Modification = _modified
+        private set
+
+    @SerialName("_title")
+    override var title: String = _title
+        private set
+
+    @SerialName("_description")
+    override var description: String? = _description
+        private set
+
+    @SerialName("_start_date")
+    @Serializable(with = NullableDateFromStringSerializer::class)
+    override var startDate: Date? = _startDate
+        private set
+
+    @SerialName("_due_date")
+    @Serializable(with = NullableDateFromStringSerializer::class)
+    override var dueDate: Date? = _dueDate
+        private set
+
+    @SerialName("_completed")
+    override var completed: Boolean = _completed
+        private set
 
     override fun setTitle(title: String, context: IRequestContext) = edit(title = title, context = context)
     override fun setDescription(description: String, context: IRequestContext) = edit(description = description, context = context)
@@ -66,7 +89,7 @@ class Task(
         title = task.title
         description = task.description
         startDate = task.startDate
-        endDate = task.endDate
+        dueDate = task.dueDate
         completed = task.completed
         modified = task.modified
     }

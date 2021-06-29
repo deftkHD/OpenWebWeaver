@@ -58,7 +58,7 @@ sealed class OperatingScope : IOperatingScope {
     abstract override val effectiveRights: List<Permission>
 
     override fun getRequestContext(apiContext: IApiContext): IRequestContext =
-        RequestContext(login, apiContext.getSessionId(), apiContext.getRequestURL(), apiContext.getRequestHandler())
+        RequestContext(login, apiContext.sessionId, apiContext.requestUrl, apiContext.requestHandler)
 
     override fun getAppointments(context: IRequestContext): List<Appointment> {
         val request = OperatingScopeApiRequest(context)
@@ -70,15 +70,15 @@ sealed class OperatingScope : IOperatingScope {
 
     override fun addAppointment(appointment: IAppointment, context: IRequestContext): Appointment {
         return addAppointment(
-            appointment.getTitle(),
-            appointment.getDescription(),
-            appointment.getEndDate(),
-            appointment.getEndDateIso(),
-            appointment.getLocation(),
-            appointment.getRrule(),
-            appointment.getStartDate(),
-            appointment.getStartDateIso(),
-            appointment.getUid(),
+            appointment.title,
+            appointment.description,
+            appointment.endDate,
+            appointment.endDateIso,
+            appointment.location,
+            appointment.rrule,
+            appointment.startDate,
+            appointment.startDateIso,
+            appointment.uid,
             context
         )
     }
@@ -245,7 +245,7 @@ sealed class OperatingScope : IOperatingScope {
     }
 
     override fun addTask(task: ITask, context: IRequestContext): ITask {
-        return addTask(task.getTitle(), task.isCompleted(), task.getDescription(), task.getEndDate()?.time, task.getStartDate()?.time, context)
+        return addTask(task.title, task.completed, task.description, task.dueDate?.time, task.startDate?.time, context)
     }
 
     override fun addTask(title: String, completed: Boolean?, description: String?, dueDate: Long?, startDate: Long?, context: IRequestContext): Task {
@@ -558,7 +558,7 @@ data class User(
     }
 
     override fun addNote(note: INote, context: IRequestContext): Note {
-        return addNote(note.getText(), note.getTitle(), note.getColor(), context)
+        return addNote(note.text, note.title, note.color, context)
     }
 
     override fun addNote(text: String, title: String, color: NoteColor?, context: IRequestContext): Note {
@@ -627,7 +627,7 @@ class Group(
     }
 
     override fun addBoardNotification(notification: IBoardNotification, context: IRequestContext): BoardNotification {
-        return addBoardNotification(notification.getTitle(), notification.getText(), notification.getColor(), notification.getKillDate(), context)
+        return addBoardNotification(notification.title, notification.text, notification.color, notification.killDate, context)
     }
 
     override fun addBoardNotification(title: String, text: String, color: BoardNotificationColor?, killDate: Date?, context: IRequestContext): BoardNotification {
@@ -647,7 +647,7 @@ class Group(
     }
 
     override fun addTeacherBoardNotification(notification: IBoardNotification, context: IRequestContext): BoardNotification {
-        return addTeacherBoardNotification(notification.getTitle(), notification.getText(), notification.getColor(), notification.getKillDate(), context)
+        return addTeacherBoardNotification(notification.title, notification.text, notification.color, notification.killDate, context)
     }
 
     override fun addTeacherBoardNotification(title: String, text: String, color: BoardNotificationColor?, killDate: Date?, context: IRequestContext): BoardNotification {
@@ -667,7 +667,7 @@ class Group(
     }
 
     override fun addPupilBoardNotification(notification: IBoardNotification, context: IRequestContext): BoardNotification {
-        return addPupilBoardNotification(notification.getTitle(), notification.getText(), notification.getColor(), notification.getKillDate(), context)
+        return addPupilBoardNotification(notification.title, notification.text, notification.color, notification.killDate, context)
     }
 
     override fun addPupilBoardNotification(title: String, text: String, color: BoardNotificationColor?, killDate: Date?, context: IRequestContext): BoardNotification {

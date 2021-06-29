@@ -12,16 +12,25 @@ import kotlinx.serialization.json.decodeFromJsonElement
 
 @Serializable
 class EmailSignature(
-    private var text: String,
+    @SerialName("text")
+    private var _text: String,
     @SerialName("position_answer")
-    private var answerPosition: SignaturePosition? = null,
+    private var _answerPosition: SignaturePosition? = null,
     @SerialName("position_forward")
-    private var forwardPosition: SignaturePosition? = null
+    private var _forwardPosition: SignaturePosition? = null
 ): IEmailSignature {
 
-    override fun getText(): String = text
-    override fun getAnswerPosition(): SignaturePosition? = answerPosition
-    override fun getForwardPosition(): SignaturePosition? = forwardPosition
+    @SerialName("_text")
+    override var text: String = _text
+        private set
+
+    @SerialName("_position_answer")
+    override var answerPosition: SignaturePosition? = _answerPosition
+        private set
+
+    @SerialName("_position_forward")
+    override var forwardPosition: SignaturePosition? = _forwardPosition
+        private set
 
     override fun edit(text: String, answerPosition: SignaturePosition?, forwardPosition: SignaturePosition?, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)

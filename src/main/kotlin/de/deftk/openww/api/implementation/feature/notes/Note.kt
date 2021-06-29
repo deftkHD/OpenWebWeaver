@@ -7,29 +7,41 @@ import de.deftk.openww.api.model.feature.notes.INote
 import de.deftk.openww.api.model.feature.notes.NoteColor
 import de.deftk.openww.api.request.UserApiRequest
 import de.deftk.openww.api.response.ResponseUtil
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.decodeFromJsonElement
 
 @Serializable
 class Note(
     override val id: String,
-    private var title: String,
-    private var text: String,
-    private var color: NoteColor? = null,
+    @SerialName("title")
+    private var _title: String,
+    @SerialName("text")
+    private var _text: String,
+    @SerialName("color")
+    private var _color: NoteColor? = null,
     override val created: Modification,
-    private var modified: Modification
+    @SerialName("modified")
+    private var _modified: Modification
 ) : INote {
 
     var deleted = false
         private set
 
-    override fun getModified(): Modification = modified
+    @SerialName("_modified")
+    override var modified: Modification = _modified
+        private set
 
-    override fun getTitle(): String = title
+    @SerialName("_title")
+    override var title: String = _title
+        private set
 
-    override fun getText(): String = text
+    @SerialName("_text")
+    override var text: String = _text
+        private set
 
-    override fun getColor(): NoteColor? = color
+    @SerialName("_color")
+    override var color: NoteColor? = _color
 
     override fun edit(title: String?, text: String?, color: NoteColor?, context: IRequestContext) {
         val request = UserApiRequest(context)

@@ -10,8 +10,8 @@ interface ISessionFile {
     val id: String
     val name: String
 
-    fun getSize(): Int
-    fun getDownloadUrl(): String
+    val size: Int
+    val downloadUrl: String
 
     fun append(data: ByteArray, context: IRequestContext)
     fun download(limit: Int? = null, offset: Int? = null, context: IRequestContext): FileChunk

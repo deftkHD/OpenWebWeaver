@@ -91,7 +91,8 @@ class Contact(
     @SerialName("webpage")
     private var webPage: String? = null,
     override val created: Modification,
-    private var modified: Modification
+    @SerialName("modified")
+    private var _modified: Modification
 ) : IContact {
 
     var deleted = false
@@ -140,7 +141,10 @@ class Contact(
     override fun getTitle(): String? = title
     override fun getUid(): String? = uid
     override fun getWebPage(): String? = webPage
-    override fun getModified(): Modification = modified
+
+    @SerialName("_modified")
+    override var modified: Modification = _modified
+        private set
 
     override fun edit(
         birthday: String?,

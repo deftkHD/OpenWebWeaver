@@ -4,6 +4,7 @@ import de.deftk.openww.api.model.IRequestContext
 import de.deftk.openww.api.model.feature.courselets.ICourseletMapping
 import de.deftk.openww.api.request.GroupApiRequest
 import de.deftk.openww.api.response.ResponseUtil
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
@@ -11,10 +12,12 @@ import kotlinx.serialization.json.decodeFromJsonElement
 @Serializable
 class CourseletMapping(
     override val id: Int,
-    private var name: String
+    @SerialName("name")
+    private var _name: String
 ) : ICourseletMapping {
 
-    override fun getName(): String = name
+    @SerialName("_name")
+    override var name: String = _name
 
     override fun setName(name: String, context: IRequestContext) {
         val request = GroupApiRequest(context)

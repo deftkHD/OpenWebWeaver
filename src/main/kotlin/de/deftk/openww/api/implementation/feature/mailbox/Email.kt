@@ -18,44 +18,91 @@ import java.util.*
 @Serializable
 class Email(
     override val id: Int,
-    private var subject: String,
+    @SerialName("subject")
+    private var _subject: String,
     @SerialName("is_unread")
     @Serializable(with = BooleanFromIntSerializer::class)
-    private var unread: Boolean,
+    private var _unread: Boolean,
     @SerialName("is_flagged")
     @Serializable(with = BooleanFromIntSerializer::class)
-    private var flagged: Boolean,
+    private var _flagged: Boolean,
     @SerialName("is_answered")
     @Serializable(with = BooleanFromIntSerializer::class)
-    private var answered: Boolean,
+    private var _answered: Boolean,
     @SerialName("is_deleted")
     @Serializable(with = BooleanFromIntSerializer::class)
-    private var deleted: Boolean,
+    private var _deleted: Boolean,
+    @SerialName("date")
     @Serializable(with = DateSerializer::class)
-    private var date: Date,
-    private var size: Int,
-    private var from: List<EmailAddress>? = null,
-    private var to: List<EmailAddress>? = null,
-    private var cc: List<EmailAddress>? = null,
+    private var _date: Date,
+    @SerialName("size")
+    private var _size: Int,
+    @SerialName("from")
+    private var _from: List<EmailAddress>? = null,
+    @SerialName("to")
+    private var _to: List<EmailAddress>? = null,
+    @SerialName("cc")
+    private var _cc: List<EmailAddress>? = null,
     @SerialName("body_plain")
-    private var plainBody: String? = null,
-    private var text: String? = null,
-    private var files: List<Attachment>? = null
+    private var _plainBody: String? = null,
+    @SerialName("text")
+    private var _text: String? = null,
+    @SerialName("files")
+    private var _files: List<Attachment>? = null
 ) : IEmail {
 
-    override fun getSubject(): String = subject
-    override fun isUnread(): Boolean = unread
-    override fun isFlagged(): Boolean = flagged
-    override fun isAnswered(): Boolean = answered
-    override fun isDeleted(): Boolean = deleted
-    override fun getDate(): Date = date
-    override fun getSize(): Int = size
-    override fun getFrom(): List<EmailAddress>? = from
-    override fun getTo(): List<EmailAddress>? = to
-    override fun getCC(): List<EmailAddress>? = cc
-    override fun getPlainBody(): String? = plainBody
-    override fun getText(): String? = text
-    override fun getAttachments(): List<IAttachment>? = files
+    @SerialName("_subject")
+    override var subject: String = _subject
+        private set
+
+    @SerialName("_is_unread")
+    override var unread: Boolean = _unread
+        private set
+
+    @SerialName("_is_flagged")
+    override var flagged: Boolean = _flagged
+        private set
+
+    @SerialName("_is_answered")
+    override var answered: Boolean = _answered
+            private set
+
+    @SerialName("_is_deleted")
+    override var deleted: Boolean = _deleted
+        private set
+
+    @SerialName("_date")
+    @Serializable(with = DateSerializer::class)
+    override var date: Date = _date
+        private set
+
+    @SerialName("_size")
+    override var size: Int = _size
+        private set
+
+    @SerialName("_from")
+    override var from: List<EmailAddress>? = _from
+        private set
+
+    @SerialName("_to")
+    override var to: List<EmailAddress>? = _to
+        private set
+
+    @SerialName("_cc")
+    override var cc: List<EmailAddress>? = _cc
+        private set
+
+    @SerialName("_body_plain")
+    override var plainBody: String? = _plainBody
+        private set
+
+    @SerialName("_text")
+    override var text: String? = _text
+        private set
+
+    @SerialName("_files")
+    override var attachments: List<IAttachment>? = _files
+        private set
 
     override fun read(folder: IEmailFolder, peek: Boolean?, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
@@ -104,7 +151,7 @@ class Email(
         cc = email.cc
         plainBody = email.plainBody
         text = email.text
-        files = email.files
+        attachments = email.attachments
     }
 
     override fun equals(other: Any?): Boolean {

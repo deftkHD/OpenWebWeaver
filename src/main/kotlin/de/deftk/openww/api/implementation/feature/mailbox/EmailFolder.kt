@@ -15,7 +15,8 @@ import java.util.*
 @Serializable
 class EmailFolder(
     override val id: String,
-    private var name: String,
+    @SerialName("name")
+    private var _name: String,
     @SerialName("is_inbox")
     override val isInbox: Boolean,
     @SerialName("is_trash")
@@ -29,7 +30,9 @@ class EmailFolder(
     override val date: Date
 ): IEmailFolder {
 
-    override fun getName(): String = name
+    @SerialName("_name")
+    override var name: String = _name
+        private set
 
     override fun getEmails(limit: Int?, offset: Int?, context: IRequestContext): List<Email> {
         val request = OperatingScopeApiRequest(context)

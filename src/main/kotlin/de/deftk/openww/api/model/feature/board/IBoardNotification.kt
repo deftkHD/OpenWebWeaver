@@ -8,10 +8,10 @@ interface IBoardNotification: IModifiable {
 
     val id: String
 
-    fun getTitle(): String
-    fun getText(): String
-    fun getColor(): BoardNotificationColor?
-    fun getKillDate(): Date?
+    val title: String
+    val text: String
+    val color: BoardNotificationColor?
+    val killDate: Date?
 
     fun setTitle(title: String, boardType: BoardType = BoardType.ALL, context: IRequestContext)
     fun setText(text: String, boardType: BoardType = BoardType.ALL, context: IRequestContext)

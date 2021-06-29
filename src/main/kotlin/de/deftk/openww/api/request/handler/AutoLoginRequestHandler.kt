@@ -33,13 +33,13 @@ class AutoLoginRequestHandler<T : IApiContext>(private val handler: LoginHandler
                             val params = methodEntries["params"]!!.jsonObject
                             val paramEntries = params.entries.map { Pair(it.key, it.value) }.toMap().toMutableMap()
                             paramEntries.remove("session_id")
-                            paramEntries["session_id"] = JsonPrimitive(apiContext.getSessionId())
+                            paramEntries["session_id"] = JsonPrimitive(apiContext.sessionId)
                             methodEntries["params"] = JsonObject(paramEntries)
                             requestContent[index] = JsonObject(methodEntries)
                         }
                     }
                 }
-                context.sessionId = apiContext.getSessionId()
+                context.sessionId = apiContext.sessionId
                 performApiRequestIntern(request, context)
             } else throw e
         }
