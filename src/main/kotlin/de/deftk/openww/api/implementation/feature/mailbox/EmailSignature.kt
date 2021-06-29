@@ -23,7 +23,7 @@ class EmailSignature(
     override fun getAnswerPosition(): SignaturePosition? = answerPosition
     override fun getForwardPosition(): SignaturePosition? = forwardPosition
 
-    override fun edit(text: String, answerPosition: SignaturePosition?, forwardPosition: SignaturePosition?, context: IRequestContext) {
+    override fun edit(text: String, answerPosition: SignaturePosition, forwardPosition: SignaturePosition, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
         val id = request.addSetEmailSignatureRequest(text, answerPosition, forwardPosition)[1]
         val response = request.fireRequest()

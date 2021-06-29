@@ -205,14 +205,14 @@ sealed class OperatingScope : IOperatingScope {
 
     override fun setReadable(readable: Boolean, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
-        request.addSetFolderRequest("/", readable = readable)
+        request.addSetFolderRequest("/", null, name, readable, null, null, null, null)
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
     }
 
     override fun setWritable(writable: Boolean, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
-        request.addSetFolderRequest("/", writable = writable)
+        request.addSetFolderRequest("/", null, name, null, null, null, null, writable)
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
     }

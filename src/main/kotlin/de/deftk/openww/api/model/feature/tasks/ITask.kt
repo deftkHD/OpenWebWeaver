@@ -20,7 +20,7 @@ interface ITask: IModifiable {
     fun setEndDate(endDate: Date, context: IRequestContext)
     fun setCompleted(completed: Boolean, context: IRequestContext)
 
-    fun edit(title: String? = null, description: String? = null, completed: Boolean? = null, startDate: Date? = null, endDate: Date? = null, context: IRequestContext)
+    fun edit(title: String, description: String? = null, completed: Boolean? = null, startDate: Date? = null, endDate: Date? = null, context: IRequestContext)
     fun delete(context: IRequestContext)
 
 }

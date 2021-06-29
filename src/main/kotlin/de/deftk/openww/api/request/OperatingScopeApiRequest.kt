@@ -33,12 +33,9 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
     fun addSetFileStorageSettingsRequest(uploadNotificationAddLogin: String?, uploadNotificationDeleteLogin: String?, selfUploadNotification: Boolean? = null, login: String = context.login): List<Int> {
         ensureCapacity(2)
         val requestProperties = buildJsonObject {
-            if (uploadNotificationAddLogin != null)
-                put("upload_notification_add_login", uploadNotificationAddLogin)
-            if (uploadNotificationDeleteLogin != null)
-                put("upload_notification_delete_login", uploadNotificationDeleteLogin)
-            if (selfUploadNotification != null)
-                put("upload_notification_me", asApiBoolean(selfUploadNotification))
+            put("upload_notification_add_login", uploadNotificationAddLogin)
+            put("upload_notification_delete_login", uploadNotificationDeleteLogin)
+            put("upload_notification_me", asApiBoolean(selfUploadNotification))
         }
         return listOf(
             addSetFocusRequest(Focusable.FILES, login),
@@ -222,17 +219,17 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
         )
     }
 
-    fun addSetFileRequest(fileId: String, description: String? = null, downloadNotificationAddLogin: String? = null, downloadNotificationDeleteLogin: String? = null, downloadNotificationMe: Boolean? = null, name: String? = null, folderId: String? = null, login: String = context.login): List<Int> {
+    fun addSetFileRequest(fileId: String, description: String? = null, downloadNotificationAddLogin: String? = null, downloadNotificationDeleteLogin: String? = null, downloadNotificationMe: Boolean? = null, name: String, folderId: String, login: String = context.login): List<Int> {
         ensureCapacity(2)
         val requestProperties = buildJsonObject {
             put("id", fileId)
-            if (description != null) put("description", description)
-            if (downloadNotificationAddLogin != null) put("download_notification_add_login", downloadNotificationAddLogin)
-            if (downloadNotificationDeleteLogin != null) put("download_notification_delete_login", downloadNotificationDeleteLogin)
-            if (downloadNotificationMe != null) put("download_notification_me", asApiBoolean(downloadNotificationMe))
-            if (name != null) put("name", name)
-            if (folderId != null) put("folder_id", name)
-            if (downloadNotificationMe != null) put("download_notification_me", asApiBoolean(downloadNotificationMe))
+            put("description", description)
+            put("download_notification_add_login", downloadNotificationAddLogin)
+            put("download_notification_delete_login", downloadNotificationDeleteLogin)
+            put("download_notification_me", asApiBoolean(downloadNotificationMe))
+            put("name", name)
+            put("folder_id", folderId)
+            put("download_notification_me", asApiBoolean(downloadNotificationMe))
         }
         return listOf(
             addSetFocusRequest(Focusable.FILES, login),
@@ -240,17 +237,17 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
         )
     }
 
-    fun addSetFolderRequest(folderId: String, description: String? = null, name: String? = null, readable: Boolean? = null, uploadNotificationAddLogin: String? = null, uploadNotificationDeleteLogin: String? = null, uploadNotificationMe: Boolean? = null, writable: Boolean? = null, login: String = context.login): List<Int> {
+    fun addSetFolderRequest(folderId: String, description: String? = null, name: String, readable: Boolean? = null, uploadNotificationAddLogin: String? = null, uploadNotificationDeleteLogin: String? = null, uploadNotificationMe: Boolean? = null, writable: Boolean? = null, login: String = context.login): List<Int> {
         ensureCapacity(2)
         val requestProperties = buildJsonObject {
             put("id", folderId)
-            if (description != null) put("description", description)
-            if (name != null) put("name", name)
-            if (readable != null) put("readable", asApiBoolean(readable))
-            if (uploadNotificationAddLogin != null) put("upload_notification_add_login", uploadNotificationAddLogin)
-            if (uploadNotificationDeleteLogin != null) put("upload_notification_delete_login", uploadNotificationDeleteLogin)
-            if (uploadNotificationMe != null) put("upload_notification_me", asApiBoolean(uploadNotificationMe))
-            if (writable != null) put("writable", asApiBoolean(writable))
+            put("description", description)
+            put("name", name)
+            put("readable", asApiBoolean(readable))
+            put("upload_notification_add_login", uploadNotificationAddLogin)
+            put("upload_notification_delete_login", uploadNotificationDeleteLogin)
+            put("upload_notification_me", asApiBoolean(uploadNotificationMe))
+            put("writable", asApiBoolean(writable))
         }
         return listOf(
             addSetFocusRequest(Focusable.FILES, login),
@@ -317,12 +314,11 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
         )
     }
 
-    fun addSetEmailFolderRequest(folderId: String, name: String?, login: String = context.login): List<Int> {
+    fun addSetEmailFolderRequest(folderId: String, name: String, login: String = context.login): List<Int> {
         ensureCapacity(2)
         val requestParams = buildJsonObject {
             put("folder_id", folderId)
-            if (name != null)
-                put("name", name)
+            put("name", name)
         }
         return listOf(
             addSetFocusRequest(Focusable.MAILBOX, login),
@@ -378,15 +374,13 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
         )
     }
 
-    fun addSetEmailRequest(folderId: String, messageId: Int, isFlagged: Boolean?, isUnread: Boolean?, login: String = context.login): List<Int> {
+    fun addSetEmailRequest(folderId: String, messageId: Int, isFlagged: Boolean, isUnread: Boolean, login: String = context.login): List<Int> {
         ensureCapacity(2)
         val requestParams = buildJsonObject {
             put("folder_id", folderId)
             put("message_id", messageId)
-            if (isFlagged != null)
-                put("is_flagged", asApiBoolean(isFlagged))
-            if (isUnread != null)
-                put("is_unread", asApiBoolean(isUnread))
+            put("is_flagged", asApiBoolean(isFlagged))
+            put("is_unread", asApiBoolean(isUnread))
         }
         return listOf(
             addSetFocusRequest(Focusable.MAILBOX, login),
@@ -440,14 +434,12 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
         )
     }
 
-    fun addSetEmailSignatureRequest(text: String, positionAnswer: SignaturePosition?, positionForward: SignaturePosition?, login: String = context.login): List<Int> {
+    fun addSetEmailSignatureRequest(text: String, positionAnswer: SignaturePosition, positionForward: SignaturePosition, login: String = context.login): List<Int> {
         ensureCapacity(2)
         val requestParams = buildJsonObject {
             put("text", text)
-            if (positionAnswer != null)
-                put("position_answer", WebWeaverClient.json.encodeToJsonElement(positionAnswer))
-            if (positionForward != null)
-                put("position_forward", WebWeaverClient.json.encodeToJsonElement(positionForward))
+            put("position_answer", WebWeaverClient.json.encodeToJsonElement(positionAnswer))
+            put("position_forward", WebWeaverClient.json.encodeToJsonElement(positionForward))
         }
         return listOf(
             addSetFocusRequest(Focusable.MAILBOX, login),
@@ -482,20 +474,15 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
         )
     }
 
-    fun addSetTaskRequest(id: String, completed: Boolean? = null, description: String? = null, dueDate: Long? = null, startDate: Long? = null, title: String? = null, login: String = context.login): List<Int> {
+    fun addSetTaskRequest(id: String, completed: Boolean? = null, description: String? = null, dueDate: Long? = null, startDate: Long? = null, title: String, login: String = context.login): List<Int> {
         ensureCapacity(2)
         val requestParams = buildJsonObject {
             put("id", id)
-            if (completed != null)
-                put("completed", asApiBoolean(completed))
-            if (description != null)
-                put("description", description)
-            if (dueDate != null)
-                put("due_date", dueDate / 1000)
-            if (startDate != null)
-                put("start_date", startDate / 1000)
-            if (title != null)
-                put("title", title)
+            put("completed", asApiBoolean(completed))
+            put("description", description)
+            put("due_date", if (dueDate != null) JsonPrimitive(dueDate / 1000) else JsonNull)
+            put("start_date", if (startDate != null) JsonPrimitive(startDate / 1000) else JsonNull)
+            put("title", title)
         }
         return listOf(
             addSetFocusRequest(Focusable.TASKS, login),
@@ -579,49 +566,49 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
         ensureCapacity(2)
         val requestProperties = buildJsonObject {
             put("id", id)
-            if (birthday != null) put("birthday", birthday)
-            if (businessCity != null) put("businesscity", businessCity)
-            if (businessCoords != null) put("businesscoords", businessCoords)
-            if (businessCountry != null) put("businesscountry", businessCountry)
-            if (businessFax != null) put("businessfax", businessFax)
-            if (businessPhone != null) put("businessphone", businessPhone)
-            if (businessPostalCode != null) put("businesspostalcode", businessPostalCode)
-            if (businessState != null) put("businessstate", businessState)
-            if (businessStreet != null) put("businessstreet", businessStreet)
-            if (businessStreet2 != null) put("businessstreet2", businessStreet2)
-            if (businessStreet3 != null) put("businesstreet3", businessStreet3)
-            if (categories != null) put("categories", categories)
-            if (company != null) put("company", company)
-            if (companyType != null) put("companytype", companyType)
-            if (emailAddress != null) put("emailaddress", emailAddress)
-            if (email2Address != null) put("email2address", email2Address)
-            if (email3Address != null) put("email3address", email3Address)
-            if (firstName != null) put("firstname", firstName)
-            if (fullName != null) put("fullname", fullName)
-            if (gender != null) put("gender", WebWeaverClient.json.encodeToJsonElement(gender).jsonPrimitive.content.toInt())
-            if (hobby != null) put("hobby", hobby)
-            if (homeCity != null) put("homecity", homeCity)
-            if (homeCoords != null) put("homecoords", homeCoords)
-            if (homeCountry != null) put("homecountry", homeCountry)
-            if (homeFax != null) put("homefax", homeFax)
-            if (homePhone != null) put("homephone", homePhone)
-            if (homePostalCode != null) put("homepostalcode", homePostalCode)
-            if (homeState != null) put("homestate", homeState)
-            if (homeStreet != null) put("homestreet", homeStreet)
-            if (homeStreet2 != null) put("homestreet2", homeStreet2)
-            if (homeStreet3 != null) put("homestreet3", homeStreet3)
-            if (jobTitle != null) put("jobtitle", jobTitle)
-            if (jobTitle2 != null) put("jobtitle2", jobTitle2)
-            if (lastName != null) put("lastname", lastName)
-            if (middleName != null) put("middlename", middleName)
-            if (mobilePhone != null) put("mobilephone", mobilePhone)
-            if (nickName != null) put("nickname", nickName)
-            if (notes != null) put("notes", notes)
-            if (subjects != null) put("subjects", subjects)
-            if (suffix != null) put("suffix", suffix)
-            if (title != null) put("title", title)
-            if (uid != null) put("uid", uid)
-            if (webPage != null) put("webpage", webPage)
+            put("birthday", birthday)
+            put("businesscity", businessCity)
+            put("businesscoords", businessCoords)
+            put("businesscountry", businessCountry)
+            put("businessfax", businessFax)
+            put("businessphone", businessPhone)
+            put("businesspostalcode", businessPostalCode)
+            put("businessstate", businessState)
+            put("businessstreet", businessStreet)
+            put("businessstreet2", businessStreet2)
+            put("businesstreet3", businessStreet3)
+            put("categories", categories)
+            put("company", company)
+            put("companytype", companyType)
+            put("emailaddress", emailAddress)
+            put("email2address", email2Address)
+            put("email3address", email3Address)
+            put("firstname", firstName)
+            put("fullname", fullName)
+            put("gender", if (gender != null) WebWeaverClient.json.encodeToJsonElement(gender).jsonPrimitive.content.toInt() else 0)
+            put("hobby", hobby)
+            put("homecity", homeCity)
+            put("homecoords", homeCoords)
+            put("homecountry", homeCountry)
+            put("homefax", homeFax)
+            put("homephone", homePhone)
+            put("homepostalcode", homePostalCode)
+            put("homestate", homeState)
+            put("homestreet", homeStreet)
+            put("homestreet2", homeStreet2)
+            put("homestreet3", homeStreet3)
+            put("jobtitle", jobTitle)
+            put("jobtitle2", jobTitle2)
+            put("lastname", lastName)
+            put("middlename", middleName)
+            put("mobilephone", mobilePhone)
+            put("nickname", nickName)
+            put("notes", notes)
+            put("subjects", subjects)
+            put("suffix", suffix)
+            put("title", title)
+            put("uid", uid)
+            put("webpage", webPage)
         }
         return listOf(
             addSetFocusRequest(Focusable.ADDRESSES, login),
@@ -666,18 +653,18 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
         )
     }
 
-    fun addSetAppointmentRequest(id: String, title: String? = null, description: String? = null, endDate: Long? = null, endDateIso: String? = null, location: String? = null, rrule: String? = null, startDate: Long? = null, startDateIso: String? = null, login: String = context.login): List<Int> {
+    fun addSetAppointmentRequest(id: String, title: String, description: String? = null, endDate: Long? = null, endDateIso: String? = null, location: String? = null, rrule: String? = null, startDate: Long? = null, startDateIso: String? = null, login: String = context.login): List<Int> {
         ensureCapacity(2)
         val requestProperties = buildJsonObject {
             put("id", id)
-            if (title != null) put("title", title)
-            if (description != null) put("description", description)
-            if (endDate != null) put("end_date", endDate / 1000)
-            if (endDateIso != null) put("end_date_iso", endDateIso)
-            if (location != null) put("location", location)
-            if (rrule != null) put("rrule", rrule)
-            if (startDate != null) put("start_date", startDate / 1000)
-            if (startDateIso != null) put("start_date_iso", startDateIso)
+            put("title", title)
+            put("description", description)
+            put("end_date", if (endDate != null) JsonPrimitive(endDate / 1000) else JsonNull)
+            put("end_date_iso", endDateIso)
+            put("location", location)
+            put("rrule", rrule)
+            put("start_date", if (startDate != null) JsonPrimitive(startDate / 1000) else JsonNull)
+            put("start_date_iso", startDateIso)
         }
         return listOf(
             addSetFocusRequest(Focusable.CALENDAR, login),

@@ -9,10 +9,7 @@ import de.deftk.openww.api.model.feature.ServiceType
 import de.deftk.openww.api.model.feature.filestorage.session.ISessionFile
 import de.deftk.openww.api.model.feature.notes.NoteColor
 import de.deftk.openww.api.utils.PlatformUtil
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.encodeToJsonElement
-import kotlinx.serialization.json.put
+import kotlinx.serialization.json.*
 
 class UserApiRequest(context: IRequestContext): OperatingScopeApiRequest(context) {
 
@@ -298,16 +295,13 @@ class UserApiRequest(context: IRequestContext): OperatingScopeApiRequest(context
         )
     }
 
-    fun addSetNoteRequest(id: String, text: String?, title: String?, color: NoteColor?): List<Int> {
+    fun addSetNoteRequest(id: String, text: String, title: String, color: NoteColor?): List<Int> {
         ensureCapacity(2)
         val params = buildJsonObject {
             put("id", id)
-            if (text != null)
-                put("text", text)
-            if (title != null)
-                put("title", title)
-            if (color != null)
-                put("color", WebWeaverClient.json.encodeToJsonElement(color))
+            put("text", text)
+            put("title", title)
+            put("color", if (color != null) WebWeaverClient.json.encodeToJsonElement(color) else JsonNull)
         }
         return listOf(
             addSetFocusRequest(Focusable.NOTES, context.login),

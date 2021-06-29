@@ -4,9 +4,7 @@ import de.deftk.openww.api.WebWeaverClient
 import de.deftk.openww.api.model.IOperatingScope
 import de.deftk.openww.api.model.IRequestContext
 import de.deftk.openww.api.response.ApiResponse
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.put
+import kotlinx.serialization.json.*
 
 open class ApiRequest {
 
@@ -66,8 +64,8 @@ open class ApiRequest {
 
     protected fun currentRequest() = requests.last()
 
-    protected fun asApiBoolean(boolean: Boolean): Int {
-        return if (boolean) 1 else 0
+    protected fun asApiBoolean(boolean: Boolean?): JsonElement {
+        return if (boolean ?: return JsonNull) JsonPrimitive(1) else JsonPrimitive(0)
     }
 
 }

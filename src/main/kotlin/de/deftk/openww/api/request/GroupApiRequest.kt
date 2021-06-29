@@ -168,8 +168,7 @@ class GroupApiRequest(context: IRequestContext): OperatingScopeApiRequest(contex
         val requestParams = buildJsonObject {
             put("id", id)
             put("suspend_data", suspendData)
-            if (ifLatest != null)
-                put("if_latest", ifLatest)
+            put("if_latest", ifLatest) //TODO not sure whether nullable or not
         }
         return listOf(
             addSetFocusRequest(Focusable.COURSELETS, login),
@@ -358,18 +357,14 @@ class GroupApiRequest(context: IRequestContext): OperatingScopeApiRequest(contex
         )
     }
 
-    fun addSetTeacherBoardNotificationRequest(id: String, title: String? = null, text: String? = null, color: BoardNotificationColor? = null, killDate: Long? = null, login: String = context.login): List<Int> {
+    fun addSetTeacherBoardNotificationRequest(id: String, title: String, text: String, color: BoardNotificationColor? = null, killDate: Long? = null, login: String = context.login): List<Int> {
         ensureCapacity(2)
         val requestParams = buildJsonObject {
             put("id", id)
-            if (title != null)
-                put("title", title)
-            if (text != null)
-                put("text", text)
-            if (color != null)
-                put("color", color.serialId)
-            if (killDate != null)
-                put("kill_date", killDate / 1000)
+            put("title", title)
+            put("text", text)
+            put("color", color?.serialId)
+            put("kill_date", if (killDate != null) JsonPrimitive(killDate / 1000) else JsonNull)
         }
         return listOf(
             addSetFocusRequest(Focusable.BOARD_TEACHER, login),
@@ -404,18 +399,14 @@ class GroupApiRequest(context: IRequestContext): OperatingScopeApiRequest(contex
         )
     }
 
-    fun addSetPupilBoardNotificationRequest(id: String, title: String? = null, text: String? = null, color: BoardNotificationColor? = null, killDate: Long? = null, login: String = context.login): List<Int> {
+    fun addSetPupilBoardNotificationRequest(id: String, title: String, text: String, color: BoardNotificationColor? = null, killDate: Long? = null, login: String = context.login): List<Int> {
         ensureCapacity(2)
         val requestParams = buildJsonObject {
             put("id", id)
-            if (title != null)
-                put("title", title)
-            if (text != null)
-                put("text", text)
-            if (color != null)
-                put("color", color.serialId)
-            if (killDate != null)
-                put("kill_date", killDate / 1000)
+            put("title", title)
+            put("text", text)
+            put("color", color?.serialId)
+            put("kill_date", if (killDate != null) JsonPrimitive(killDate / 1000) else JsonNull)
         }
         return listOf(
             addSetFocusRequest(Focusable.BOARD_PUPIL, login),
@@ -450,18 +441,14 @@ class GroupApiRequest(context: IRequestContext): OperatingScopeApiRequest(contex
         )
     }
 
-    fun addSetBoardNotificationRequest(id: String, title: String? = null, text: String? = null, color: BoardNotificationColor? = null, killDate: Long? = null, login: String = context.login): List<Int> {
+    fun addSetBoardNotificationRequest(id: String, title: String, text: String, color: BoardNotificationColor? = null, killDate: Long? = null, login: String = context.login): List<Int> {
         ensureCapacity(2)
         val requestParams = buildJsonObject {
             put("id", id)
-            if (title != null)
-                put("title", title)
-            if (text != null)
-                put("text", text)
-            if (color != null)
-                put("color", color.serialId)
-            if (killDate != null)
-                put("kill_date", killDate / 1000)
+            put("title", title)
+            put("text", text)
+            put("color", color?.serialId)
+            put("kill_date", if (killDate != null) JsonPrimitive(killDate / 1000) else JsonNull)
         }
         return listOf(
             addSetFocusRequest(Focusable.BOARD, login),

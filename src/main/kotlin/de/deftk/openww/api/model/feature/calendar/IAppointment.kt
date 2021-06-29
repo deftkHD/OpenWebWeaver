@@ -30,7 +30,7 @@ interface IAppointment : IModifiable {
     fun setUid(uid: String, context: IRequestContext)
 
     fun edit(
-        title: String? = null,
+        title: String,
         description: String? = null,
         endDate: Date? = null,
         endDateIso: String? = null,
