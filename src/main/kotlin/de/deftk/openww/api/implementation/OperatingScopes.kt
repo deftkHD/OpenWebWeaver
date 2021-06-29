@@ -408,7 +408,7 @@ data class User(
         addToSentFolder: Boolean?,
         cc: String?,
         bcc: String?,
-        importSessionFiles: Array<JsonElement>?,
+        importSessionFiles: List<ISessionFile>?,
         referenceFolderId: String?,
         referenceMessageId: Int?,
         referenceMode: ReferenceMode?,
@@ -416,7 +416,7 @@ data class User(
         context: IRequestContext
     ) {
         val request = OperatingScopeApiRequest(context)
-        request.addSendEmailRequest(to, subject, plainBody, text, bcc, cc)
+        request.addSendEmailRequest(to, subject, plainBody, text, bcc, cc, importSessionFiles, referenceFolderId, referenceMessageId, referenceMode)
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
     }

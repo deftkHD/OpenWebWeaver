@@ -4,11 +4,11 @@ import de.deftk.openww.api.WebWeaverClient
 import de.deftk.openww.api.model.IRequestContext
 import de.deftk.openww.api.model.feature.contacts.Gender
 import de.deftk.openww.api.model.feature.filestorage.filter.SearchMode
+import de.deftk.openww.api.model.feature.filestorage.session.ISessionFile
+import de.deftk.openww.api.model.feature.mailbox.ReferenceMode
 import de.deftk.openww.api.model.feature.mailbox.SignaturePosition
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.encodeToJsonElement
-import kotlinx.serialization.json.put
+import kotlinx.serialization.json.*
 
 open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(context) {
 
@@ -278,18 +278,27 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
         )
     }
 
-    fun addSendEmailRequest(to: String, subject: String, plainBody: String, text: String?, bcc: String?, cc: String?, login: String = context.login): List<Int> {
+    fun addSendEmailRequest(to: String, subject: String, plainBody: String?, text: String?, bcc: String?, cc: String?, attachments: List<ISessionFile>?, referenceFolderId: String?, referenceMessageId: Int?, referenceMode: ReferenceMode?, login: String = context.login): List<Int> {
         ensureCapacity(2)
         val requestParams = buildJsonObject {
             put("to", to)
             put("subject", subject)
-            put("body_plain", plainBody)
+            if (plainBody != null)
+                put("body_plain", plainBody)
             if (text != null)
                 put("text", text)
             if (bcc != null)
                 put("bcc", bcc)
             if (cc != null)
                 put("cc", cc)
+            if (attachments != null)
+                put("attachments", buildJsonArray { attachments.forEach { attachment -> add(attachment.id) } })
+            if (referenceFolderId != null)
+                put("reference_folder_id", referenceFolderId)
+            if (referenceMessageId != null)
+                put("reference_message_id", referenceMessageId)
+            if (referenceMode != null)
+                put("reference_mode", WebWeaverClient.json.encodeToJsonElement(referenceMode))
         }
         return listOf(
             addSetFocusRequest(Focusable.MAILBOX, login),

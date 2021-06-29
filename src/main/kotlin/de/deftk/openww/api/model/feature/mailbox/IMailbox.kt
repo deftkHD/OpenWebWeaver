@@ -2,7 +2,7 @@ package de.deftk.openww.api.model.feature.mailbox
 
 import de.deftk.openww.api.model.IRequestContext
 import de.deftk.openww.api.model.feature.Quota
-import kotlinx.serialization.json.JsonElement
+import de.deftk.openww.api.model.feature.filestorage.session.ISessionFile
 
 interface IMailbox {
 
@@ -20,7 +20,7 @@ interface IMailbox {
         addToSentFolder: Boolean? = null,
         cc: String? = null,
         bcc: String? = null,
-        importSessionFiles: Array<JsonElement>? = null,
+        importSessionFiles: List<ISessionFile>? = null,
         referenceFolderId: String? = null,
         referenceMessageId: Int? = null,
         referenceMode: ReferenceMode? = null,
