@@ -522,7 +522,7 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
             if (businessState != null) put("businessstate", businessState)
             if (businessStreet != null) put("businessstreet", businessStreet)
             if (businessStreet2 != null) put("businessstreet2", businessStreet2)
-            if (businessStreet3 != null) put("businesstreet3", businessStreet3)
+            if (businessStreet3 != null) put("businessstreet3", businessStreet3)
             if (categories != null) put("categories", categories)
             if (company != null) put("company", company)
             if (companyType != null) put("companytype", companyType)
