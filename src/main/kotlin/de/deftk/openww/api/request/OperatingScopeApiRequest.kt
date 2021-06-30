@@ -576,7 +576,7 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
             put("businessstate", businessState)
             put("businessstreet", businessStreet)
             put("businessstreet2", businessStreet2)
-            put("businesstreet3", businessStreet3)
+            put("businessstreet3", businessStreet3)
             put("categories", categories)
             put("company", company)
             put("companytype", companyType)
