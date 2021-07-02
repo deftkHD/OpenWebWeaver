@@ -153,7 +153,10 @@ enum class Permission(val id: String) {
     @SerialName("settings") SETTINGS("settings"),
 
     @SerialName("self") SELF("self"),
+
     @SerialName("profile") PROFILE("profile"),
+    @SerialName("profile_write") PROFILE_WRITE("profile_write"),
+    @SerialName("profile_admin") PROFILE_ADMIN("profile_admin"),
 
     @SerialName("password") PASSWORD("password");
 
