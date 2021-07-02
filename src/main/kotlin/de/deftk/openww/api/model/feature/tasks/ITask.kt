@@ -16,11 +16,11 @@ interface ITask: IModifiable {
 
     fun setTitle(title: String, context: IRequestContext)
     fun setDescription(description: String, context: IRequestContext)
-    fun setStartDate(startDate: Date, context: IRequestContext)
-    fun setEndDate(endDate: Date, context: IRequestContext)
+    fun setStartDate(startDate: Date?, context: IRequestContext)
+    fun setDueDate(dueDate: Date?, context: IRequestContext)
     fun setCompleted(completed: Boolean, context: IRequestContext)
 
-    fun edit(title: String, description: String? = null, completed: Boolean? = null, startDate: Date? = null, endDate: Date? = null, context: IRequestContext)
+    fun edit(title: String, description: String? = null, completed: Boolean? = null, startDate: Date? = null, dueDate: Date? = null, context: IRequestContext)
     fun delete(context: IRequestContext)
 
 }

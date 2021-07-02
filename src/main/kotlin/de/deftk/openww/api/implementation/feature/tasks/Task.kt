@@ -65,13 +65,13 @@ class Task(
 
     override fun setTitle(title: String, context: IRequestContext) = edit(title, description, completed, startDate, dueDate, context)
     override fun setDescription(description: String, context: IRequestContext) = edit(title, description, completed, startDate, dueDate, context)
-    override fun setStartDate(startDate: Date, context: IRequestContext) = edit(title, description, completed, startDate, dueDate, context)
-    override fun setEndDate(endDate: Date, context: IRequestContext) = edit(title, description, completed, startDate, endDate, context)
+    override fun setStartDate(startDate: Date?, context: IRequestContext) = edit(title, description, completed, startDate, dueDate, context)
+    override fun setDueDate(dueDate: Date?, context: IRequestContext) = edit(title, description, completed, startDate, dueDate, context)
     override fun setCompleted(completed: Boolean, context: IRequestContext) = edit(title, description, completed, startDate, dueDate, context)
 
-    override fun edit(title: String, description: String?, completed: Boolean?, startDate: Date?, endDate: Date?, context: IRequestContext) {
+    override fun edit(title: String, description: String?, completed: Boolean?, startDate: Date?, dueDate: Date?, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
-        val id = request.addSetTaskRequest(id, completed, description, endDate?.time, startDate?.time, title)[1]
+        val id = request.addSetTaskRequest(id, completed, description, dueDate?.time, startDate?.time, title)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         readFrom(WebWeaverClient.json.decodeFromJsonElement(subResponse["entry"]!!))

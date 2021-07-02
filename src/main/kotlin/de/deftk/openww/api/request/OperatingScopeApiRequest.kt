@@ -480,8 +480,8 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
             put("id", id)
             put("completed", asApiBoolean(completed))
             put("description", description)
-            put("due_date", if (dueDate != null) JsonPrimitive(dueDate / 1000) else JsonNull)
-            put("start_date", if (startDate != null) JsonPrimitive(startDate / 1000) else JsonNull)
+            put("due_date", if (dueDate != null) JsonPrimitive(dueDate / 1000) else JsonPrimitive(0))
+            put("start_date", if (startDate != null) JsonPrimitive(startDate / 1000) else JsonPrimitive(0))
             put("title", title)
         }
         return listOf(
