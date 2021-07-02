@@ -295,13 +295,13 @@ class UserApiRequest(context: IRequestContext): OperatingScopeApiRequest(context
         )
     }
 
-    fun addSetNoteRequest(id: String, text: String, title: String, color: NoteColor?): List<Int> {
+    fun addSetNoteRequest(id: String, text: String, title: String, color: NoteColor): List<Int> {
         ensureCapacity(2)
         val params = buildJsonObject {
             put("id", id)
             put("text", text)
             put("title", title)
-            put("color", if (color != null) WebWeaverClient.json.encodeToJsonElement(color) else JsonNull)
+            put("color", WebWeaverClient.json.encodeToJsonElement(color))
         }
         return listOf(
             addSetFocusRequest(Focusable.NOTES, context.login),
