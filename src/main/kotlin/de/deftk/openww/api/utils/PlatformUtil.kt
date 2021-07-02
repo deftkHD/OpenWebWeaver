@@ -3,6 +3,7 @@ package de.deftk.openww.api.utils
 import de.deftk.openww.api.response.ApiResponse
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
 import java.security.MessageDigest
@@ -13,7 +14,7 @@ object PlatformUtil {
 
     fun postRequest(requestUrl: String, timeout: Int, contentType: String, data: ByteArray): ApiResponse {
         val url = URL(requestUrl)
-        val connection = url.openConnection() as HttpsURLConnection
+        val connection = if (requestUrl.startsWith("https://")) url.openConnection() as HttpsURLConnection else url.openConnection() as HttpURLConnection
         connection.connectTimeout = timeout
         connection.requestMethod = "POST"
         connection.addRequestProperty("Content-Type", contentType)
