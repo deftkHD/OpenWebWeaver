@@ -8,6 +8,6 @@ interface IEmailSignature {
     val answerPosition: SignaturePosition?
     val forwardPosition: SignaturePosition?
 
-    fun edit(text: String, answerPosition: SignaturePosition? = null, forwardPosition: SignaturePosition? = null, context: IRequestContext)
+    fun edit(text: String, answerPosition: SignaturePosition, forwardPosition: SignaturePosition, context: IRequestContext)
 
 }

@@ -178,12 +178,12 @@ object WebWeaverClient {
             "application/x-www-form-urlencoded",
             requestData
         )
-        val indexOf: Int = response.text.indexOf("<host>") + 6
-        val indexOf2: Int = response.text.indexOf("</host>")
-        if (indexOf >= 0 && indexOf2 >= 0) {
+        val start: Int = response.text.indexOf("<host>") + 6
+        val end: Int = response.text.indexOf("</host>", start)
+        if (start >= 0 && end >= 0) {
             val urlBuilder = StringBuilder()
             urlBuilder.append("https://")
-            urlBuilder.append(response.text.substring(indexOf, indexOf2))
+            urlBuilder.append(response.text.substring(start, end))
             urlBuilder.append("/jsonrpc.php")
             return urlBuilder.toString()
         }

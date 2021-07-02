@@ -10,12 +10,14 @@ import kotlinx.serialization.json.jsonPrimitive
 
 class DefaultApiContextFactory : IApiContextFactory {
 
+    private val parser = Json { ignoreUnknownKeys = true }
+
     override fun createApiContext(response: ApiResponse, requestUrl: String): ApiContext {
         val json = response.toJson()
         val loginResult = ResponseUtil.getSubResponseResultByMethod(json, "login")
         val informationResult = ResponseUtil.getSubResponseResultByMethod(json, "get_information")
 
-        val user = Json { ignoreUnknownKeys = true }.decodeFromJsonElement<User>(loginResult)
+        val user = parser.decodeFromJsonElement<User>(loginResult)
 
         return ApiContext(
             informationResult["session_id"]!!.jsonPrimitive.content,

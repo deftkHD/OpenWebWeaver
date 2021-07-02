@@ -194,8 +194,8 @@ open class RemoteFile(
     override fun setName(name: String, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
         val id = when (type) {
-            FileType.FILE -> request.addSetFileRequest(id, name = name)[1]
-            FileType.FOLDER -> request.addSetFolderRequest(id, name = name)[1]
+            FileType.FILE -> request.addSetFileRequest(id, description, null, null, downloadNotification?.me, name, parentId!!)[1]
+            FileType.FOLDER -> request.addSetFolderRequest(id, description, name, readable, null, null, null, writable)[1]
         }
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
@@ -205,8 +205,8 @@ open class RemoteFile(
     override fun setDescription(description: String, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
         val id = when (type) {
-            FileType.FILE -> request.addSetFileRequest(id, description = description)[1]
-            FileType.FOLDER -> request.addSetFolderRequest(id, description = description)[1]
+            FileType.FILE -> request.addSetFileRequest(id, description, null, null, downloadNotification?.me, name, parentId!!)[1]
+            FileType.FOLDER -> request.addSetFolderRequest(id, description, name, readable, null, null, null, writable)[1]
         }
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
@@ -217,7 +217,7 @@ open class RemoteFile(
         requireFile()
         val request = OperatingScopeApiRequest(context)
         val id = when (type) {
-            FileType.FILE -> request.addSetFileRequest(id, downloadNotificationAddLogin = login)[1]
+            FileType.FILE -> request.addSetFileRequest(id, description, login, null, downloadNotification?.me, name, parentId!!)[1]
             else -> error("Can't add download logins")
         }
         val response = request.fireRequest()
@@ -229,7 +229,7 @@ open class RemoteFile(
         requireFile()
         val request = OperatingScopeApiRequest(context)
         val id = when (type) {
-            FileType.FILE -> request.addSetFileRequest(id, downloadNotificationDeleteLogin = login)[1]
+            FileType.FILE -> request.addSetFileRequest(id, description, null, login, downloadNotification?.me, name, parentId!!)[1]
             else -> error("Can't delete download logins")
         }
         val response = request.fireRequest()
@@ -241,7 +241,7 @@ open class RemoteFile(
         requireFile()
         val request = OperatingScopeApiRequest(context)
         val id = when (type) {
-            FileType.FILE -> request.addSetFileRequest(id, downloadNotificationMe = receive)[1]
+            FileType.FILE -> request.addSetFileRequest(id, description, null, null, receive, name, parentId!!)[1]
             else -> error("Can't update receive update notification state")
         }
         val response = request.fireRequest()
@@ -253,7 +253,8 @@ open class RemoteFile(
         requireFolder()
         val request = OperatingScopeApiRequest(context)
         val id = when (type) {
-            FileType.FILE -> request.addSetFolderRequest(id, uploadNotificationAddLogin = login)[1]
+            //TODO check if null should be replaced
+            FileType.FILE -> request.addSetFolderRequest(id, description, name, readable, login, null, null, writable)[1]
             else -> error("Can't delete add logins")
         }
         val response = request.fireRequest()
@@ -265,7 +266,8 @@ open class RemoteFile(
         requireFolder()
         val request = OperatingScopeApiRequest(context)
         val id = when (type) {
-            FileType.FILE -> request.addSetFolderRequest(id, uploadNotificationDeleteLogin = login)[1]
+            //TODO check if null should be replaced
+            FileType.FILE -> request.addSetFolderRequest(id, description, name, readable, null, login, null, writable)[1]
             else -> error("Can't delete upload logins")
         }
         val response = request.fireRequest()
@@ -277,7 +279,8 @@ open class RemoteFile(
         requireFolder()
         val request = OperatingScopeApiRequest(context)
         val id = when (type) {
-            FileType.FILE -> request.addSetFolderRequest(id, uploadNotificationMe = receive)[1]
+            //TODO check if null should be replaced
+            FileType.FILE -> request.addSetFolderRequest(id, description, name, readable, null, null, receive, writable)[1]
             else -> error("Can't update receive update notification state")
         }
         val response = request.fireRequest()
@@ -350,7 +353,8 @@ open class RemoteFile(
         requireFolder()
         val request = OperatingScopeApiRequest(context)
         val id = when (type) {
-            FileType.FOLDER -> request.addSetFolderRequest(id, readable = readable)[1]
+            //TODO check if null should be replaced
+            FileType.FOLDER -> request.addSetFolderRequest(id, description, name, readable, null, null, null, writable)[1]
             else -> error("Can't update readable state")
         }
         val response = request.fireRequest()
@@ -362,7 +366,8 @@ open class RemoteFile(
         requireFolder()
         val request = OperatingScopeApiRequest(context)
         val id = when (type) {
-            FileType.FOLDER -> request.addSetFolderRequest(id, writable = writable)[1]
+            //TODO check if null should be replaced
+            FileType.FOLDER -> request.addSetFolderRequest(id, description, name, readable, null, null, null, writable)[1]
             else -> error("Can't update writable state")
         }
         val response = request.fireRequest()

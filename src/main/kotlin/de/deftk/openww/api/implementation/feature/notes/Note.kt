@@ -43,7 +43,7 @@ class Note(
     @SerialName("_color")
     override var color: NoteColor? = _color
 
-    override fun edit(title: String?, text: String?, color: NoteColor?, context: IRequestContext) {
+    override fun edit(title: String, text: String, color: NoteColor, context: IRequestContext) {
         val request = UserApiRequest(context)
         val id = request.addSetNoteRequest(id, text, title, color)[1]
         val response = request.fireRequest()

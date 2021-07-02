@@ -1,9 +1,14 @@
 package de.deftk.openww.api.model
 
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
-@Serializable
+@Serializable(with = PermissionSerializer::class)
 enum class Permission(val id: String) {
 
     @SerialName("sysadmin") SYSADMIN("sysadmin"),
@@ -153,13 +158,29 @@ enum class Permission(val id: String) {
     @SerialName("settings") SETTINGS("settings"),
 
     @SerialName("self") SELF("self"),
-    @SerialName("profile") PROFILE("profile"),
 
-    @SerialName("password") PASSWORD("password");
+    @SerialName("profile") PROFILE("profile"),
+    @SerialName("profile_write") PROFILE_WRITE("profile_write"),
+    @SerialName("profile_admin") PROFILE_ADMIN("profile_admin"),
+
+    @SerialName("password") PASSWORD("password"),
+
+    UNKNOWN("");
 
     companion object {
         fun getByName(name: String): Permission? {
             return values().firstOrNull { it.id == name }
         }
     }
+}
+
+object PermissionSerializer : KSerializer<Permission> {
+
+    private val className = this::class.qualifiedName!!
+    private val lookup = Permission.values().associateBy({ it }, { it.id })
+    private val revLookup = Permission.values().associateBy { it.id }
+    override val descriptor = PrimitiveSerialDescriptor(className, PrimitiveKind.STRING)
+    override fun serialize(encoder: Encoder, value: Permission) = encoder.encodeString(lookup.getValue(value))
+    override fun deserialize(decoder: Decoder) = revLookup.getOrDefault(decoder.decodeString(), Permission.UNKNOWN)
+
 }

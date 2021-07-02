@@ -18,7 +18,7 @@ interface IBoardNotification: IModifiable {
     fun setColor(color: BoardNotificationColor, boardType: BoardType = BoardType.ALL, context: IRequestContext)
     fun setKillDate(killDate: Date, boardType: BoardType = BoardType.ALL, context: IRequestContext)
 
-    fun edit(title: String? = null, text: String? = null, color: BoardNotificationColor? = null, killDate: Date? = null, boardType: BoardType = BoardType.ALL, context: IRequestContext)
+    fun edit(title: String, text: String, color: BoardNotificationColor? = null, killDate: Date? = null, boardType: BoardType = BoardType.ALL, context: IRequestContext)
     fun delete(board: BoardType = BoardType.ALL, context: IRequestContext)
 
 }

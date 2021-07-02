@@ -58,23 +58,22 @@ class BoardNotification(
             private set
 
     override fun setTitle(title: String, boardType: BoardType, context: IRequestContext) {
-        edit(title = title, boardType = boardType, context = context)
+        edit(title, text, color, killDate, boardType, context)
     }
 
     override fun setText(text: String, boardType: BoardType, context: IRequestContext) {
-        edit(text = text, boardType = boardType, context = context)
+        edit(title, text, color, killDate, boardType, context)
     }
 
     override fun setColor(color: BoardNotificationColor, boardType: BoardType, context: IRequestContext) {
-        edit(color = color, boardType = boardType, context = context)
+        edit(title, text, color, killDate, boardType, context)
     }
 
     override fun setKillDate(killDate: Date, boardType: BoardType, context: IRequestContext) {
-        edit(killDate = killDate, boardType = boardType, context = context)
+        edit(title, text, color, killDate, boardType, context)
     }
 
-    override fun edit(title: String?, text: String?, color: BoardNotificationColor?, killDate: Date?, boardType: BoardType, context: IRequestContext
-    ) {
+    override fun edit(title: String, text: String, color: BoardNotificationColor?, killDate: Date?, boardType: BoardType, context: IRequestContext) {
         val request = GroupApiRequest(context)
         val id = when (boardType) {
             BoardType.ALL -> request.addSetBoardNotificationRequest(id, title, text, color, killDate?.time)[1]

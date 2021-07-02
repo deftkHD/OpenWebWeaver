@@ -91,17 +91,17 @@ class Appointment(
     override var uid: String? = _uid
         private set
 
-    override fun setTitle(title: String, context: IRequestContext) = edit(title = title, context = context)
-    override fun setDescription(description: String, context: IRequestContext) = edit(description = description, context = context)
-    override fun setEndDate(endDate: Date, context: IRequestContext) = edit(endDate = endDate, context = context)
-    override fun setEndDateIso(endDateIso: String, context: IRequestContext) = edit(endDateIso = endDateIso, context = context)
-    override fun setLocation(location: String, context: IRequestContext) = edit(location = location, context = context)
-    override fun setRrule(rrule: String, context: IRequestContext) = edit(rrule = rrule, context = context)
-    override fun setStartDate(startDate: Date, context: IRequestContext) = edit(startDate = startDate, context = context)
-    override fun setStartDateIso(startDateIso: String, context: IRequestContext) = edit(startDateIso = startDateIso, context = context)
-    override fun setUid(uid: String, context: IRequestContext) = edit(uid = uid, context = context)
+    override fun setTitle(title: String, context: IRequestContext) = edit(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, uid, context)
+    override fun setDescription(description: String, context: IRequestContext) = edit(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, uid, context)
+    override fun setEndDate(endDate: Date, context: IRequestContext) = edit(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, uid, context)
+    override fun setEndDateIso(endDateIso: String, context: IRequestContext) = edit(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, uid, context)
+    override fun setLocation(location: String, context: IRequestContext) = edit(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, uid, context)
+    override fun setRrule(rrule: String, context: IRequestContext) = edit(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, uid, context)
+    override fun setStartDate(startDate: Date, context: IRequestContext) = edit(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, uid, context)
+    override fun setStartDateIso(startDateIso: String, context: IRequestContext) = edit(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, uid, context)
+    override fun setUid(uid: String, context: IRequestContext) = edit(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, uid, context)
 
-    override fun edit(title: String?, description: String?, endDate: Date?, endDateIso: String?, location: String?, rrule: String?, startDate: Date?, startDateIso: String?, uid: String?, context: IRequestContext) {
+    override fun edit(title: String, description: String?, endDate: Date?, endDateIso: String?, location: String?, rrule: String?, startDate: Date?, startDateIso: String?, uid: String?, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
         val id = request.addSetAppointmentRequest(id, title, description, endDate?.time, endDateIso, location, rrule, startDate?.time, startDateIso)[1]
         val response = request.fireRequest()

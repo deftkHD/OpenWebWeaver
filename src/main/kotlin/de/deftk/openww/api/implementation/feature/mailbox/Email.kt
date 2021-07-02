@@ -112,15 +112,13 @@ class Email(
         readFrom(WebWeaverClient.json.decodeFromJsonElement(subResponse["message"]!!))
     }
 
-    override fun edit(folder: IEmailFolder, isFlagged: Boolean?, isUnread: Boolean?, context: IRequestContext) {
+    override fun edit(folder: IEmailFolder, isFlagged: Boolean, isUnread: Boolean, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
         request.addSetEmailRequest(folder.id, id, isFlagged, isUnread)
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
-        if (isFlagged != null)
-            this.flagged = isFlagged
-        if (isUnread != null)
-            this.unread = isUnread
+        this.flagged = isFlagged
+        this.unread = isUnread
     }
 
     override fun move(folder: IEmailFolder, to: IEmailFolder, context: IRequestContext) {

@@ -63,13 +63,13 @@ class Task(
     override var completed: Boolean = _completed
         private set
 
-    override fun setTitle(title: String, context: IRequestContext) = edit(title = title, context = context)
-    override fun setDescription(description: String, context: IRequestContext) = edit(description = description, context = context)
-    override fun setStartDate(startDate: Date, context: IRequestContext) = edit(startDate = startDate, context = context)
-    override fun setEndDate(endDate: Date, context: IRequestContext) = edit(endDate = endDate, context = context)
-    override fun setCompleted(completed: Boolean, context: IRequestContext) = edit(completed = completed, context = context)
+    override fun setTitle(title: String, context: IRequestContext) = edit(title, description, completed, startDate, endDate, context)
+    override fun setDescription(description: String, context: IRequestContext) = edit(title, description, completed, startDate, endDate, context)
+    override fun setStartDate(startDate: Date, context: IRequestContext) = edit(title, description, completed, startDate, endDate, context)
+    override fun setEndDate(endDate: Date, context: IRequestContext) = edit(title, description, completed, startDate, endDate, context)
+    override fun setCompleted(completed: Boolean, context: IRequestContext) = edit(title, description, completed, startDate, endDate, context)
 
-    override fun edit(title: String?, description: String?, completed: Boolean?, startDate: Date?, endDate: Date?, context: IRequestContext) {
+    override fun edit(title: String, description: String?, completed: Boolean?, startDate: Date?, endDate: Date?, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
         val id = request.addSetTaskRequest(id, completed, description, endDate?.time, startDate?.time, title)[1]
         val response = request.fireRequest()
