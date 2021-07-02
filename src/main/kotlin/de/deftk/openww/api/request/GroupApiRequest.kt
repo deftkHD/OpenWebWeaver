@@ -441,14 +441,16 @@ class GroupApiRequest(context: IRequestContext): OperatingScopeApiRequest(contex
         )
     }
 
-    fun addSetBoardNotificationRequest(id: String, title: String, text: String, color: BoardNotificationColor? = null, killDate: Long? = null, login: String = context.login): List<Int> {
+    // warning: killDate can't be removed once set
+    fun addSetBoardNotificationRequest(id: String, title: String, text: String, color: BoardNotificationColor, killDate: Long? = null, login: String = context.login): List<Int> {
         ensureCapacity(2)
         val requestParams = buildJsonObject {
             put("id", id)
             put("title", title)
             put("text", text)
-            put("color", color?.serialId)
-            put("kill_date", if (killDate != null) JsonPrimitive(killDate / 1000) else JsonNull)
+            put("color", WebWeaverClient.json.encodeToJsonElement(color))
+            if (killDate != null)
+            put("kill_date", killDate / 1000)
         }
         return listOf(
             addSetFocusRequest(Focusable.BOARD, login),

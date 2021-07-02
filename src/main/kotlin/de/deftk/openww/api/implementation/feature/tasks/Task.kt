@@ -63,11 +63,11 @@ class Task(
     override var completed: Boolean = _completed
         private set
 
-    override fun setTitle(title: String, context: IRequestContext) = edit(title, description, completed, startDate, endDate, context)
-    override fun setDescription(description: String, context: IRequestContext) = edit(title, description, completed, startDate, endDate, context)
-    override fun setStartDate(startDate: Date, context: IRequestContext) = edit(title, description, completed, startDate, endDate, context)
+    override fun setTitle(title: String, context: IRequestContext) = edit(title, description, completed, startDate, dueDate, context)
+    override fun setDescription(description: String, context: IRequestContext) = edit(title, description, completed, startDate, dueDate, context)
+    override fun setStartDate(startDate: Date, context: IRequestContext) = edit(title, description, completed, startDate, dueDate, context)
     override fun setEndDate(endDate: Date, context: IRequestContext) = edit(title, description, completed, startDate, endDate, context)
-    override fun setCompleted(completed: Boolean, context: IRequestContext) = edit(title, description, completed, startDate, endDate, context)
+    override fun setCompleted(completed: Boolean, context: IRequestContext) = edit(title, description, completed, startDate, dueDate, context)
 
     override fun edit(title: String, description: String?, completed: Boolean?, startDate: Date?, endDate: Date?, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
