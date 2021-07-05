@@ -300,12 +300,12 @@ data class User(
         get() = userData.baseRights
     override val effectiveRights: List<Permission>
         get() = userData.effectiveRights
-
-    override fun getBaseUser(): RemoteScope = userData.baseUser
-
-    override fun getFullName(): String = userData.fullName
-
-    override fun getGTAC(): GTAC = userData.gtac
+    override val baseUser: RemoteScope
+        get() = userData.baseUser
+    override val fullName: String
+        get() = userData.fullName
+    override val gtac: GTAC
+        get() = userData.gtac
 
     override suspend fun getSystemNotifications(context: IRequestContext): List<SystemNotification> {
         val request = UserApiRequest(context)
@@ -601,14 +601,16 @@ class Group(
     @SerialName("effective_rights")
     override val effectiveRights: List<Permission> = emptyList(),
     @SerialName("reduced_rights")
-    private val reducedRights: List<Permission> = emptyList(),
+    private val _reducedRights: List<Permission> = emptyList(),
     @SerialName("member_rights")
-    private val memberRights: List<Permission> = emptyList()
+    private val _memberRights: List<Permission> = emptyList()
 ) : IGroup, OperatingScope() {
 
-    override fun getReducedRights(): List<Permission> = reducedRights
+    override var reducedRights: List<Permission> = _reducedRights
+        private set
 
-    override fun getMemberRights(): List<Permission> = memberRights
+    override var memberRights: List<Permission> = _memberRights
+        private set
 
     override suspend fun getMembers(miniatures: Boolean?, onlineOnly: Boolean?, context: IRequestContext): List<RemoteScope> {
         val request = GroupApiRequest(context)

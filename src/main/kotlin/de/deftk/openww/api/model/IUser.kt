@@ -12,9 +12,9 @@ import kotlinx.serialization.json.JsonElement
 
 interface IUser: IOperatingScope, IMailbox, IMessenger, INotebook {
 
-    fun getBaseUser(): RemoteScope
-    fun getFullName(): String
-    fun getGTAC(): GTAC
+    val baseUser: RemoteScope
+    val fullName: String
+    val gtac: GTAC
 
     suspend fun getSystemNotifications(context: IRequestContext): List<ISystemNotification>
     suspend fun addSessionFile(name: String, data: ByteArray, context: IRequestContext): ISessionFile
