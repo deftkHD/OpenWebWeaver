@@ -57,24 +57,24 @@ class BoardNotification(
     override var modified: Modification = _modified
             private set
 
-    override fun setTitle(title: String, boardType: BoardType, context: IRequestContext) {
+    override suspend fun setTitle(title: String, boardType: BoardType, context: IRequestContext) {
         edit(title, text, color ?: BoardNotificationColor.BLUE, killDate, boardType, context)
     }
 
-    override fun setText(text: String, boardType: BoardType, context: IRequestContext) {
+    override suspend fun setText(text: String, boardType: BoardType, context: IRequestContext) {
         edit(title, text, color ?: BoardNotificationColor.BLUE, killDate, boardType, context)
     }
 
-    override fun setColor(color: BoardNotificationColor, boardType: BoardType, context: IRequestContext) {
+    override suspend fun setColor(color: BoardNotificationColor, boardType: BoardType, context: IRequestContext) {
         edit(title, text, color, killDate, boardType, context)
     }
 
-    override fun setKillDate(killDate: Date, boardType: BoardType, context: IRequestContext) {
+    override suspend fun setKillDate(killDate: Date, boardType: BoardType, context: IRequestContext) {
         edit(title, text, color ?: BoardNotificationColor.BLUE, killDate, boardType, context)
     }
 
     // killDate == null -> ignore killDate, not reset killDate
-    override fun edit(title: String, text: String, color: BoardNotificationColor, killDate: Date?, boardType: BoardType, context: IRequestContext) {
+    override suspend fun edit(title: String, text: String, color: BoardNotificationColor, killDate: Date?, boardType: BoardType, context: IRequestContext) {
         val request = GroupApiRequest(context)
         val id = when (boardType) {
             BoardType.ALL -> request.addSetBoardNotificationRequest(id, title, text, color, killDate?.time)[1]
@@ -86,7 +86,7 @@ class BoardNotification(
         readFrom(WebWeaverClient.json.decodeFromJsonElement(subResponse["entry"]!!.jsonObject))
     }
 
-    override fun delete(board: BoardType, context: IRequestContext) {
+    override suspend fun delete(board: BoardType, context: IRequestContext) {
         val request = GroupApiRequest(context)
         when (board) {
             BoardType.ALL -> request.addDeleteBoardNotificationRequest(id)

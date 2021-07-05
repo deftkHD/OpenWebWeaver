@@ -11,7 +11,7 @@ interface INote: IModifiable {
     val text: String
     val color: NoteColor?
 
-    fun edit(title: String, text: String, color: NoteColor, context: IRequestContext)
-    fun delete(context: IRequestContext)
+    suspend fun edit(title: String, text: String, color: NoteColor, context: IRequestContext)
+    suspend fun delete(context: IRequestContext)
 
 }

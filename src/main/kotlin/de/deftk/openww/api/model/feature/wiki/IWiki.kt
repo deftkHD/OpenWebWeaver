@@ -4,6 +4,6 @@ import de.deftk.openww.api.model.IRequestContext
 
 interface IWiki {
 
-    fun getWikiPage(name: String?, context: IRequestContext): IWikiPage?
+    suspend fun getWikiPage(name: String?, context: IRequestContext): IWikiPage?
 
 }

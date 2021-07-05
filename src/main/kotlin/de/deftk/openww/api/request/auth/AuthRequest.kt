@@ -11,11 +11,11 @@ import kotlinx.serialization.json.*
 
 class AuthRequest(private val requestUrl: String, private val requestHandler: IRequestHandler) : ApiRequest() {
 
-    override fun fireRequest(context: IRequestContext): ApiResponse {
+    override suspend fun fireRequest(context: IRequestContext): ApiResponse {
         error("Operation not supported!")
     }
 
-    fun fireRequest(): ApiResponse {
+    suspend fun fireRequest(): ApiResponse {
         return super.fireRequest(AuthContext(requestUrl, requestHandler))
     }
 

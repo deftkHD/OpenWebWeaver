@@ -43,7 +43,7 @@ class Note(
     @SerialName("_color")
     override var color: NoteColor? = _color
 
-    override fun edit(title: String, text: String, color: NoteColor, context: IRequestContext) {
+    override suspend fun edit(title: String, text: String, color: NoteColor, context: IRequestContext) {
         val request = UserApiRequest(context)
         val id = request.addSetNoteRequest(id, text, title, color)[1]
         val response = request.fireRequest()
@@ -51,7 +51,7 @@ class Note(
         readFrom(WebWeaverClient.json.decodeFromJsonElement(subResponse["entry"]!!))
     }
 
-    override fun delete(context: IRequestContext) {
+    override suspend fun delete(context: IRequestContext) {
         val request = UserApiRequest(context)
         request.addDeleteNoteRequest(id)
         val response = request.fireRequest()

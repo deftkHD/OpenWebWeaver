@@ -19,7 +19,7 @@ class CourseletMapping(
     @SerialName("_name")
     override var name: String = _name
 
-    override fun setName(name: String, context: IRequestContext) {
+    override suspend fun setName(name: String, context: IRequestContext) {
         val request = GroupApiRequest(context)
         val id = request.addSetCourseletMappingRequest(id, name)[1]
         val response = request.fireRequest()
@@ -27,7 +27,7 @@ class CourseletMapping(
         readFrom(Json.decodeFromJsonElement(subResponse["mapping"]!!))
     }
 
-    override fun delete(context: IRequestContext) {
+    override suspend fun delete(context: IRequestContext) {
         val request = GroupApiRequest(context)
         request.addDeleteCourseletMappingRequest(id)
         val response = request.fireRequest()

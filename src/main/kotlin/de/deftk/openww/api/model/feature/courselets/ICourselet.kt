@@ -14,13 +14,13 @@ interface ICourselet: IModifiable {
     val isTemplate: Boolean
     val size: Int
 
-    fun setSuspendDate(suspendData: String, ifLatest: Int, context: IRequestContext)
-    fun getResults(context: IRequestContext): ICourseletData
-    fun deleteResults(context: IRequestContext)
-    fun addBookmark(context: IRequestContext)
-    fun deleteBookmark(context: IRequestContext)
-    fun export(pkg: TemplatePackage? = null, context: IRequestContext): FileDownloadUrl
-    fun delete(context: IRequestContext)
+    suspend fun setSuspendDate(suspendData: String, ifLatest: Int, context: IRequestContext)
+    suspend fun getResults(context: IRequestContext): ICourseletData
+    suspend fun deleteResults(context: IRequestContext)
+    suspend fun addBookmark(context: IRequestContext)
+    suspend fun deleteBookmark(context: IRequestContext)
+    suspend fun export(pkg: TemplatePackage? = null, context: IRequestContext): FileDownloadUrl
+    suspend fun delete(context: IRequestContext)
 
 
 }

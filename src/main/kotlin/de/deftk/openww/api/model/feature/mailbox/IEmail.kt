@@ -21,9 +21,9 @@ interface IEmail {
     val text: String?
     val attachments: List<IAttachment>?
 
-    fun read(folder: IEmailFolder, peek: Boolean? = null, context: IRequestContext)
-    fun edit(folder: IEmailFolder, isFlagged: Boolean, isUnread: Boolean, context: IRequestContext)
-    fun move(folder: IEmailFolder, to: IEmailFolder, context: IRequestContext)
-    fun delete(folder: IEmailFolder, context: IRequestContext)
+    suspend fun read(folder: IEmailFolder, peek: Boolean? = null, context: IRequestContext)
+    suspend fun edit(folder: IEmailFolder, isFlagged: Boolean, isUnread: Boolean, context: IRequestContext)
+    suspend fun move(folder: IEmailFolder, to: IEmailFolder, context: IRequestContext)
+    suspend fun delete(folder: IEmailFolder, context: IRequestContext)
 
 }

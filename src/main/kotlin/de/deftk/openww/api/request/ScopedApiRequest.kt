@@ -7,11 +7,11 @@ import kotlinx.serialization.json.put
 
 open class ScopedApiRequest(protected val context: IRequestContext): ApiRequest() {
 
-    fun fireRequest(): ApiResponse {
+    suspend fun fireRequest(): ApiResponse {
         return fireRequest(context)
     }
 
-    override fun fireRequest(context: IRequestContext): ApiResponse {
+    override suspend fun fireRequest(context: IRequestContext): ApiResponse {
         val requests = this.requests
         this.requests = mutableListOf()
         requests.forEach { request ->

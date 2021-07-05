@@ -19,17 +19,17 @@ interface IAppointment : IModifiable {
     val startDateIso: String?
     val uid: String?
 
-    fun setTitle(title: String, context: IRequestContext)
-    fun setDescription(description: String, context: IRequestContext)
-    fun setEndDate(endDate: Date, context: IRequestContext)
-    fun setEndDateIso(endDateIso: String, context: IRequestContext)
-    fun setLocation(location: String, context: IRequestContext)
-    fun setRrule(rrule: String, context: IRequestContext)
-    fun setStartDate(startDate: Date, context: IRequestContext)
-    fun setStartDateIso(startDateIso: String, context: IRequestContext)
-    fun setUid(uid: String, context: IRequestContext)
+    suspend fun setTitle(title: String, context: IRequestContext)
+    suspend fun setDescription(description: String, context: IRequestContext)
+    suspend fun setEndDate(endDate: Date, context: IRequestContext)
+    suspend fun setEndDateIso(endDateIso: String, context: IRequestContext)
+    suspend fun setLocation(location: String, context: IRequestContext)
+    suspend fun setRrule(rrule: String, context: IRequestContext)
+    suspend fun setStartDate(startDate: Date, context: IRequestContext)
+    suspend fun setStartDateIso(startDateIso: String, context: IRequestContext)
+    suspend fun setUid(uid: String, context: IRequestContext)
 
-    fun edit(
+    suspend fun edit(
         title: String,
         description: String? = null,
         endDate: Date? = null,
@@ -42,6 +42,6 @@ interface IAppointment : IModifiable {
         context: IRequestContext
     )
 
-    fun delete(context: IRequestContext)
+    suspend fun delete(context: IRequestContext)
 
 }

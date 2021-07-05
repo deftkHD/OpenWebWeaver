@@ -5,9 +5,9 @@ import java.util.*
 
 interface ICalendar {
 
-    fun getAppointments(context: IRequestContext): List<IAppointment>
-    fun addAppointment(appointment: IAppointment, context: IRequestContext): IAppointment
-    fun addAppointment(
+    suspend fun getAppointments(context: IRequestContext): List<IAppointment>
+    suspend fun addAppointment(appointment: IAppointment, context: IRequestContext): IAppointment
+    suspend fun addAppointment(
         title: String,
         description: String? = null,
         endDate: Date? = null,

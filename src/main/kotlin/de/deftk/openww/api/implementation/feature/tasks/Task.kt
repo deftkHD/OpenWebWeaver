@@ -63,13 +63,13 @@ class Task(
     override var completed: Boolean = _completed
         private set
 
-    override fun setTitle(title: String, context: IRequestContext) = edit(title, description, completed, startDate, dueDate, context)
-    override fun setDescription(description: String, context: IRequestContext) = edit(title, description, completed, startDate, dueDate, context)
-    override fun setStartDate(startDate: Date?, context: IRequestContext) = edit(title, description, completed, startDate, dueDate, context)
-    override fun setDueDate(dueDate: Date?, context: IRequestContext) = edit(title, description, completed, startDate, dueDate, context)
-    override fun setCompleted(completed: Boolean, context: IRequestContext) = edit(title, description, completed, startDate, dueDate, context)
+    override suspend fun setTitle(title: String, context: IRequestContext) = edit(title, description, completed, startDate, dueDate, context)
+    override suspend fun setDescription(description: String, context: IRequestContext) = edit(title, description, completed, startDate, dueDate, context)
+    override suspend fun setStartDate(startDate: Date?, context: IRequestContext) = edit(title, description, completed, startDate, dueDate, context)
+    override suspend fun setDueDate(dueDate: Date?, context: IRequestContext) = edit(title, description, completed, startDate, dueDate, context)
+    override suspend fun setCompleted(completed: Boolean, context: IRequestContext) = edit(title, description, completed, startDate, dueDate, context)
 
-    override fun edit(title: String, description: String?, completed: Boolean?, startDate: Date?, dueDate: Date?, context: IRequestContext) {
+    override suspend fun edit(title: String, description: String?, completed: Boolean?, startDate: Date?, dueDate: Date?, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
         val id = request.addSetTaskRequest(id, completed, description, dueDate?.time, startDate?.time, title)[1]
         val response = request.fireRequest()
@@ -77,7 +77,7 @@ class Task(
         readFrom(WebWeaverClient.json.decodeFromJsonElement(subResponse["entry"]!!))
     }
 
-    override fun delete(context: IRequestContext) {
+    override suspend fun delete(context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
         request.addDeleteTaskRequest(id)
         val response = request.fireRequest()

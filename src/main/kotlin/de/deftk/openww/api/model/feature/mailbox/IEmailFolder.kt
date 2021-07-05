@@ -14,8 +14,8 @@ interface IEmailFolder {
 
     val name: String
 
-    fun getEmails(limit: Int? = null, offset: Int? = null, context: IRequestContext): List<IEmail>
-    fun setName(name: String, context: IRequestContext)
-    fun delete(context: IRequestContext)
+    suspend fun getEmails(limit: Int? = null, offset: Int? = null, context: IRequestContext): List<IEmail>
+    suspend fun setName(name: String, context: IRequestContext)
+    suspend fun delete(context: IRequestContext)
 
 }

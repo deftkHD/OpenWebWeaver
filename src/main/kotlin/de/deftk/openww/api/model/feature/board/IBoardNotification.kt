@@ -13,12 +13,12 @@ interface IBoardNotification: IModifiable {
     val color: BoardNotificationColor?
     val killDate: Date?
 
-    fun setTitle(title: String, boardType: BoardType = BoardType.ALL, context: IRequestContext)
-    fun setText(text: String, boardType: BoardType = BoardType.ALL, context: IRequestContext)
-    fun setColor(color: BoardNotificationColor, boardType: BoardType = BoardType.ALL, context: IRequestContext)
-    fun setKillDate(killDate: Date, boardType: BoardType = BoardType.ALL, context: IRequestContext)
+    suspend fun setTitle(title: String, boardType: BoardType = BoardType.ALL, context: IRequestContext)
+    suspend fun setText(text: String, boardType: BoardType = BoardType.ALL, context: IRequestContext)
+    suspend fun setColor(color: BoardNotificationColor, boardType: BoardType = BoardType.ALL, context: IRequestContext)
+    suspend fun setKillDate(killDate: Date, boardType: BoardType = BoardType.ALL, context: IRequestContext)
 
-    fun edit(title: String, text: String, color: BoardNotificationColor, killDate: Date? = null, boardType: BoardType = BoardType.ALL, context: IRequestContext)
-    fun delete(board: BoardType = BoardType.ALL, context: IRequestContext)
+    suspend fun edit(title: String, text: String, color: BoardNotificationColor, killDate: Date? = null, boardType: BoardType = BoardType.ALL, context: IRequestContext)
+    suspend fun delete(board: BoardType = BoardType.ALL, context: IRequestContext)
 
 }

@@ -34,7 +34,7 @@ class SessionFile(
     override var downloadUrl: String = _downloadUrl
         private set
 
-    override fun append(data: ByteArray, context: IRequestContext) {
+    override suspend fun append(data: ByteArray, context: IRequestContext) {
         val request = UserApiRequest(context)
         val id = request.addAppendSessionFileRequest(id, data)[1]
         val response = request.fireRequest()
@@ -42,7 +42,7 @@ class SessionFile(
         readFrom(WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!))
     }
 
-    override fun download(limit: Int?, offset: Int?, context: IRequestContext): FileChunk {
+    override suspend fun download(limit: Int?, offset: Int?, context: IRequestContext): FileChunk {
         val request = UserApiRequest(context)
         val id = request.addGetSessionFileRequest(id, limit, offset)[1]
         val response = request.fireRequest()
@@ -50,7 +50,7 @@ class SessionFile(
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!)
     }
 
-    override fun queryDownloadUrl(context: IRequestContext): FileDownloadUrl {
+    override suspend fun queryDownloadUrl(context: IRequestContext): FileDownloadUrl {
         val request = UserApiRequest(context)
         val id = request.addGetSessionFileDownloadUrlRequest(id)[1]
         val response = request.fireRequest()
@@ -58,7 +58,7 @@ class SessionFile(
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!)
     }
 
-    override fun queryUploadUrl(context: IRequestContext): FileUploadUrl {
+    override suspend fun queryUploadUrl(context: IRequestContext): FileUploadUrl {
         val request = UserApiRequest(context)
         val id = request.addGetSessionFileUploadUrlRequest(id)[1]
         val response = request.fireRequest()
@@ -66,7 +66,7 @@ class SessionFile(
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!.jsonObject)
     }
 
-    override fun delete(context: IRequestContext) {
+    override suspend fun delete(context: IRequestContext) {
         val request = UserApiRequest(context)
         request.addDeleteSessionFileRequest(id)
         val response = request.fireRequest()

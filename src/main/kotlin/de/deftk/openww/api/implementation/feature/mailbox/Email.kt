@@ -104,7 +104,7 @@ class Email(
     override var attachments: List<IAttachment>? = _files
         private set
 
-    override fun read(folder: IEmailFolder, peek: Boolean?, context: IRequestContext) {
+    override suspend fun read(folder: IEmailFolder, peek: Boolean?, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
         val id = request.addReadEmailRequest(folder.id, id, peek)[1]
         val response = request.fireRequest()
@@ -112,7 +112,7 @@ class Email(
         readFrom(WebWeaverClient.json.decodeFromJsonElement(subResponse["message"]!!))
     }
 
-    override fun edit(folder: IEmailFolder, isFlagged: Boolean, isUnread: Boolean, context: IRequestContext) {
+    override suspend fun edit(folder: IEmailFolder, isFlagged: Boolean, isUnread: Boolean, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
         request.addSetEmailRequest(folder.id, id, isFlagged, isUnread)
         val response = request.fireRequest()
@@ -121,14 +121,14 @@ class Email(
         this.unread = isUnread
     }
 
-    override fun move(folder: IEmailFolder, to: IEmailFolder, context: IRequestContext) {
+    override suspend fun move(folder: IEmailFolder, to: IEmailFolder, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
         request.addMoveEmailRequest(folder.id, id, to.id)
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
     }
 
-    override fun delete(folder: IEmailFolder, context: IRequestContext) {
+    override suspend fun delete(folder: IEmailFolder, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
         request.addDeleteEmailRequest(folder.id, id)
         val response = request.fireRequest()

@@ -5,9 +5,9 @@ import de.deftk.openww.api.model.feature.Quota
 
 interface IForum {
 
-    fun getForumState(context: IRequestContext): Pair<Quota, ForumSettings>
-    fun getForumPosts(parentId: String? = null, context: IRequestContext): List<IForumPost>
-    fun addForumPost(
+    suspend fun getForumState(context: IRequestContext): Pair<Quota, ForumSettings>
+    suspend fun getForumPosts(parentId: String? = null, context: IRequestContext): List<IForumPost>
+    suspend fun addForumPost(
         title: String,
         text: String,
         icon: ForumPostIcon,

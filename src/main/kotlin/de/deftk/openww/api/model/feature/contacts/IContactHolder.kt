@@ -4,9 +4,9 @@ import de.deftk.openww.api.model.IRequestContext
 
 interface IContactHolder {
 
-    fun getContacts(context: IRequestContext): List<IContact>
-    fun addContact(contact: IContact, context: IRequestContext): IContact
-    fun addContact(
+    suspend fun getContacts(context: IRequestContext): List<IContact>
+    suspend fun addContact(contact: IContact, context: IRequestContext): IContact
+    suspend fun addContact(
         birthday: String? = null,
         businessCity: String? = null,
         businessCoords: String? = null,

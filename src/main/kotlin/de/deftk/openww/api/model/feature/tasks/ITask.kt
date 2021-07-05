@@ -14,13 +14,13 @@ interface ITask: IModifiable {
     val dueDate: Date?
     val completed: Boolean
 
-    fun setTitle(title: String, context: IRequestContext)
-    fun setDescription(description: String, context: IRequestContext)
-    fun setStartDate(startDate: Date?, context: IRequestContext)
-    fun setDueDate(dueDate: Date?, context: IRequestContext)
-    fun setCompleted(completed: Boolean, context: IRequestContext)
+    suspend fun setTitle(title: String, context: IRequestContext)
+    suspend fun setDescription(description: String, context: IRequestContext)
+    suspend fun setStartDate(startDate: Date?, context: IRequestContext)
+    suspend fun setDueDate(dueDate: Date?, context: IRequestContext)
+    suspend fun setCompleted(completed: Boolean, context: IRequestContext)
 
-    fun edit(title: String, description: String? = null, completed: Boolean? = null, startDate: Date? = null, dueDate: Date? = null, context: IRequestContext)
-    fun delete(context: IRequestContext)
+    suspend fun edit(title: String, description: String? = null, completed: Boolean? = null, startDate: Date? = null, dueDate: Date? = null, context: IRequestContext)
+    suspend fun delete(context: IRequestContext)
 
 }

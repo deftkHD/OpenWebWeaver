@@ -91,17 +91,17 @@ class Appointment(
     override var uid: String? = _uid
         private set
 
-    override fun setTitle(title: String, context: IRequestContext) = edit(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, uid, context)
-    override fun setDescription(description: String, context: IRequestContext) = edit(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, uid, context)
-    override fun setEndDate(endDate: Date, context: IRequestContext) = edit(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, uid, context)
-    override fun setEndDateIso(endDateIso: String, context: IRequestContext) = edit(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, uid, context)
-    override fun setLocation(location: String, context: IRequestContext) = edit(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, uid, context)
-    override fun setRrule(rrule: String, context: IRequestContext) = edit(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, uid, context)
-    override fun setStartDate(startDate: Date, context: IRequestContext) = edit(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, uid, context)
-    override fun setStartDateIso(startDateIso: String, context: IRequestContext) = edit(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, uid, context)
-    override fun setUid(uid: String, context: IRequestContext) = edit(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, uid, context)
+    override suspend fun setTitle(title: String, context: IRequestContext) = edit(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, uid, context)
+    override suspend fun setDescription(description: String, context: IRequestContext) = edit(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, uid, context)
+    override suspend fun setEndDate(endDate: Date, context: IRequestContext) = edit(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, uid, context)
+    override suspend fun setEndDateIso(endDateIso: String, context: IRequestContext) = edit(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, uid, context)
+    override suspend fun setLocation(location: String, context: IRequestContext) = edit(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, uid, context)
+    override suspend fun setRrule(rrule: String, context: IRequestContext) = edit(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, uid, context)
+    override suspend fun setStartDate(startDate: Date, context: IRequestContext) = edit(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, uid, context)
+    override suspend fun setStartDateIso(startDateIso: String, context: IRequestContext) = edit(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, uid, context)
+    override suspend fun setUid(uid: String, context: IRequestContext) = edit(title, description, endDate, endDateIso, location, rrule, startDate, startDateIso, uid, context)
 
-    override fun edit(title: String, description: String?, endDate: Date?, endDateIso: String?, location: String?, rrule: String?, startDate: Date?, startDateIso: String?, uid: String?, context: IRequestContext) {
+    override suspend fun edit(title: String, description: String?, endDate: Date?, endDateIso: String?, location: String?, rrule: String?, startDate: Date?, startDateIso: String?, uid: String?, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
         val id = request.addSetAppointmentRequest(id, title, description, endDate?.time, endDateIso, location, rrule, startDate?.time, startDateIso)[1]
         val response = request.fireRequest()
@@ -109,7 +109,7 @@ class Appointment(
         readFrom(WebWeaverClient.json.decodeFromJsonElement(subResponse["entry"]!!))
     }
 
-    override fun delete(context: IRequestContext) {
+    override suspend fun delete(context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
         request.addDeleteAppointmentRequest(id)
         val response = request.fireRequest()

@@ -51,7 +51,7 @@ interface IContact: IModifiable {
     fun getUid(): String?
     fun getWebPage(): String?
 
-    fun edit(
+    suspend fun edit(
         birthday: String? = null,
         businessCity: String? = null,
         businessCoords: String? = null,
@@ -98,6 +98,6 @@ interface IContact: IModifiable {
         context: IRequestContext
     )
 
-    fun delete(context: IRequestContext)
+    suspend fun delete(context: IRequestContext)
 
 }

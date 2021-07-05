@@ -21,14 +21,14 @@ class CourseletPage(
     override val result: JsonObject? = null
 ) : ICourseletPage {
 
-    override fun addResult(courselet: ICourselet, score: Int?, time: Long?, context: IRequestContext) {
+    override suspend fun addResult(courselet: ICourselet, score: Int?, time: Long?, context: IRequestContext) {
         val request = GroupApiRequest(context)
         request.addAddCourseletResultRequest(courselet.id, pageId, score, time)[1]
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
     }
 
-    override fun deleteResults(courselet: ICourselet, context: IRequestContext) {
+    override suspend fun deleteResults(courselet: ICourselet, context: IRequestContext) {
         val request = GroupApiRequest(context)
         request.addDeleteCourseletResultsRequest(courselet.id, pageId)[1]
         val response = request.fireRequest()

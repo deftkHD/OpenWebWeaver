@@ -32,19 +32,19 @@ interface IRemoteFile: IRemoteFileProvider, IModifiable {
     val effectiveDelete: Boolean?
     val downloadNotification: DownloadNotification?
 
-    fun download(limit: Int? = null, offset: Int? = null, context: IRequestContext): FileChunk
-    fun getPreviewUrl(context: IRequestContext): FilePreviewUrl
-    fun getDownloadUrl(context: IRequestContext): FileDownloadUrl
-    fun getProxyNonce(context: IRequestContext): ProxyNonce
-    fun delete(context: IRequestContext)
-    fun setName(name: String, context: IRequestContext)
-    fun setDescription(description: String, context: IRequestContext)
-    fun setDownloadNotificationAddLogin(login: String, context: IRequestContext)
-    fun setDownloadNotificationDeleteLogin(login: String, context: IRequestContext)
-    fun setDownloadNotificationMe(receive: Boolean, context: IRequestContext)
-    fun setUploadNotificationAddLogin(login: String, context: IRequestContext)
-    fun setUploadNotificationDeleteLogin(login: String, context: IRequestContext)
-    fun setUploadNotificationMe(receive: Boolean, context: IRequestContext)
-    fun exportSessionFile(user: IUser, context: IRequestContext): ISessionFile
+    suspend fun download(limit: Int? = null, offset: Int? = null, context: IRequestContext): FileChunk
+    suspend fun getPreviewUrl(context: IRequestContext): FilePreviewUrl
+    suspend fun getDownloadUrl(context: IRequestContext): FileDownloadUrl
+    suspend fun getProxyNonce(context: IRequestContext): ProxyNonce
+    suspend fun delete(context: IRequestContext)
+    suspend fun setName(name: String, context: IRequestContext)
+    suspend fun setDescription(description: String, context: IRequestContext)
+    suspend fun setDownloadNotificationAddLogin(login: String, context: IRequestContext)
+    suspend fun setDownloadNotificationDeleteLogin(login: String, context: IRequestContext)
+    suspend fun setDownloadNotificationMe(receive: Boolean, context: IRequestContext)
+    suspend fun setUploadNotificationAddLogin(login: String, context: IRequestContext)
+    suspend fun setUploadNotificationDeleteLogin(login: String, context: IRequestContext)
+    suspend fun setUploadNotificationMe(receive: Boolean, context: IRequestContext)
+    suspend fun exportSessionFile(user: IUser, context: IRequestContext): ISessionFile
 
 }

@@ -13,10 +13,10 @@ interface ISessionFile {
     val size: Int
     val downloadUrl: String
 
-    fun append(data: ByteArray, context: IRequestContext)
-    fun download(limit: Int? = null, offset: Int? = null, context: IRequestContext): FileChunk
-    fun queryDownloadUrl(context: IRequestContext): FileDownloadUrl
-    fun queryUploadUrl(context: IRequestContext): FileUploadUrl
-    fun delete(context: IRequestContext)
+    suspend fun append(data: ByteArray, context: IRequestContext)
+    suspend fun download(limit: Int? = null, offset: Int? = null, context: IRequestContext): FileChunk
+    suspend fun queryDownloadUrl(context: IRequestContext): FileDownloadUrl
+    suspend fun queryUploadUrl(context: IRequestContext): FileUploadUrl
+    suspend fun delete(context: IRequestContext)
 
 }

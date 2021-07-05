@@ -6,7 +6,7 @@ import de.deftk.openww.api.response.ApiResponse
 
 class DefaultRequestHandler: AbstractRequestHandler() {
 
-    override fun performRequest(request: ApiRequest, context: IRequestContext): ApiResponse {
+    override suspend fun performRequest(request: ApiRequest, context: IRequestContext): ApiResponse {
         return performApiRequestIntern(request, context)
     }
 }

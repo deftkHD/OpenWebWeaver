@@ -146,7 +146,7 @@ class Contact(
     override var modified: Modification = _modified
         private set
 
-    override fun edit(
+    override suspend fun edit(
         birthday: String?,
         businessCity: String?,
         businessCoords: String?,
@@ -244,7 +244,7 @@ class Contact(
         readFrom(WebWeaverClient.json.decodeFromJsonElement(subResponse["entry"]!!))
     }
 
-    override fun delete(context: IRequestContext) {
+    override suspend fun delete(context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
         request.addDeleteContactRequest(id.toString())
         val response = request.fireRequest()

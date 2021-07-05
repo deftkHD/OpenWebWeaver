@@ -16,22 +16,22 @@ interface IUser: IOperatingScope, IMailbox, IMessenger, INotebook {
     fun getFullName(): String
     fun getGTAC(): GTAC
 
-    fun getSystemNotifications(context: IRequestContext): List<ISystemNotification>
-    fun addSessionFile(name: String, data: ByteArray, context: IRequestContext): ISessionFile
+    suspend fun getSystemNotifications(context: IRequestContext): List<ISystemNotification>
+    suspend fun addSessionFile(name: String, data: ByteArray, context: IRequestContext): ISessionFile
 
     fun getGroups(): List<IGroup>
     fun passwordMustChange(): Boolean
 
-    fun getAutoLoginUrl(disableLogout: Boolean? = null, disableReceptionOfQuickMessages: Boolean? = null, ensalveSession: Boolean? = null, locale: Locale? = null, pingMaster: Boolean? = null, sessionTimeout: Int? = null, targetData: JsonElement? = null, targetIframes: Boolean? = null, targetUrlPath: String? = null, context: IRequestContext): String
-    fun logout(context: IRequestContext)
-    fun logoutDestroyToken(token: String, context: IRequestContext)
-    fun checkSession(context: IRequestContext): Boolean
-    fun registerService(type: ServiceType, token: String, application: String? = null, generateSecret: String? = null, isOnline: Boolean? = null, managedObjects: String? = null, unmanagedPriority: Int? = null,context: IRequestContext)
-    fun unregisterService(type: ServiceType, token: String, context: IRequestContext)
+    suspend fun getAutoLoginUrl(disableLogout: Boolean? = null, disableReceptionOfQuickMessages: Boolean? = null, ensalveSession: Boolean? = null, locale: Locale? = null, pingMaster: Boolean? = null, sessionTimeout: Int? = null, targetData: JsonElement? = null, targetIframes: Boolean? = null, targetUrlPath: String? = null, context: IRequestContext): String
+    suspend fun logout(context: IRequestContext)
+    suspend fun logoutDestroyToken(token: String, context: IRequestContext)
+    suspend fun checkSession(context: IRequestContext): Boolean
+    suspend fun registerService(type: ServiceType, token: String, application: String? = null, generateSecret: String? = null, isOnline: Boolean? = null, managedObjects: String? = null, unmanagedPriority: Int? = null,context: IRequestContext)
+    suspend fun unregisterService(type: ServiceType, token: String, context: IRequestContext)
 
-    fun getAllTasks(context: IApiContext): List<Pair<ITask, IOperatingScope>>
-    fun getAllBoardNotifications(context: IApiContext): List<Pair<IBoardNotification, IGroup>>
-    fun getAllPupilBoardNotifications(context: IApiContext): List<Pair<IBoardNotification, IGroup>>
-    fun getAllTeacherBoardNotifications(context: IApiContext): List<Pair<IBoardNotification, IGroup>>
+    suspend fun getAllTasks(context: IApiContext): List<Pair<ITask, IOperatingScope>>
+    suspend fun getAllBoardNotifications(context: IApiContext): List<Pair<IBoardNotification, IGroup>>
+    suspend fun getAllPupilBoardNotifications(context: IApiContext): List<Pair<IBoardNotification, IGroup>>
+    suspend fun getAllTeacherBoardNotifications(context: IApiContext): List<Pair<IBoardNotification, IGroup>>
 
 }

@@ -6,14 +6,14 @@ import de.deftk.openww.api.model.feature.filestorage.session.ISessionFile
 
 interface IMailbox {
 
-    fun getEmailStatus(context: IRequestContext): Pair<Quota, Int>
-    fun getEmailQuota(context: IRequestContext): Quota
-    fun getUnreadEmailCount(context: IRequestContext): Int
+    suspend fun getEmailStatus(context: IRequestContext): Pair<Quota, Int>
+    suspend fun getEmailQuota(context: IRequestContext): Quota
+    suspend fun getUnreadEmailCount(context: IRequestContext): Int
 
-    fun getEmailFolders(context: IRequestContext): List<IEmailFolder>
-    fun addEmailFolder(name: String, context: IRequestContext)
+    suspend fun getEmailFolders(context: IRequestContext): List<IEmailFolder>
+    suspend fun addEmailFolder(name: String, context: IRequestContext)
 
-    fun sendEmail(
+    suspend fun sendEmail(
         to: String,
         subject: String,
         plainBody: String,
@@ -28,6 +28,6 @@ interface IMailbox {
         context: IRequestContext
     )
 
-    fun getEmailSignature(context: IRequestContext): IEmailSignature
+    suspend fun getEmailSignature(context: IRequestContext): IEmailSignature
 
 }

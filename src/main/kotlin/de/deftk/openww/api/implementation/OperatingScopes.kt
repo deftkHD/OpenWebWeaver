@@ -60,7 +60,7 @@ sealed class OperatingScope : IOperatingScope {
     override fun getRequestContext(apiContext: IApiContext): IRequestContext =
         RequestContext(login, apiContext.sessionId, apiContext.requestUrl, apiContext.requestHandler)
 
-    override fun getAppointments(context: IRequestContext): List<Appointment> {
+    override suspend fun getAppointments(context: IRequestContext): List<Appointment> {
         val request = OperatingScopeApiRequest(context)
         val id = request.addGetAppointmentsRequest()[1]
         val response = request.fireRequest()
@@ -68,7 +68,7 @@ sealed class OperatingScope : IOperatingScope {
         return subResponse["entries"]!!.jsonArray.map { WebWeaverClient.json.decodeFromJsonElement(it) }
     }
 
-    override fun addAppointment(appointment: IAppointment, context: IRequestContext): Appointment {
+    override suspend fun addAppointment(appointment: IAppointment, context: IRequestContext): Appointment {
         return addAppointment(
             appointment.title,
             appointment.description,
@@ -83,7 +83,7 @@ sealed class OperatingScope : IOperatingScope {
         )
     }
 
-    override fun addAppointment(title: String, description: String?, endDate: Date?, endDateIso: String?, location: String?, rrule: String?, startDate: Date?, startDateIso: String?, uid: String?, context: IRequestContext): Appointment {
+    override suspend fun addAppointment(title: String, description: String?, endDate: Date?, endDateIso: String?, location: String?, rrule: String?, startDate: Date?, startDateIso: String?, uid: String?, context: IRequestContext): Appointment {
         val request = OperatingScopeApiRequest(context)
         val id = request.addAddAppointmentRequest(title, description, endDate?.time, endDateIso, location, rrule, startDate?.time, startDateIso, login)[1]
         val response = request.fireRequest()
@@ -91,7 +91,7 @@ sealed class OperatingScope : IOperatingScope {
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["entry"]!!)
     }
 
-    override fun getContacts(context: IRequestContext): List<Contact> {
+    override suspend fun getContacts(context: IRequestContext): List<Contact> {
         val request = OperatingScopeApiRequest(context)
         val id = request.addGetContactsRequest()[1]
         val response = request.fireRequest()
@@ -99,11 +99,11 @@ sealed class OperatingScope : IOperatingScope {
         return subResponse["entries"]?.jsonArray?.map { WebWeaverClient.json.decodeFromJsonElement(it) } ?: emptyList()
     }
 
-    override fun addContact(contact: IContact, context: IRequestContext): Contact {
+    override suspend fun addContact(contact: IContact, context: IRequestContext): Contact {
         return addContact(contact.getBirthday(), contact.getBusinessCity(), contact.getBusinessCoords(), contact.getBusinessCountry(), contact.getBusinessFax(), contact.getBusinessPhone(), contact.getBusinessPostalCode(), contact.getBusinessState(), contact.getBusinessStreet(), contact.getBusinessStreet2(), contact.getBusinessStreet3(), contact.getCategories(), contact.getCompany(), contact.getCompanyType(), contact.getEmailAddress2(), contact.getEmailAddress3(), contact.getEmailAddress(), contact.getFirstName(), contact.getFullName(), contact.getGender(), contact.getHobby(), contact.getHomeCity(), contact.getHomeCoords(), contact.getHomeCountry(), contact.getHomeFax(), contact.getHomePhone(), contact.getHomePostalCode(), contact.getHomeState(), contact.getHomeStreet(), contact.getHomeStreet2(), contact.getHomeStreet3(), contact.getJobTitle(), contact.getJobTitle2(), contact.getLastName(), contact.getMiddleName(), contact.getMobilePhone(), contact.getNickName(), contact.getNotes(), contact.getSubjects(), contact.getSuffix(), contact.getTitle(), contact.getUid(), contact.getWebPage(), context)
     }
 
-    override fun addContact(
+    override suspend fun addContact(
         birthday: String?,
         businessCity: String?,
         businessCoords: String?,
@@ -156,7 +156,7 @@ sealed class OperatingScope : IOperatingScope {
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["entry"]!!)
     }
 
-    override fun getFiles(limit: Int?, offset: Int?, filter: FileFilter?, context: IRequestContext): List<RemoteFile> {
+    override suspend fun getFiles(limit: Int?, offset: Int?, filter: FileFilter?, context: IRequestContext): List<RemoteFile> {
         val request = OperatingScopeApiRequest(context)
         val id = request.addGetFileStorageFilesRequest(
             "/",
@@ -171,7 +171,7 @@ sealed class OperatingScope : IOperatingScope {
         return subResponse["entries"]?.jsonArray?.map { WebWeaverClient.json.decodeFromJsonElement(it) } ?: emptyList()
     }
 
-    override fun addFile(name: String, data: ByteArray, description: String?, context: IRequestContext): RemoteFile {
+    override suspend fun addFile(name: String, data: ByteArray, description: String?, context: IRequestContext): RemoteFile {
         val request = OperatingScopeApiRequest(context)
         val id = request.addAddFileRequest(PlatformUtil.base64EncodeToString(data), "/", name, description)[1]
         val response = request.fireRequest()
@@ -179,7 +179,7 @@ sealed class OperatingScope : IOperatingScope {
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!)
     }
 
-    override fun addSparseFile(name: String, size: Int, description: String?, context: IRequestContext): RemoteFile {
+    override suspend fun addSparseFile(name: String, size: Int, description: String?, context: IRequestContext): RemoteFile {
         val request = OperatingScopeApiRequest(context)
         val id = request.addAddSparseFileRequest("/", name, size, description, login)[1]
         val response = request.fireRequest()
@@ -187,7 +187,7 @@ sealed class OperatingScope : IOperatingScope {
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!)
     }
 
-    override fun importSessionFile(sessionFile: ISessionFile, createCopy: Boolean?, description: String?, context: IRequestContext): RemoteFile {
+    override suspend fun importSessionFile(sessionFile: ISessionFile, createCopy: Boolean?, description: String?, context: IRequestContext): RemoteFile {
         val request = OperatingScopeApiRequest(context)
         val id = request.addImportSessionFileRequest(sessionFile.id, createCopy, description, folderId = "/")[1]
         val response = request.fireRequest()
@@ -195,7 +195,7 @@ sealed class OperatingScope : IOperatingScope {
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!)
     }
 
-    override fun addFolder(name: String, description: String?, context: IRequestContext): RemoteFile {
+    override suspend fun addFolder(name: String, description: String?, context: IRequestContext): RemoteFile {
         val request = OperatingScopeApiRequest(context)
         val id = request.addAddFolderRequest("/", name, description)[1]
         val response = request.fireRequest()
@@ -203,21 +203,21 @@ sealed class OperatingScope : IOperatingScope {
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["folder"]!!)
     }
 
-    override fun setReadable(readable: Boolean, context: IRequestContext) {
+    override suspend fun setReadable(readable: Boolean, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
         request.addSetFolderRequest("/", null, name, readable, null, null, null, null)
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
     }
 
-    override fun setWritable(writable: Boolean, context: IRequestContext) {
+    override suspend fun setWritable(writable: Boolean, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
         request.addSetFolderRequest("/", null, name, null, null, null, null, writable)
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
     }
 
-    override fun getFileStorageState(context: IRequestContext): Pair<FileStorageSettings, Quota> {
+    override suspend fun getFileStorageState(context: IRequestContext): Pair<FileStorageSettings, Quota> {
         val request = OperatingScopeApiRequest(context)
         val id = request.addGetFileStorageStateRequest()[1]
         val response = request.fireRequest()
@@ -228,7 +228,7 @@ sealed class OperatingScope : IOperatingScope {
         )
     }
 
-    override fun getTrash(limit: Int?, context: IRequestContext): List<RemoteFile> {
+    override suspend fun getTrash(limit: Int?, context: IRequestContext): List<RemoteFile> {
         val request = OperatingScopeApiRequest(context)
         val id = request.addGetTrashRequest(limit)[1]
         val response = request.fireRequest()
@@ -236,7 +236,7 @@ sealed class OperatingScope : IOperatingScope {
         return subResponse["files"]!!.jsonArray.map { WebWeaverClient.json.decodeFromJsonElement(it) }
     }
 
-    override fun getTasks(context: IRequestContext): List<Task> {
+    override suspend fun getTasks(context: IRequestContext): List<Task> {
         val request = OperatingScopeApiRequest(context)
         val id = request.addGetTasksRequest()[1]
         val response = request.fireRequest()
@@ -244,11 +244,11 @@ sealed class OperatingScope : IOperatingScope {
         return subResponse["entries"]?.jsonArray?.map { WebWeaverClient.json.decodeFromJsonElement(it) } ?: emptyList()
     }
 
-    override fun addTask(task: ITask, context: IRequestContext): ITask {
+    override suspend fun addTask(task: ITask, context: IRequestContext): ITask {
         return addTask(task.title, task.completed, task.description, task.dueDate?.time, task.startDate?.time, context)
     }
 
-    override fun addTask(title: String, completed: Boolean?, description: String?, dueDate: Long?, startDate: Long?, context: IRequestContext): Task {
+    override suspend fun addTask(title: String, completed: Boolean?, description: String?, dueDate: Long?, startDate: Long?, context: IRequestContext): Task {
         val request = OperatingScopeApiRequest(context)
         val id = request.addAddTaskRequest(title, completed, description, dueDate, startDate)[1]
         val response = request.fireRequest()
@@ -256,7 +256,7 @@ sealed class OperatingScope : IOperatingScope {
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["entry"]!!)
     }
 
-    override fun readQuickMessages(exportSessionFile: Boolean?, context: IRequestContext): List<QuickMessage> {
+    override suspend fun readQuickMessages(exportSessionFile: Boolean?, context: IRequestContext): List<QuickMessage> {
         val request = GroupApiRequest(context)
         val id = request.addReadQuickMessagesRequest(exportSessionFile)[1]
         val response = request.fireRequest()
@@ -307,7 +307,7 @@ data class User(
 
     override fun getGTAC(): GTAC = userData.gtac
 
-    override fun getSystemNotifications(context: IRequestContext): List<SystemNotification> {
+    override suspend fun getSystemNotifications(context: IRequestContext): List<SystemNotification> {
         val request = UserApiRequest(context)
         val id = request.addGetSystemNotificationsRequest()[1]
         val response = request.fireRequest()
@@ -315,7 +315,7 @@ data class User(
         return subResponse["messages"]?.jsonArray?.map { WebWeaverClient.json.decodeFromJsonElement(it) } ?: emptyList()
     }
 
-    override fun addSessionFile(name: String, data: ByteArray, context: IRequestContext): SessionFile {
+    override suspend fun addSessionFile(name: String, data: ByteArray, context: IRequestContext): SessionFile {
         val request = UserApiRequest(context)
         val id = request.addAddSessionFileRequest(name, data)[1]
         val response = request.fireRequest()
@@ -327,7 +327,7 @@ data class User(
 
     override fun passwordMustChange(): Boolean = userData.passwordMustChange
 
-    override fun getAutoLoginUrl(disableLogout: Boolean?, disableReceptionOfQuickMessages: Boolean?, ensalveSession: Boolean?, locale: Locale?, pingMaster: Boolean?, sessionTimeout: Int?, targetData: JsonElement?, targetIframes: Boolean?, targetUrlPath: String?, context: IRequestContext): String {
+    override suspend fun getAutoLoginUrl(disableLogout: Boolean?, disableReceptionOfQuickMessages: Boolean?, ensalveSession: Boolean?, locale: Locale?, pingMaster: Boolean?, sessionTimeout: Int?, targetData: JsonElement?, targetIframes: Boolean?, targetUrlPath: String?, context: IRequestContext): String {
         val request = UserApiRequest(context)
         val id = request.addGetAutoLoginUrlRequest(disableLogout, disableReceptionOfQuickMessages, ensalveSession, locale, pingMaster, sessionTimeout, targetData, targetIframes, targetUrlPath)[1]
         val response = request.fireRequest()
@@ -335,39 +335,39 @@ data class User(
         return subResponse["url"]!!.jsonPrimitive.content
     }
 
-    override fun logout(context: IRequestContext) {
+    override suspend fun logout(context: IRequestContext) {
         val request = UserApiRequest(context)
         request.addRequest("logout", null)
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
     }
 
-    override fun logoutDestroyToken(token: String, context: IRequestContext) {
+    override suspend fun logoutDestroyToken(token: String, context: IRequestContext) {
         logout(context)
         WebWeaverClient.loginToken(login, token, true, ApiContext::class.java)
     }
 
-    override fun checkSession(context: IRequestContext): Boolean {
+    override suspend fun checkSession(context: IRequestContext): Boolean {
         val request = UserApiRequest(context)
         val response = request.fireRequest()
         return runCatching { ResponseUtil.checkSuccess(response.toJson()) }.isSuccess
     }
 
-    override fun registerService(type: ServiceType, token: String, application: String?, generateSecret: String?, isOnline: Boolean?, managedObjects: String?, unmanagedPriority: Int?, context: IRequestContext) {
+    override suspend fun registerService(type: ServiceType, token: String, application: String?, generateSecret: String?, isOnline: Boolean?, managedObjects: String?, unmanagedPriority: Int?, context: IRequestContext) {
         val request = UserApiRequest(context)
         request.addRegisterServiceRequest(type, token, application, generateSecret, isOnline, managedObjects, unmanagedPriority)[1]
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
     }
 
-    override fun unregisterService(type: ServiceType, token: String, context: IRequestContext) {
+    override suspend fun unregisterService(type: ServiceType, token: String, context: IRequestContext) {
         val request = UserApiRequest(context)
         request.addUnregisterServiceRequest(type, token)[1]
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
     }
 
-    override fun getEmailStatus(context: IRequestContext): Pair<Quota, Int> {
+    override suspend fun getEmailStatus(context: IRequestContext): Pair<Quota, Int> {
         val request = OperatingScopeApiRequest(context)
         val id = request.addGetEmailStateRequest()[1]
         val response = request.fireRequest()
@@ -378,15 +378,15 @@ data class User(
         )
     }
 
-    override fun getEmailQuota(context: IRequestContext): Quota {
+    override suspend fun getEmailQuota(context: IRequestContext): Quota {
         return getEmailStatus(context).first
     }
 
-    override fun getUnreadEmailCount(context: IRequestContext): Int {
+    override suspend fun getUnreadEmailCount(context: IRequestContext): Int {
         return getEmailStatus(context).second
     }
 
-    override fun getEmailFolders(context: IRequestContext): List<EmailFolder> {
+    override suspend fun getEmailFolders(context: IRequestContext): List<EmailFolder> {
         val request = OperatingScopeApiRequest(context)
         val id = request.addGetEmailFoldersRequest()[1]
         val response = request.fireRequest()
@@ -394,14 +394,14 @@ data class User(
         return subResponse["folders"]!!.jsonArray.map { WebWeaverClient.json.decodeFromJsonElement(it) }
     }
 
-    override fun addEmailFolder(name: String, context: IRequestContext) {
+    override suspend fun addEmailFolder(name: String, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
         request.addAddEmailFolderRequest(name)
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
     }
 
-    override fun sendEmail(
+    override suspend fun sendEmail(
         to: String,
         subject: String,
         plainBody: String,
@@ -421,14 +421,14 @@ data class User(
         ResponseUtil.checkSuccess(response.toJson())
     }
 
-    override fun getEmailSignature(context: IRequestContext): EmailSignature {
+    override suspend fun getEmailSignature(context: IRequestContext): EmailSignature {
         val request = OperatingScopeApiRequest(context)
         val id = request.addGetEmailSignatureRequest()[1]
         val response = request.fireRequest()
         return WebWeaverClient.json.decodeFromJsonElement(ResponseUtil.getSubResponseResult(response.toJson(), id)["signature"]!!)
     }
 
-    override fun getAllTasks(context: IApiContext): List<Pair<ITask, IOperatingScope>> {
+    override suspend fun getAllTasks(context: IApiContext): List<Pair<ITask, IOperatingScope>> {
         check(context is ApiContext)
         val request = UserApiRequest(getRequestContext(context))
         val taskIds = request.addGetAllTasksRequest(this)
@@ -449,7 +449,7 @@ data class User(
         return tasks
     }
 
-    override fun getAllBoardNotifications(context: IApiContext): List<Pair<IBoardNotification, IGroup>> {
+    override suspend fun getAllBoardNotifications(context: IApiContext): List<Pair<IBoardNotification, IGroup>> {
         check(context is ApiContext)
         val request = UserApiRequest(getRequestContext(context))
         val taskIds = request.addGetAllBoardNotificationsRequest(this)
@@ -470,7 +470,7 @@ data class User(
         return notifications
     }
 
-    override fun getAllPupilBoardNotifications(context: IApiContext): List<Pair<IBoardNotification, IGroup>> {
+    override suspend fun getAllPupilBoardNotifications(context: IApiContext): List<Pair<IBoardNotification, IGroup>> {
         check(context is ApiContext)
         val request = UserApiRequest(getRequestContext(context))
         val taskIds = request.addGetAllPupilBoardNotificationsRequest(this)
@@ -491,7 +491,7 @@ data class User(
         return notifications
     }
 
-    override fun getAllTeacherBoardNotifications(context: IApiContext): List<Pair<IBoardNotification, IGroup>> {
+    override suspend fun getAllTeacherBoardNotifications(context: IApiContext): List<Pair<IBoardNotification, IGroup>> {
         check(context is ApiContext)
         val request = UserApiRequest(getRequestContext(context))
         val taskIds = request.addGetAllTeacherBoardNotificationsRequest(this)
@@ -512,7 +512,7 @@ data class User(
         return notifications
     }
 
-    override fun getUsers(getMiniatures: Boolean?, onlineOnly: Boolean?, context: IRequestContext): List<RemoteScope> {
+    override suspend fun getUsers(getMiniatures: Boolean?, onlineOnly: Boolean?, context: IRequestContext): List<RemoteScope> {
         val request = UserApiRequest(context)
         val id = request.addGetMessengerUsersRequest(getMiniatures, onlineOnly)[1]
         val response = request.fireRequest()
@@ -520,28 +520,28 @@ data class User(
         return subResponse["users"]?.jsonArray?.map { WebWeaverClient.json.decodeFromJsonElement(it) } ?: emptyList()
     }
 
-    override fun sendQuickMessage(login: String, importSessionFile: ISessionFile?, text: String?, context: IRequestContext): QuickMessage {
+    override suspend fun sendQuickMessage(login: String, importSessionFile: ISessionFile?, text: String?, context: IRequestContext): QuickMessage {
         val request = UserApiRequest(context)
         val id = request.addSendQuickMessageRequest(login, importSessionFile, text)[1]
         val response = request.fireRequest()
         return WebWeaverClient.json.decodeFromJsonElement(ResponseUtil.getSubResponseResult(response.toJson(), id)["message"]!!)
     }
 
-    override fun addChat(login: String, context: IRequestContext): RemoteScope {
+    override suspend fun addChat(login: String, context: IRequestContext): RemoteScope {
         val request = UserApiRequest(context)
         val id = request.addAddChatRequest(login)[1]
         val response = request.fireRequest()
         return WebWeaverClient.json.decodeFromJsonElement(ResponseUtil.getSubResponseResult(response.toJson(), id)["user"]!!)
     }
 
-    override fun removeChat(login: String, context: IRequestContext): RemoteScope {
+    override suspend fun removeChat(login: String, context: IRequestContext): RemoteScope {
         val request = UserApiRequest(context)
         val id = request.addRemoveChatRequest(login)[1]
         val response = request.fireRequest()
         return WebWeaverClient.json.decodeFromJsonElement(ResponseUtil.getSubResponseResult(response.toJson(), id)["user"]!!)
     }
 
-    override fun getHistory(exportSessionFile: Boolean?, startId: Int?, context: IRequestContext): List<QuickMessage> {
+    override suspend fun getHistory(exportSessionFile: Boolean?, startId: Int?, context: IRequestContext): List<QuickMessage> {
         val request = UserApiRequest(context)
         val id = request.addGetHistoryRequest(exportSessionFile, startId)[1]
         val response = request.fireRequest()
@@ -549,7 +549,7 @@ data class User(
         return subResponse["messages"]?.jsonArray?.map { WebWeaverClient.json.decodeFromJsonElement(it) } ?: emptyList()
     }
 
-    override fun getNotes(context: IRequestContext): List<Note> {
+    override suspend fun getNotes(context: IRequestContext): List<Note> {
         val request = UserApiRequest(context)
         val id = request.addGetNotesRequest()[1]
         val response = request.fireRequest()
@@ -557,11 +557,11 @@ data class User(
         return subResponse["entries"]?.jsonArray?.map { WebWeaverClient.json.decodeFromJsonElement(it) } ?: emptyList()
     }
 
-    override fun addNote(note: INote, context: IRequestContext): Note {
+    override suspend fun addNote(note: INote, context: IRequestContext): Note {
         return addNote(note.text, note.title, note.color, context)
     }
 
-    override fun addNote(text: String, title: String, color: NoteColor?, context: IRequestContext): Note {
+    override suspend fun addNote(text: String, title: String, color: NoteColor?, context: IRequestContext): Note {
         val request = UserApiRequest(context)
         val id = request.addAddNoteRequest(text, title, color)[1]
         val response = request.fireRequest()
@@ -610,7 +610,7 @@ class Group(
 
     override fun getMemberRights(): List<Permission> = memberRights
 
-    override fun getMembers(miniatures: Boolean?, onlineOnly: Boolean?, context: IRequestContext): List<RemoteScope> {
+    override suspend fun getMembers(miniatures: Boolean?, onlineOnly: Boolean?, context: IRequestContext): List<RemoteScope> {
         val request = GroupApiRequest(context)
         val id = request.addGetMembersRequest(miniatures, onlineOnly)[1]
         val response = request.fireRequest()
@@ -618,7 +618,7 @@ class Group(
         return subResponse["users"]?.jsonArray?.map { WebWeaverClient.json.decodeFromJsonElement(it) } ?: emptyList()
     }
 
-    override fun getBoardNotifications(context: IRequestContext): List<BoardNotification> {
+    override suspend fun getBoardNotifications(context: IRequestContext): List<BoardNotification> {
         val request = GroupApiRequest(context)
         val id = request.addGetBoardNotificationsRequest()[1]
         val response = request.fireRequest()
@@ -626,11 +626,11 @@ class Group(
         return subResponse["entries"]?.jsonArray?.map { WebWeaverClient.json.decodeFromJsonElement(it) } ?: emptyList()
     }
 
-    override fun addBoardNotification(notification: IBoardNotification, context: IRequestContext): BoardNotification {
+    override suspend fun addBoardNotification(notification: IBoardNotification, context: IRequestContext): BoardNotification {
         return addBoardNotification(notification.title, notification.text, notification.color, notification.killDate, context)
     }
 
-    override fun addBoardNotification(title: String, text: String, color: BoardNotificationColor?, killDate: Date?, context: IRequestContext): BoardNotification {
+    override suspend fun addBoardNotification(title: String, text: String, color: BoardNotificationColor?, killDate: Date?, context: IRequestContext): BoardNotification {
         val request = GroupApiRequest(context)
         val id = request.addAddBoardNotificationRequest(title, text, color, killDate?.time)[1]
         val response = request.fireRequest()
@@ -638,7 +638,7 @@ class Group(
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["entry"]!!)
     }
 
-    override fun getTeacherBoardNotifications(context: IRequestContext): List<BoardNotification> {
+    override suspend fun getTeacherBoardNotifications(context: IRequestContext): List<BoardNotification> {
         val request = GroupApiRequest(context)
         val id = request.addGetTeacherBoardNotificationsRequest()[1]
         val response = request.fireRequest()
@@ -646,11 +646,11 @@ class Group(
         return subResponse["entries"]?.jsonArray?.map { WebWeaverClient.json.decodeFromJsonElement(it) } ?: emptyList()
     }
 
-    override fun addTeacherBoardNotification(notification: IBoardNotification, context: IRequestContext): BoardNotification {
+    override suspend fun addTeacherBoardNotification(notification: IBoardNotification, context: IRequestContext): BoardNotification {
         return addTeacherBoardNotification(notification.title, notification.text, notification.color, notification.killDate, context)
     }
 
-    override fun addTeacherBoardNotification(title: String, text: String, color: BoardNotificationColor?, killDate: Date?, context: IRequestContext): BoardNotification {
+    override suspend fun addTeacherBoardNotification(title: String, text: String, color: BoardNotificationColor?, killDate: Date?, context: IRequestContext): BoardNotification {
         val request = GroupApiRequest(context)
         val id = request.addAddTeacherBoardNotificationRequest(title, text, color, killDate?.time)[1]
         val response = request.fireRequest()
@@ -658,7 +658,7 @@ class Group(
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["entry"]!!)
     }
 
-    override fun getPupilBoardNotifications(context: IRequestContext): List<BoardNotification> {
+    override suspend fun getPupilBoardNotifications(context: IRequestContext): List<BoardNotification> {
         val request = GroupApiRequest(context)
         val id = request.addGetPupilBoardNotificationsRequest()[1]
         val response = request.fireRequest()
@@ -666,11 +666,11 @@ class Group(
         return subResponse["entries"]?.jsonArray?.map { WebWeaverClient.json.decodeFromJsonElement(it) } ?: emptyList()
     }
 
-    override fun addPupilBoardNotification(notification: IBoardNotification, context: IRequestContext): BoardNotification {
+    override suspend fun addPupilBoardNotification(notification: IBoardNotification, context: IRequestContext): BoardNotification {
         return addPupilBoardNotification(notification.title, notification.text, notification.color, notification.killDate, context)
     }
 
-    override fun addPupilBoardNotification(title: String, text: String, color: BoardNotificationColor?, killDate: Date?, context: IRequestContext): BoardNotification {
+    override suspend fun addPupilBoardNotification(title: String, text: String, color: BoardNotificationColor?, killDate: Date?, context: IRequestContext): BoardNotification {
         val request = GroupApiRequest(context)
         val id = request.addAddPupilBoardNotificationRequest(title, text, color, killDate?.time)[1]
         val response = request.fireRequest()
@@ -678,7 +678,7 @@ class Group(
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["entry"]!!)
     }
 
-    override fun getForumState(context: IRequestContext): Pair<Quota, ForumSettings> {
+    override suspend fun getForumState(context: IRequestContext): Pair<Quota, ForumSettings> {
         val request = GroupApiRequest(context)
         val id = request.addGetForumStateRequest()[1]
         val response = request.fireRequest()
@@ -686,7 +686,7 @@ class Group(
         return Pair(Json.decodeFromJsonElement(subResponse["quota"]!!.jsonObject), WebWeaverClient.json.decodeFromJsonElement(subResponse["settings"]!!.jsonObject))
     }
 
-    override fun getForumPosts(parentId: String?, context: IRequestContext): List<ForumPost> {
+    override suspend fun getForumPosts(parentId: String?, context: IRequestContext): List<ForumPost> {
         val request = GroupApiRequest(context)
         val id = request.addGetForumPostsRequest(parentId = parentId)[1]
         val response = request.fireRequest()
@@ -707,7 +707,7 @@ class Group(
         return rootPosts
     }
 
-    override fun addForumPost(title: String, text: String, icon: ForumPostIcon, parent: IForumPost?, importSessionFile: String?, importSessionFiles: Array<String>?, replyNotificationMe: Boolean?, context: IRequestContext): ForumPost {
+    override suspend fun addForumPost(title: String, text: String, icon: ForumPostIcon, parent: IForumPost?, importSessionFile: String?, importSessionFiles: Array<String>?, replyNotificationMe: Boolean?, context: IRequestContext): ForumPost {
         val request = GroupApiRequest(context)
         val id = request.addAddForumPostRequest(title, text, icon, parent?.id ?: "0", importSessionFile, importSessionFiles, replyNotificationMe)[1]
         val response = request.fireRequest()
@@ -715,7 +715,7 @@ class Group(
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["entry"]!!)
     }
 
-    override fun getWikiPage(name: String?, context: IRequestContext): WikiPage? {
+    override suspend fun getWikiPage(name: String?, context: IRequestContext): WikiPage? {
         val request = GroupApiRequest(context)
         val id = request.addGetWikiPageRequest(name)[1]
         val response = request.fireRequest()
@@ -723,7 +723,7 @@ class Group(
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["page"]!!)
     }
 
-    override fun getCourseletState(context: IRequestContext): Pair<Quota, String> {
+    override suspend fun getCourseletState(context: IRequestContext): Pair<Quota, String> {
         val request = GroupApiRequest(context)
         val id = request.addGetCourseletsStateRequest()[1]
         val response = request.fireRequest()
@@ -734,7 +734,7 @@ class Group(
         )
     }
 
-    override fun getCourseletConfiguration(context: IRequestContext): JsonElement {
+    override suspend fun getCourseletConfiguration(context: IRequestContext): JsonElement {
         val request = GroupApiRequest(context)
         val id = request.addGetCourseletsConfigurationRequest()[1]
         val response = request.fireRequest()
@@ -742,7 +742,7 @@ class Group(
         return subResponse["configuration"]!!.jsonObject
     }
 
-    override fun getCourselets(context: IRequestContext): List<Courselet> {
+    override suspend fun getCourselets(context: IRequestContext): List<Courselet> {
         val request = GroupApiRequest(context)
         val id = request.addGetCourseletsRequest()[1]
         val response = request.fireRequest()
@@ -750,7 +750,7 @@ class Group(
         return subResponse["courselets"]!!.jsonArray.map { WebWeaverClient.json.decodeFromJsonElement(it) }
     }
 
-    override fun getCourseletMappings(context: IRequestContext): List<CourseletMapping> {
+    override suspend fun getCourseletMappings(context: IRequestContext): List<CourseletMapping> {
         val request = GroupApiRequest(context)
         val id = request.addGetCourseletMappingsRequest()[1]
         val response = request.fireRequest()
@@ -758,7 +758,7 @@ class Group(
         return subResponse["mappings"]!!.jsonArray.map { WebWeaverClient.json.decodeFromJsonElement(it) }
     }
 
-    override fun addCourseletMapping(name: String, context: IRequestContext): CourseletMapping {
+    override suspend fun addCourseletMapping(name: String, context: IRequestContext): CourseletMapping {
         val request = GroupApiRequest(context)
         val id = request.addAddCourseletMappingRequest(name)[1]
         val response = request.fireRequest()
@@ -766,7 +766,7 @@ class Group(
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["mapping"]!!)
     }
 
-    override fun exportCourseletRuntime(context: IRequestContext): FileDownloadUrl {
+    override suspend fun exportCourseletRuntime(context: IRequestContext): FileDownloadUrl {
         val request = GroupApiRequest(context)
         val id = request.addExportCourseletRuntimeRequest()[1]
         val response = request.fireRequest()

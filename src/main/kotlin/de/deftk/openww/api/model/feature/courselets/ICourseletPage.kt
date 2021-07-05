@@ -11,7 +11,7 @@ interface ICourseletPage {
     val maxScore: Int?
     val result: JsonObject?
 
-    fun addResult(courselet: ICourselet, score: Int? = null, time: Long? = null, context: IRequestContext)
-    fun deleteResults(courselet: ICourselet, context: IRequestContext)
+    suspend fun addResult(courselet: ICourselet, score: Int? = null, time: Long? = null, context: IRequestContext)
+    suspend fun deleteResults(courselet: ICourselet, context: IRequestContext)
 
 }

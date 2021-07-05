@@ -33,14 +33,14 @@ class Courselet(
     override var modified: Modification = _modified
         private set
 
-    override fun setSuspendDate(suspendData: String, ifLatest: Int, context: IRequestContext) {
+    override suspend fun setSuspendDate(suspendData: String, ifLatest: Int, context: IRequestContext) {
         val request = GroupApiRequest(context)
         request.addSetCourseletSuspendDataRequest(id, suspendData, ifLatest)[1]
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
     }
 
-    override fun getResults(context: IRequestContext): CourseletData {
+    override suspend fun getResults(context: IRequestContext): CourseletData {
         val request = GroupApiRequest(context)
         val id = request.addGetCourseletResultsRequest(id)[1]
         val response = request.fireRequest()
@@ -48,28 +48,28 @@ class Courselet(
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["courselet"]!!)
     }
 
-    override fun deleteResults(context: IRequestContext) {
+    override suspend fun deleteResults(context: IRequestContext) {
         val request = GroupApiRequest(context)
         request.addDeleteCourseletResultsRequest(id)[1]
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
     }
 
-    override fun addBookmark(context: IRequestContext) {
+    override suspend fun addBookmark(context: IRequestContext) {
         val request = GroupApiRequest(context)
         request.addAddCourseletBookmarkRequest(id)[1]
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
     }
 
-    override fun deleteBookmark(context: IRequestContext) {
+    override suspend fun deleteBookmark(context: IRequestContext) {
         val request = GroupApiRequest(context)
         request.addDeleteCourseletBookmarkRequest(id)[1]
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
     }
 
-    override fun export(pkg: TemplatePackage?, context: IRequestContext): FileDownloadUrl {
+    override suspend fun export(pkg: TemplatePackage?, context: IRequestContext): FileDownloadUrl {
         val request = GroupApiRequest(context)
         val id = request.addExportCourseletRequest(id.toString(), pkg)[1]
         val response = request.fireRequest()
@@ -77,7 +77,7 @@ class Courselet(
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!)
     }
 
-    override fun delete(context: IRequestContext) {
+    override suspend fun delete(context: IRequestContext) {
         val request = GroupApiRequest(context)
         request.addDeleteCourseletRequest(id.toString())
         val response = request.fireRequest()

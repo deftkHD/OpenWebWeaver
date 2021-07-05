@@ -15,7 +15,7 @@ import kotlinx.serialization.json.jsonPrimitive
 
 class AutoLoginRequestHandler<T : IApiContext>(private val handler: LoginHandler<T>, private val contextClass: Class<T>) : AbstractRequestHandler() {
 
-    override fun performRequest(request: ApiRequest, context: IRequestContext): ApiResponse {
+    override suspend fun performRequest(request: ApiRequest, context: IRequestContext): ApiResponse {
         return try {
             val response = performApiRequestIntern(request, context)
             ResponseUtil.checkSuccess(response.toJson())
@@ -46,8 +46,8 @@ class AutoLoginRequestHandler<T : IApiContext>(private val handler: LoginHandler
     }
 
     interface LoginHandler<T : IApiContext> {
-        fun getCredentials(): Credentials
-        fun onLogin(context: T)
+        suspend fun getCredentials(): Credentials
+        suspend fun onLogin(context: T)
     }
 
 }

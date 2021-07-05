@@ -34,7 +34,7 @@ class EmailFolder(
     override var name: String = _name
         private set
 
-    override fun getEmails(limit: Int?, offset: Int?, context: IRequestContext): List<Email> {
+    override suspend fun getEmails(limit: Int?, offset: Int?, context: IRequestContext): List<Email> {
         val request = OperatingScopeApiRequest(context)
         val id = request.addGetEmailsRequest(id, limit, offset)[1]
         val response = request.fireRequest()
@@ -42,7 +42,7 @@ class EmailFolder(
         return subResponse["messages"]!!.jsonArray.map { WebWeaverClient.json.decodeFromJsonElement(it) }
     }
 
-    override fun setName(name: String, context: IRequestContext) {
+    override suspend fun setName(name: String, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
         request.addSetEmailFolderRequest(id, name)
         val response = request.fireRequest()
@@ -50,7 +50,7 @@ class EmailFolder(
         this.name = name
     }
 
-    override fun delete(context: IRequestContext) {
+    override suspend fun delete(context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
         request.addDeleteEmailFolderRequest(id)
         val response = request.fireRequest()

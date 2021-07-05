@@ -49,7 +49,7 @@ class ForumPost(
         comments.add(comment)
     }
 
-    override fun delete(context: IRequestContext) {
+    override suspend fun delete(context: IRequestContext) {
         val request = GroupApiRequest(context)
         request.addDeleteForumPostRequest(id)
         val response = request.fireRequest()

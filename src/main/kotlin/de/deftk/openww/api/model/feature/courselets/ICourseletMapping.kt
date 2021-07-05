@@ -7,7 +7,7 @@ interface ICourseletMapping {
     val id: Int
     val name: String
 
-    fun setName(name: String, context: IRequestContext)
-    fun delete(context: IRequestContext)
+    suspend fun setName(name: String, context: IRequestContext)
+    suspend fun delete(context: IRequestContext)
 
 }

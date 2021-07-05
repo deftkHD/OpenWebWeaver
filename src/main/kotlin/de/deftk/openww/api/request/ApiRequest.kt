@@ -14,7 +14,7 @@ open class ApiRequest {
 
     var requests = mutableListOf(mutableListOf<JsonObject>())
 
-    open fun fireRequest(context: IRequestContext): ApiResponse {
+    open suspend fun fireRequest(context: IRequestContext): ApiResponse {
         return context.requestHandler.performRequest(this, context)
     }
 

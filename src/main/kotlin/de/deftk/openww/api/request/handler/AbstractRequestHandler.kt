@@ -9,7 +9,7 @@ import kotlinx.serialization.json.*
 
 abstract class AbstractRequestHandler: IRequestHandler {
 
-    protected fun performApiRequestIntern(request: ApiRequest, context: IRequestContext): ApiResponse {
+    protected suspend fun performApiRequestIntern(request: ApiRequest, context: IRequestContext): ApiResponse {
         val responses = mutableListOf<ApiResponse>()
         request.requests.forEach { requestBlock ->
             val response = PlatformUtil.postRequest(

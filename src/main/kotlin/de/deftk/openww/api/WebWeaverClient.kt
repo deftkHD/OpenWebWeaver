@@ -33,12 +33,12 @@ object WebWeaverClient {
     }
 
     @Throws(ApiException::class)
-    fun login(credentials: Credentials): ApiContext {
+    suspend fun login(credentials: Credentials): ApiContext {
         return login(credentials, ApiContext::class.java)
     }
 
     @Throws(ApiException::class)
-    fun <T : IApiContext> login(credentials: Credentials, contextClass: Class<T>): T {
+    suspend fun <T : IApiContext> login(credentials: Credentials, contextClass: Class<T>): T {
         return when {
             credentials.password != null -> login(credentials.username, credentials.password, contextClass)
             credentials.token != null -> loginToken(credentials.username, credentials.token, contextClass = contextClass)
@@ -47,12 +47,12 @@ object WebWeaverClient {
     }
 
     @Throws(ApiException::class)
-    fun login(username: String, password: String): ApiContext {
+    suspend fun login(username: String, password: String): ApiContext {
         return login(username, password, ApiContext::class.java)
     }
 
     @Throws(ApiException::class)
-    fun <T : IApiContext> login(username: String, password: String, contextClass: Class<T>): T {
+    suspend fun <T : IApiContext> login(username: String, password: String, contextClass: Class<T>): T {
         val requestUrl = getRequestUrl(username)
         val request = AuthRequest(requestUrl, DefaultRequestHandler())
         request.addLoginRequest(AuthRequest.LoginRequest(username, password = password, getMiniature = true))
@@ -64,12 +64,12 @@ object WebWeaverClient {
     }
 
     @Throws(ApiException::class)
-    fun loginToken(username: String, token: String, removeTrust: Boolean = false): ApiContext {
+    suspend fun loginToken(username: String, token: String, removeTrust: Boolean = false): ApiContext {
         return loginToken(username, token, removeTrust, ApiContext::class.java)
     }
 
     @Throws(ApiException::class)
-    fun <T : IApiContext> loginToken(username: String, token: String, removeTrust: Boolean = false, contextClass: Class<T>): T {
+    suspend fun <T : IApiContext> loginToken(username: String, token: String, removeTrust: Boolean = false, contextClass: Class<T>): T {
         val requestUrl = getRequestUrl(username)
         val nonceRequest = AuthRequest(requestUrl, DefaultRequestHandler())
         nonceRequest.addGetNonceRequest()
@@ -110,7 +110,7 @@ object WebWeaverClient {
     }
 
     @Throws(ApiException::class)
-    fun <T : IApiContext> loginTokenCreateSubstitute(username: String, token: String, service: AuthRequest.SubstituteService, substituteTimeout: Int, substituteName: String? = null, contextClass: Class<T>): Pair<T, Substitute> {
+    suspend fun <T : IApiContext> loginTokenCreateSubstitute(username: String, token: String, service: AuthRequest.SubstituteService, substituteTimeout: Int, substituteName: String? = null, contextClass: Class<T>): Pair<T, Substitute> {
         val requestUrl = getRequestUrl(username)
         val nonceRequest = AuthRequest(requestUrl, DefaultRequestHandler())
         nonceRequest.addGetNonceRequest()
@@ -150,12 +150,12 @@ object WebWeaverClient {
     }
 
     @Throws(ApiException::class)
-    fun loginCreateToken(username: String, password: String, title: String, identity: String): Pair<ApiContext, String> {
+    suspend fun loginCreateToken(username: String, password: String, title: String, identity: String): Pair<ApiContext, String> {
         return loginCreateToken(username, password, title, identity, ApiContext::class.java)
     }
 
     @Throws(ApiException::class)
-    fun <T : IApiContext> loginCreateToken(username: String, password: String, title: String, identity: String, contextClass: Class<T>): Pair<T, String> {
+    suspend fun <T : IApiContext> loginCreateToken(username: String, password: String, title: String, identity: String, contextClass: Class<T>): Pair<T, String> {
         val requestUrl = getRequestUrl(username)
         val request = AuthRequest(requestUrl, DefaultRequestHandler())
         request.addLoginRequest(AuthRequest.LoginRequest(username, password = password, getMiniature = true))
@@ -170,7 +170,7 @@ object WebWeaverClient {
     }
 
     @Throws(ApiException::class)
-    private fun getRequestUrl(username: String): String {
+    private suspend fun getRequestUrl(username: String): String {
         val requestData = serializePostRequestData(mapOf(Pair("login", username)))
         val response = PlatformUtil.postRequest(
             "https://fork.webweaver.de/service/get_responsible_host.php",

@@ -17,6 +17,6 @@ interface IForumPost: IModifiable {
     fun getComments(): List<IForumPost>
     fun commentLoaded(comment: IForumPost)
 
-    fun delete(context: IRequestContext)
+    suspend fun delete(context: IRequestContext)
 
 }

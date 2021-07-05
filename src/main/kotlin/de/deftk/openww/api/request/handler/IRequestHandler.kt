@@ -6,6 +6,6 @@ import de.deftk.openww.api.response.ApiResponse
 
 interface IRequestHandler {
 
-    fun performRequest(request: ApiRequest, context: IRequestContext): ApiResponse
+    suspend fun performRequest(request: ApiRequest, context: IRequestContext): ApiResponse
 
 }

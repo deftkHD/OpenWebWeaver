@@ -17,6 +17,6 @@ interface ISystemNotification {
     val isUnread: Boolean
     val obj: String?
 
-    fun delete(context: IRequestContext)
+    suspend fun delete(context: IRequestContext)
 
 }

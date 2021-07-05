@@ -9,6 +9,6 @@ interface IAttachment {
     val name: String
     val size: Int
 
-    fun exportSessionFile(email: IEmail, folder: IEmailFolder, context: IRequestContext): FileDownloadUrl
+    suspend fun exportSessionFile(email: IEmail, folder: IEmailFolder, context: IRequestContext): FileDownloadUrl
 
 }

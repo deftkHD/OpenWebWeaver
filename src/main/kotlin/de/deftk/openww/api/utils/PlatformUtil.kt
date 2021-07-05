@@ -12,7 +12,7 @@ import javax.net.ssl.HttpsURLConnection
 
 object PlatformUtil {
 
-    fun postRequest(requestUrl: String, timeout: Int, contentType: String, data: ByteArray): ApiResponse {
+    suspend fun postRequest(requestUrl: String, timeout: Int, contentType: String, data: ByteArray): ApiResponse {
         val url = URL(requestUrl)
         val connection = if (requestUrl.startsWith("https://")) url.openConnection() as HttpsURLConnection else url.openConnection() as HttpURLConnection
         connection.connectTimeout = timeout
