@@ -14,133 +14,229 @@ import kotlinx.serialization.json.decodeFromJsonElement
 @Serializable
 class Contact(
     override val id: Int,
-    private var birthday: String? = null,
+    @SerialName("birthday")
+    private val _birthday: String? = null,
     @SerialName("businesscity")
-    private var businessCity: String? = null,
+    private val _businessCity: String? = null,
     @SerialName("businesscoords")
-    private var businessCoords: String? = null,
+    private val _businessCoords: String? = null,
     @SerialName("businesscountry")
-    private var businessCountry: String? = null,
+    private val _businessCountry: String? = null,
     @SerialName("businessfax")
-    private var businessFax: String? = null,
+    private val _businessFax: String? = null,
     @SerialName("businessphone")
-    private var businessPhone: String? = null,
+    private val _businessPhone: String? = null,
     @SerialName("businesspostalcode")
-    private var businessPostalCode: String? = null,
+    private val _businessPostalCode: String? = null,
     @SerialName("businessstate")
-    private var businessState: String? = null,
+    private val _businessState: String? = null,
     @SerialName("businessstreet")
-    private var businessStreet: String? = null,
+    private val _businessStreet: String? = null,
     @SerialName("businessstreet2")
-    private var businessStreet2: String? = null,
+    private val _businessStreet2: String? = null,
     @SerialName("businessstreet3")
-    private var businessStreet3: String? = null,
-    private var categories: String? = null,
-    private var company: String? = null,
+    private val _businessStreet3: String? = null,
+    @SerialName("categories")
+    private val _categories: String? = null,
+    @SerialName("company")
+    private val _company: String? = null,
     @SerialName("companytype")
-    private var companyType: String? = null,
+    private val _companyType: String? = null,
     @SerialName("email2address")
-    private var email2Address: String? = null,
+    private val _email2Address: String? = null,
     @SerialName("email3address")
-    private var email3Address: String? = null,
+    private val _email3Address: String? = null,
     @SerialName("emailaddress")
-    private var emailAddress: String? = null,
+    private val _emailAddress: String? = null,
     @SerialName("firstname")
-    private var firstName: String? = null,
+    private val _firstName: String? = null,
     @SerialName("fullname")
-    private var fullName: String? = null,
-    private var gender: Gender? = null,
-    private var hobby: String? = null,
+    private val _fullName: String? = null,
+    @SerialName("gender")
+    private val _gender: Gender? = null,
+    @SerialName("hobby")
+    private val _hobby: String? = null,
     @SerialName("homecity")
-    private var homeCity: String? = null,
+    private val _homeCity: String? = null,
     @SerialName("homecoords")
-    private var homeCoords: String? = null,
+    private val _homeCoords: String? = null,
     @SerialName("homecountry")
-    private var homeCountry: String? = null,
+    private val _homeCountry: String? = null,
     @SerialName("homefax")
-    private var homeFax: String? = null,
+    private val _homeFax: String? = null,
     @SerialName("homephone")
-    private var homePhone: String? = null,
+    private val _homePhone: String? = null,
     @SerialName("homepostalcode")
-    private var homePostalCode: String? = null,
+    private val _homePostalCode: String? = null,
     @SerialName("homestate")
-    private var homeState: String? = null,
+    private val _homeState: String? = null,
     @SerialName("homestreet")
-    private var homeStreet: String? = null,
+    private val _homeStreet: String? = null,
     @SerialName("homestreet2")
-    private var homeStreet2: String? = null,
+    private val _homeStreet2: String? = null,
     @SerialName("homestreet3")
-    private var homeStreet3: String? = null,
+    private val _homeStreet3: String? = null,
     @SerialName("jobtitle")
-    private var jobTitle: String? = null,
+    private val _jobTitle: String? = null,
     @SerialName("jobtitle2")
-    private var jobTitle2: String? = null,
+    private val _jobTitle2: String? = null,
     @SerialName("lastname")
-    private var lastName: String? = null,
+    private val _lastName: String? = null,
     @SerialName("middlename")
-    private var middleName: String? = null,
+    private val _middleName: String? = null,
     @SerialName("mobilephone")
-    private var mobilePhone: String? = null,
+    private val _mobilePhone: String? = null,
     @SerialName("nickname")
-    private var nickName: String? = null,
-    private var notes: String? = null,
-    private var subjects: String? = null,
-    private var suffix: String? = null,
-    private var title: String? = null,
-    private var uid: String? = null,
+    private val _nickName: String? = null,
+    @SerialName("notes")
+    private val _notes: String? = null,
+    @SerialName("subjects")
+    private val _subjects: String? = null,
+    @SerialName("suffix")
+    private val _suffix: String? = null,
+    @SerialName("title")
+    private val _title: String? = null,
+    @SerialName("uid")
+    private val _uid: String? = null,
     @SerialName("webpage")
-    private var webPage: String? = null,
+    private val _webPage: String? = null,
     override val created: Modification,
     @SerialName("modified")
-    private var _modified: Modification
+    private val _modified: Modification
 ) : IContact {
 
     var deleted = false
         private set
 
-    override fun getBirthday(): String? = birthday
-    override fun getBusinessCity(): String? = businessCity
-    override fun getBusinessCoords(): String? = businessCoords
-    override fun getBusinessCountry(): String? = businessCountry
-    override fun getBusinessFax(): String? = businessFax
-    override fun getBusinessPhone(): String? = businessPhone
-    override fun getBusinessPostalCode(): String? = businessPostalCode
-    override fun getBusinessState(): String? = businessState
-    override fun getBusinessStreet(): String? = businessStreet
-    override fun getBusinessStreet2(): String? = businessStreet2
-    override fun getBusinessStreet3(): String? = businessStreet3
-    override fun getCategories(): String? = categories
-    override fun getCompany(): String? = company
-    override fun getCompanyType(): String? = companyType
-    override fun getEmailAddress2(): String? = email2Address
-    override fun getEmailAddress3(): String? = email3Address
-    override fun getEmailAddress(): String? = emailAddress
-    override fun getFirstName(): String? = firstName
-    override fun getFullName(): String? = fullName
-    override fun getGender(): Gender? = gender
-    override fun getHobby(): String? = hobby
-    override fun getHomeCity(): String? = homeCity
-    override fun getHomeCoords(): String? = homeCoords
-    override fun getHomeCountry(): String? = homeCountry
-    override fun getHomeFax(): String? = homeFax
-    override fun getHomePhone(): String? = homePhone
-    override fun getHomePostalCode(): String? = homePostalCode
-    override fun getHomeState(): String? = homeState
-    override fun getHomeStreet(): String? = homeStreet
-    override fun getHomeStreet2(): String? = homeStreet2
-    override fun getHomeStreet3(): String? = homeStreet3
-    override fun getJobTitle(): String? = jobTitle
-    override fun getJobTitle2(): String? = jobTitle2
-    override fun getLastName(): String? = lastName
-    override fun getMiddleName(): String? = middleName
-    override fun getMobilePhone(): String? = mobilePhone
-    override fun getNickName(): String? = nickName
-    override fun getNotes(): String? = notes
-    override fun getSubjects(): String? = subjects
-    override fun getSuffix(): String? = suffix
-    override fun getTitle(): String? = title
-    override fun getUid(): String? = uid
-    override fun getWebPage(): String? = webPage
+    @SerialName("_birthday")
+    override var birthday: String? = _birthday
+        private set
+    @SerialName("_businessCity")
+    override var businessCity: String? = _businessCity
+        private set
+    @SerialName("_businessCoords")
+    override var businessCoords: String? = _businessCoords
+        private set
+    @SerialName("_businessCounty")
+    override var businessCountry: String? = _businessCountry
+        private set
+    @SerialName("_businessFax")
+    override var businessFax: String? = _businessFax
+        private set
+    @SerialName("_businessPhone")
+    override var businessPhone: String? = _businessPhone
+        private set
+    @SerialName("_businessPostalCode")
+    override var businessPostalCode: String? = _businessPostalCode
+        private set
+    @SerialName("_businessState")
+    override var businessState: String? = _businessState
+        private set
+    @SerialName("_businessStreet")
+    override var businessStreet: String? = _businessStreet
+        private set
+    @SerialName("_businessStreet2")
+    override var businessStreet2: String? = _businessStreet2
+        private set
+    @SerialName("_businessStreet3")
+    override var businessStreet3: String? = _businessStreet3
+        private set
+    @SerialName("_categories")
+    override var categories: String? = _categories
+        private set
+    @SerialName("_company")
+    override var company: String? = _company
+        private set
+    @SerialName("_companyType")
+    override var companyType: String? = _companyType
+        private set
+    @SerialName("_email2Address")
+    override var email2Address: String? = _email2Address
+        private set
+    @SerialName("_email3Address")
+    override var email3Address: String? = _email3Address
+        private set
+    @SerialName("_emailAddress")
+    override var emailAddress: String? = _emailAddress
+        private set
+    @SerialName("_firstName")
+    override var firstName: String? = _firstName
+        private set
+    @SerialName("_fullName")
+    override var fullName: String? = _fullName
+        private set
+    @SerialName("_gender")
+    override var gender: Gender? = _gender
+        private set
+    @SerialName("_hobby")
+    override var hobby: String? = _hobby
+        private set
+    @SerialName("_homeCity")
+    override var homeCity: String? = _homeCity
+        private set
+    @SerialName("_homeCoords")
+    override var homeCoords: String? = _homeCoords
+        private set
+    @SerialName("_homeCountry")
+    override var homeCountry: String? = _homeCountry
+        private set
+    @SerialName("_homeFax")
+    override var homeFax: String? = _homeFax
+        private set
+    @SerialName("_homePhone")
+    override var homePhone: String? = _homePhone
+        private set
+    @SerialName("_homePostalCode")
+    override var homePostalCode: String? = _homePostalCode
+        private set
+    @SerialName("_homeState")
+    override var homeState: String? = _homeState
+        private set
+    @SerialName("_homeStreet")
+    override var homeStreet: String? = _homeStreet
+        private set
+    @SerialName("_homeStreet2")
+    override var homeStreet2: String? = _homeStreet2
+        private set
+    @SerialName("_homeStreet3")
+    override var homeStreet3: String? = _homeStreet3
+        private set
+    @SerialName("_jobTitle")
+    override var jobTitle: String? = _jobTitle
+        private set
+    @SerialName("_jobTitle2")
+    override var jobTitle2: String? = _jobTitle2
+        private set
+    @SerialName("_lastName")
+    override var lastName: String? = _lastName
+        private set
+    @SerialName("_middleName")
+    override var middleName: String? = _middleName
+        private set
+    @SerialName("_mobilePhone")
+    override var mobilePhone: String? = _mobilePhone
+        private set
+    @SerialName("_nickName")
+    override var nickName: String? = _nickName
+        private set
+    @SerialName("_notes")
+    override var notes: String? = _notes
+        private set
+    @SerialName("_subjects")
+    override var subjects: String? = _subjects
+        private set
+    @SerialName("_suffix")
+    override var suffix: String? = _suffix
+        private set
+    @SerialName("_title")
+    override var title: String? = _title
+        private set
+    @SerialName("_uid")
+    override var uid: String? = _uid
+        private set
+    @SerialName("_webPage")
+    override var webPage: String? = _webPage
+        private set
 
     @SerialName("_modified")
     override var modified: Modification = _modified
