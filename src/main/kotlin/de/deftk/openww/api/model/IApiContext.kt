@@ -9,6 +9,8 @@ interface IApiContext {
 
     fun findOperatingScope(login: String): IOperatingScope?
     fun mapOperatingScope(scope: RemoteScope): IScope
+    fun userContext(): IRequestContext
+    fun requestContext(scope: IOperatingScope): IRequestContext
 
     val requestUrl: String
 

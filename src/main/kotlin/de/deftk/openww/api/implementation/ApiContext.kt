@@ -1,8 +1,6 @@
 package de.deftk.openww.api.implementation
 
-import de.deftk.openww.api.model.IApiContext
-import de.deftk.openww.api.model.IScope
-import de.deftk.openww.api.model.RemoteScope
+import de.deftk.openww.api.model.*
 import de.deftk.openww.api.request.handler.IRequestHandler
 
 class ApiContext(
@@ -20,4 +18,8 @@ class ApiContext(
     override fun mapOperatingScope(scope: RemoteScope): IScope {
         return findOperatingScope(scope.login) ?: scope
     }
+
+    override fun userContext(): IRequestContext = user.getRequestContext(this)
+
+    override fun requestContext(scope: IOperatingScope): IRequestContext = scope.getRequestContext(this)
 }
