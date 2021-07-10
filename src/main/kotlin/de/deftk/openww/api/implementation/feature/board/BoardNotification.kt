@@ -9,7 +9,6 @@ import de.deftk.openww.api.model.feature.board.BoardType
 import de.deftk.openww.api.model.feature.board.IBoardNotification
 import de.deftk.openww.api.request.GroupApiRequest
 import de.deftk.openww.api.response.ResponseUtil
-import de.deftk.openww.api.serialization.DateSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.decodeFromJsonElement
@@ -25,9 +24,6 @@ class BoardNotification(
     private val _text: String,
     @SerialName("color")
     private val _color: BoardNotificationColor? = null,
-    @SerialName("killDate")
-    @Serializable(with = DateSerializer::class)
-    private val _killDate: Date? = null,
     override val created: Modification,
     @SerialName("modified")
     private var _modified: Modification
@@ -48,25 +44,20 @@ class BoardNotification(
     override var color: BoardNotificationColor? = _color
         private set
 
-    @SerialName("_killDate")
-    @Serializable(with = DateSerializer::class)
-    override var killDate: Date? = _killDate
-        private set
-
     @SerialName("_modified")
     override var modified: Modification = _modified
             private set
 
     override suspend fun setTitle(title: String, boardType: BoardType, context: IRequestContext) {
-        edit(title, text, color ?: BoardNotificationColor.BLUE, killDate, boardType, context)
+        edit(title, text, color ?: BoardNotificationColor.BLUE, null, boardType, context)
     }
 
     override suspend fun setText(text: String, boardType: BoardType, context: IRequestContext) {
-        edit(title, text, color ?: BoardNotificationColor.BLUE, killDate, boardType, context)
+        edit(title, text, color ?: BoardNotificationColor.BLUE, null, boardType, context)
     }
 
     override suspend fun setColor(color: BoardNotificationColor, boardType: BoardType, context: IRequestContext) {
-        edit(title, text, color, killDate, boardType, context)
+        edit(title, text, color, null, boardType, context)
     }
 
     override suspend fun setKillDate(killDate: Date, boardType: BoardType, context: IRequestContext) {
@@ -102,7 +93,6 @@ class BoardNotification(
         title = notification.title
         text = notification.text
         color = notification.color
-        killDate = notification.killDate
         modified = notification.modified
     }
 

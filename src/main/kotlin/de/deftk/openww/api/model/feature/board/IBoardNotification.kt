@@ -11,7 +11,6 @@ interface IBoardNotification: IModifiable {
     val title: String
     val text: String
     val color: BoardNotificationColor?
-    val killDate: Date?
 
     suspend fun setTitle(title: String, boardType: BoardType = BoardType.ALL, context: IRequestContext)
     suspend fun setText(text: String, boardType: BoardType = BoardType.ALL, context: IRequestContext)

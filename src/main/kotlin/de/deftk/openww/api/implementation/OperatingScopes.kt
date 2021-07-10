@@ -462,8 +462,8 @@ data class User(
                 assert(focus["method"]?.jsonPrimitive?.content == "set_focus")
                 val memberLogin = focus["user"]!!.jsonObject["login"]!!.jsonPrimitive.content
                 val member = context.findOperatingScope(memberLogin)!! as Group
-                subResponse["result"]!!.jsonObject["entries"]!!.jsonArray.forEach { taskResponse ->
-                    notifications.add(Pair(Json.decodeFromJsonElement<BoardNotification>(taskResponse.jsonObject), member))
+                subResponse["result"]!!.jsonObject["entries"]!!.jsonArray.forEach { notificationResponse ->
+                    notifications.add(Pair(Json.decodeFromJsonElement<BoardNotification>(notificationResponse.jsonObject), member))
                 }
             }
         }
@@ -629,7 +629,7 @@ class Group(
     }
 
     override suspend fun addBoardNotification(notification: IBoardNotification, context: IRequestContext): BoardNotification {
-        return addBoardNotification(notification.title, notification.text, notification.color, notification.killDate, context)
+        return addBoardNotification(notification.title, notification.text, notification.color, null, context)
     }
 
     override suspend fun addBoardNotification(title: String, text: String, color: BoardNotificationColor?, killDate: Date?, context: IRequestContext): BoardNotification {
@@ -649,7 +649,7 @@ class Group(
     }
 
     override suspend fun addTeacherBoardNotification(notification: IBoardNotification, context: IRequestContext): BoardNotification {
-        return addTeacherBoardNotification(notification.title, notification.text, notification.color, notification.killDate, context)
+        return addTeacherBoardNotification(notification.title, notification.text, notification.color, null, context)
     }
 
     override suspend fun addTeacherBoardNotification(title: String, text: String, color: BoardNotificationColor?, killDate: Date?, context: IRequestContext): BoardNotification {
@@ -669,7 +669,7 @@ class Group(
     }
 
     override suspend fun addPupilBoardNotification(notification: IBoardNotification, context: IRequestContext): BoardNotification {
-        return addPupilBoardNotification(notification.title, notification.text, notification.color, notification.killDate, context)
+        return addPupilBoardNotification(notification.title, notification.text, notification.color, null, context)
     }
 
     override suspend fun addPupilBoardNotification(title: String, text: String, color: BoardNotificationColor?, killDate: Date?, context: IRequestContext): BoardNotification {
