@@ -24,6 +24,20 @@ class GroupApiRequest(context: IRequestContext): OperatingScopeApiRequest(contex
         )
     }
 
+    fun addSendQuickMessageRequest(sessionFile: String?, text: String?, login: String = context.login): List<Int> {
+        ensureCapacity(2)
+        val params = buildJsonObject {
+            if (sessionFile != null)
+                put("import_session_file", sessionFile)
+            if (text != null)
+                put("text", text)
+        }
+        return listOf(
+            addSetFocusRequest(Focusable.MEMBERS, login),
+            addRequest("send_quick_message", params)
+        )
+    }
+
     fun addGetForumStateRequest(login: String = context.login): List<Int> {
         ensureCapacity(2)
         return listOf(

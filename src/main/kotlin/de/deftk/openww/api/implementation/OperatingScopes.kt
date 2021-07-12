@@ -34,6 +34,7 @@ import de.deftk.openww.api.model.feature.forum.ForumPostIcon
 import de.deftk.openww.api.model.feature.forum.ForumSettings
 import de.deftk.openww.api.model.feature.forum.IForumPost
 import de.deftk.openww.api.model.feature.mailbox.ReferenceMode
+import de.deftk.openww.api.model.feature.messenger.IQuickMessage
 import de.deftk.openww.api.model.feature.notes.INote
 import de.deftk.openww.api.model.feature.notes.NoteColor
 import de.deftk.openww.api.model.feature.tasks.ITask
@@ -618,6 +619,13 @@ class Group(
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return subResponse["users"]?.jsonArray?.map { WebWeaverClient.json.decodeFromJsonElement(it) } ?: emptyList()
+    }
+
+    override suspend fun sendGlobalQuickMessage(sessionFile: ISessionFile?, text: String?, context: IRequestContext): IQuickMessage {
+        val request = GroupApiRequest(context)
+        val id = request.addSendQuickMessageRequest(sessionFile?.id, text)[1]
+        val response = request.fireRequest()
+        return WebWeaverClient.json.decodeFromJsonElement(ResponseUtil.getSubResponseResult(response.toJson(), id)["message"]!!)
     }
 
     override suspend fun getBoardNotifications(context: IRequestContext): List<BoardNotification> {
