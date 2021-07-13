@@ -696,7 +696,15 @@ class Group(
         return Pair(Json.decodeFromJsonElement(subResponse["quota"]!!.jsonObject), WebWeaverClient.json.decodeFromJsonElement(subResponse["settings"]!!.jsonObject))
     }
 
-    override suspend fun getForumPosts(parentId: String?, context: IRequestContext): List<ForumPost> {
+    override suspend fun getForumPosts(parentId: String?, context: IRequestContext): List<IForumPost> {
+        val request = GroupApiRequest(context)
+        val id = request.addGetForumPostsRequest(parentId = parentId)[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return subResponse["entries"]!!.jsonArray.map { WebWeaverClient.json.decodeFromJsonElement<ForumPost>(it) }
+    }
+
+    override suspend fun getForumPostsTree(parentId: String?, context: IRequestContext): List<ForumPost> {
         val request = GroupApiRequest(context)
         val id = request.addGetForumPostsRequest(parentId = parentId)[1]
         val response = request.fireRequest()

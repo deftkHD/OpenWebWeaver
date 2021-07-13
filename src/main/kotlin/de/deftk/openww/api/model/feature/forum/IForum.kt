@@ -7,6 +7,7 @@ interface IForum {
 
     suspend fun getForumState(context: IRequestContext): Pair<Quota, ForumSettings>
     suspend fun getForumPosts(parentId: String? = null, context: IRequestContext): List<IForumPost>
+    suspend fun getForumPostsTree(parentId: String? = null, context: IRequestContext): List<IForumPost>
     suspend fun addForumPost(
         title: String,
         text: String,
