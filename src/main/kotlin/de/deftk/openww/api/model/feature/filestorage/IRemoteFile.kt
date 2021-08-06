@@ -31,6 +31,7 @@ interface IRemoteFile: IRemoteFileProvider, IModifiable {
     val effectiveModify: Boolean?
     val effectiveDelete: Boolean?
     val downloadNotification: DownloadNotification?
+    val aggregation: FileAggregation?
 
     suspend fun download(limit: Int? = null, offset: Int? = null, context: IRequestContext): FileChunk
     suspend fun getPreviewUrl(context: IRequestContext): FilePreviewUrl

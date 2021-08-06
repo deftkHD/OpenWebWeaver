@@ -8,6 +8,7 @@ import de.deftk.openww.api.model.feature.FileDownloadUrl
 import de.deftk.openww.api.model.feature.FilePreviewUrl
 import de.deftk.openww.api.model.feature.Modification
 import de.deftk.openww.api.model.feature.filestorage.DownloadNotification
+import de.deftk.openww.api.model.feature.filestorage.FileAggregation
 import de.deftk.openww.api.model.feature.filestorage.FileType
 import de.deftk.openww.api.model.feature.filestorage.IRemoteFile
 import de.deftk.openww.api.model.feature.filestorage.filter.FileFilter
@@ -66,7 +67,9 @@ open class RemoteFile(
     @SerialName("sparseKey")
     private var _sparseKey: String? = null,
     @SerialName("download_notification")
-    private var _downloadNotification: DownloadNotification? = null
+    private var _downloadNotification: DownloadNotification? = null,
+    @SerialName("aggregation")
+    private var _aggregation: FileAggregation? = null
 ) : IRemoteFile {
 
     @SerialName("_modified")
@@ -143,6 +146,10 @@ open class RemoteFile(
 
     @SerialName("_name")
     override var name: String = _name
+        protected set
+
+    @SerialName("_aggregation")
+    override var aggregation: FileAggregation? = _aggregation
         protected set
 
     override suspend fun download(limit: Int?, offset: Int?, context: IRequestContext): FileChunk {
@@ -405,6 +412,7 @@ open class RemoteFile(
         preview = file.preview
         empty = file.empty
         sparseKey = file.sparseKey
+        aggregation = file.aggregation
     }
 
     private fun requireFile() {
