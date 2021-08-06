@@ -297,6 +297,21 @@ open class RemoteFile(
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!)
     }
 
+    override suspend fun getRootFile(context: IRequestContext): IRemoteFile {
+        requireFolder()
+        val request = OperatingScopeApiRequest(context)
+        val id = request.addGetFileStorageFilesRequest(
+            folderId = id,
+            getFolder = true,
+            getFiles = false,
+            getFolders = false,
+            recursive = false
+        )[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return subResponse["entries"]!!.jsonArray.map { WebWeaverClient.json.decodeFromJsonElement<RemoteFile>(it) }[0]
+    }
+
     override suspend fun getFiles(limit: Int?, offset: Int?, filter: FileFilter?, context: IRequestContext): List<RemoteFile> {
         requireFolder()
         val request = OperatingScopeApiRequest(context)

@@ -8,6 +8,7 @@ interface IRemoteFileProvider {
 
     val name: String
 
+    suspend fun getRootFile(context: IRequestContext): IRemoteFile
     suspend fun getFiles(limit: Int? = null, offset: Int? = null, filter: FileFilter? = null, context: IRequestContext): List<IRemoteFile>
     suspend fun addFile(name: String, data: ByteArray, description: String? = null, context: IRequestContext): IRemoteFile
     suspend fun addSparseFile(name: String, size: Int, description: String? = null, context: IRequestContext): IRemoteFile

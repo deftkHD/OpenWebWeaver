@@ -28,6 +28,7 @@ import de.deftk.openww.api.model.feature.calendar.IAppointment
 import de.deftk.openww.api.model.feature.contacts.Gender
 import de.deftk.openww.api.model.feature.contacts.IContact
 import de.deftk.openww.api.model.feature.filestorage.FileStorageSettings
+import de.deftk.openww.api.model.feature.filestorage.IRemoteFile
 import de.deftk.openww.api.model.feature.filestorage.filter.FileFilter
 import de.deftk.openww.api.model.feature.filestorage.session.ISessionFile
 import de.deftk.openww.api.model.feature.forum.ForumPostIcon
@@ -155,6 +156,20 @@ sealed class OperatingScope : IOperatingScope {
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["entry"]!!)
+    }
+
+    override suspend fun getRootFile(context: IRequestContext): IRemoteFile {
+        val request = OperatingScopeApiRequest(context)
+        val id = request.addGetFileStorageFilesRequest(
+            folderId = "/",
+            getFolder = true,
+            getFiles = false,
+            getFolders = false,
+            recursive = false
+        )[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return subResponse["entries"]!!.jsonArray.map { WebWeaverClient.json.decodeFromJsonElement<RemoteFile>(it) }[0]
     }
 
     override suspend fun getFiles(limit: Int?, offset: Int?, filter: FileFilter?, context: IRequestContext): List<RemoteFile> {
