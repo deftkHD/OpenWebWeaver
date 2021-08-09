@@ -99,7 +99,7 @@ enum class SystemNotificationType {
     NEW_APPOINTMENT,
 
     @SerialName("31")
-    UNKNOWN_31,
+    NEW_POLL2,
 
     @SerialName("32")
     UNKNOWN_32,
