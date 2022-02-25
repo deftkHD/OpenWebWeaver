@@ -400,6 +400,24 @@ open class RemoteFile(
         readFrom(WebWeaverClient.json.decodeFromJsonElement(subResponse["folder"]!!))
     }
 
+    override suspend fun setFile(name: String, description: String?, downloadNotificationAddLogin: String?, downloadNotificationDeleteLogin: String?, downloadNotificationMe: Boolean?, context: IRequestContext) {
+        requireFile()
+        val request = OperatingScopeApiRequest(context)
+        val id = request.addSetFileRequest(id, description, downloadNotificationAddLogin, downloadNotificationDeleteLogin, downloadNotificationMe, name, parentId!!)[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        readFrom(WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!))
+    }
+
+    override suspend fun setFolder(name: String, description: String?, readable: Boolean?, writable: Boolean?, uploadNotificationAddLogin: String?, uploadNotificationDeleteLogin: String?, uploadNotificationMe: Boolean?, context: IRequestContext) {
+        requireFolder()
+        val request = OperatingScopeApiRequest(context)
+        val id = request.addSetFolderRequest(id, description, name, readable, uploadNotificationAddLogin, uploadNotificationDeleteLogin, uploadNotificationMe, writable)[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        readFrom(WebWeaverClient.json.decodeFromJsonElement(subResponse["folder"]!!))
+    }
+
     private fun readFrom(file: RemoteFile) {
         ordinal = file.ordinal
         _name = file._name

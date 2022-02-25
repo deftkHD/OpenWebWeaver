@@ -48,4 +48,7 @@ interface IRemoteFile: IRemoteFileProvider, IModifiable {
     suspend fun setUploadNotificationMe(receive: Boolean, context: IRequestContext)
     suspend fun exportSessionFile(user: IUser, context: IRequestContext): ISessionFile
 
+    suspend fun setFile(name: String, description: String?, downloadNotificationAddLogin: String?, downloadNotificationDeleteLogin: String?, downloadNotificationMe: Boolean?, context: IRequestContext)
+    suspend fun setFolder(name: String, description: String?, readable: Boolean?, writable: Boolean?, uploadNotificationAddLogin: String?, uploadNotificationDeleteLogin: String?, uploadNotificationMe: Boolean?, context: IRequestContext)
+
 }
