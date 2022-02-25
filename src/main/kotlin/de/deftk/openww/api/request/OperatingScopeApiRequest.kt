@@ -226,10 +226,10 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
             put("description", description)
             put("download_notification_add_login", downloadNotificationAddLogin)
             put("download_notification_delete_login", downloadNotificationDeleteLogin)
-            put("download_notification_me", asApiBoolean(downloadNotificationMe))
+            if (downloadNotificationMe != null)
+                put("download_notification_me", asApiBoolean(downloadNotificationMe))
             put("name", name)
             put("folder_id", folderId)
-            put("download_notification_me", asApiBoolean(downloadNotificationMe))
         }
         return listOf(
             addSetFocusRequest(Focusable.FILES, login),
@@ -246,7 +246,8 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
             put("readable", asApiBoolean(readable))
             put("upload_notification_add_login", uploadNotificationAddLogin)
             put("upload_notification_delete_login", uploadNotificationDeleteLogin)
-            put("upload_notification_me", asApiBoolean(uploadNotificationMe))
+            if (uploadNotificationMe != null)
+                put("upload_notification_me", asApiBoolean(uploadNotificationMe))
             put("writable", asApiBoolean(writable))
         }
         return listOf(

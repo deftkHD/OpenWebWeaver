@@ -206,7 +206,11 @@ open class RemoteFile(
         }
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        readFrom(WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!))
+        val respObj = when (type) {
+            FileType.FILE -> "file"
+            FileType.FOLDER -> "folder"
+        }
+        readFrom(WebWeaverClient.json.decodeFromJsonElement(subResponse[respObj]!!))
     }
 
     override suspend fun setDescription(description: String, context: IRequestContext) {
@@ -217,7 +221,11 @@ open class RemoteFile(
         }
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
-        readFrom(WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!))
+        val respObj = when (type) {
+            FileType.FILE -> "file"
+            FileType.FOLDER -> "folder"
+        }
+        readFrom(WebWeaverClient.json.decodeFromJsonElement(subResponse[respObj]!!))
     }
 
     override suspend fun setDownloadNotificationAddLogin(login: String, context: IRequestContext) {
@@ -260,7 +268,6 @@ open class RemoteFile(
         requireFolder()
         val request = OperatingScopeApiRequest(context)
         val id = when (type) {
-            //TODO check if null should be replaced
             FileType.FILE -> request.addSetFolderRequest(id, description, name, readable, login, null, null, writable)[1]
             else -> error("Can't delete add logins")
         }
@@ -273,7 +280,6 @@ open class RemoteFile(
         requireFolder()
         val request = OperatingScopeApiRequest(context)
         val id = when (type) {
-            //TODO check if null should be replaced
             FileType.FILE -> request.addSetFolderRequest(id, description, name, readable, null, login, null, writable)[1]
             else -> error("Can't delete upload logins")
         }
@@ -286,7 +292,6 @@ open class RemoteFile(
         requireFolder()
         val request = OperatingScopeApiRequest(context)
         val id = when (type) {
-            //TODO check if null should be replaced
             FileType.FILE -> request.addSetFolderRequest(id, description, name, readable, null, null, receive, writable)[1]
             else -> error("Can't update receive update notification state")
         }
@@ -375,7 +380,6 @@ open class RemoteFile(
         requireFolder()
         val request = OperatingScopeApiRequest(context)
         val id = when (type) {
-            //TODO check if null should be replaced
             FileType.FOLDER -> request.addSetFolderRequest(id, description, name, readable, null, null, null, writable)[1]
             else -> error("Can't update readable state")
         }
@@ -388,7 +392,6 @@ open class RemoteFile(
         requireFolder()
         val request = OperatingScopeApiRequest(context)
         val id = when (type) {
-            //TODO check if null should be replaced
             FileType.FOLDER -> request.addSetFolderRequest(id, description, name, readable, null, null, null, writable)[1]
             else -> error("Can't update writable state")
         }
