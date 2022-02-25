@@ -420,7 +420,7 @@ open class RemoteFile(
 
     private fun readFrom(file: RemoteFile) {
         ordinal = file.ordinal
-        _name = file._name
+        name = file.name
         description = file.description
         size = file.size
         readable = file.readable
