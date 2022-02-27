@@ -52,7 +52,7 @@ user.logoutDestroyToken("<token>", requestContext)
 - [x] Token login
 - [x] Auto login urls
 - [ ] Change user password
-- [ ] Profile details
+- [x] Profile details
 ---
 - [ ] Statistics (admin)
 - [ ] User management (admin)

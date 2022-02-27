@@ -14,6 +14,7 @@ import de.deftk.openww.api.implementation.feature.mailbox.EmailFolder
 import de.deftk.openww.api.implementation.feature.mailbox.EmailSignature
 import de.deftk.openww.api.implementation.feature.messenger.QuickMessage
 import de.deftk.openww.api.implementation.feature.notes.Note
+import de.deftk.openww.api.implementation.feature.profile.UserProfile
 import de.deftk.openww.api.implementation.feature.systemnotification.SystemNotification
 import de.deftk.openww.api.implementation.feature.tasks.Task
 import de.deftk.openww.api.implementation.feature.wiki.WikiPage
@@ -322,6 +323,36 @@ data class User(
         get() = userData.fullName
     override val gtac: GTAC
         get() = userData.gtac
+
+    override suspend fun getProfile(exportImage: Boolean?, context: IRequestContext): UserProfile {
+        val request = UserApiRequest(context)
+        val id = request.addGetProfileRequest(exportImage)[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return WebWeaverClient.json.decodeFromJsonElement(subResponse["profile"]!!)
+    }
+
+    override suspend fun exportProfileImage(context: IRequestContext): SessionFile {
+        val request = UserApiRequest(context)
+        val id = request.addExportProfileImageRequest()[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return WebWeaverClient.json.decodeFromJsonElement(subResponse["image"]!!)
+    }
+
+    override suspend fun deleteProfileImage(context: IRequestContext) {
+        val request = UserApiRequest(context)
+        request.addDeleteProfileImageRequest()[1]
+        val response = request.fireRequest()
+        ResponseUtil.checkSuccess(response.toJson())
+    }
+
+    override suspend fun importProfileImage(sessionFile: ISessionFile, context: IRequestContext) {
+        val request = UserApiRequest(context)
+        request.addImportProfileImageRequest(sessionFile.id)[1]
+        val response = request.fireRequest()
+        ResponseUtil.checkSuccess(response.toJson())
+    }
 
     override suspend fun getSystemNotifications(context: IRequestContext): List<SystemNotification> {
         val request = UserApiRequest(context)

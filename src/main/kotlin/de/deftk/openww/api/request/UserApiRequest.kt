@@ -6,10 +6,14 @@ import de.deftk.openww.api.model.IRequestContext
 import de.deftk.openww.api.model.IUser
 import de.deftk.openww.api.model.Locale
 import de.deftk.openww.api.model.feature.ServiceType
+import de.deftk.openww.api.model.feature.contacts.Gender
 import de.deftk.openww.api.model.feature.filestorage.session.ISessionFile
 import de.deftk.openww.api.model.feature.notes.NoteColor
 import de.deftk.openww.api.utils.PlatformUtil
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.encodeToJsonElement
+import kotlinx.serialization.json.put
 
 class UserApiRequest(context: IRequestContext): OperatingScopeApiRequest(context) {
 
@@ -29,6 +33,101 @@ class UserApiRequest(context: IRequestContext): OperatingScopeApiRequest(context
         return listOf(
             addSetFocusRequest(Focusable.TRUSTS, context.login),
             addRequest("get_url_for_autologin", requestParams)
+        )
+    }
+
+    fun addGetProfileRequest(exportImage: Boolean?): List<Int> {
+        ensureCapacity(2)
+        val params = buildJsonObject {
+            if (exportImage != null)
+                put("export_image", asApiBoolean(exportImage))
+        }
+        return listOf(
+            addSetFocusRequest(Focusable.PROFILE, context.login),
+            addRequest("get_profile", params)
+        )
+    }
+
+    fun addSetProfileRequest(fullName: String?, firstName: String?, lastName: String?, homePostalCode: String?, homeCity: String?, homeState: String?, birthday: String?, emailAddress: String?, gender: Gender?, hobbies: String?, notes: String?, website: String?, company: String?, companyType: String?, subjects: String?, jobTitle: String?, visible: Boolean?, jobTitle2: String?, homePhone: String?, homeFax: String?, mobilePhone: String?, title: String?, image: ISessionFile?): List<Int> {
+        ensureCapacity(2)
+        val params = buildJsonObject {
+            if (fullName != null)
+                put("fullname", fullName)
+            if (firstName != null)
+                put("firstname", firstName)
+            if (lastName != null)
+                put("lastname", lastName)
+            if (homePostalCode != null)
+                put("homepostalcode", homePostalCode)
+            if (homeCity != null)
+                put("homecity", homeCity)
+            if (homeState != null)
+                put("homestate", homeState)
+            if (birthday != null)
+                put("birthday", birthday)
+            if (emailAddress != null)
+                put("emailaddress", emailAddress)
+            if (gender != null)
+                put("gender", WebWeaverClient.json.encodeToJsonElement(gender))
+            if (hobbies != null)
+                put("hobby", hobbies)
+            if (notes != null)
+                put("notes", notes)
+            if (website != null)
+                put("webpage", website)
+            if (company != null)
+                put("company", company)
+            if (companyType != null)
+                put("companytype", companyType)
+            if (subjects != null)
+                put("subjects", subjects)
+            if (jobTitle != null)
+                put("jobtitle", jobTitle)
+            if (visible != null)
+                put("visible", asApiBoolean(visible))
+            if (jobTitle2 != null)
+                put("jobtitle2", jobTitle2)
+            if (homePhone != null)
+                put("homephone", homePhone)
+            if (homeFax != null)
+                put("homefax", homeFax)
+            if (mobilePhone != null)
+                put("mobilephone", mobilePhone)
+            if (title != null)
+                put("title", title)
+            if (image != null)
+                put("image", image.id)
+        }
+        return listOf(
+            addSetFocusRequest(Focusable.PROFILE, context.login),
+            addRequest("set_profile", params)
+        )
+    }
+
+    fun addExportProfileImageRequest(): List<Int> {
+        ensureCapacity(2)
+        return listOf(
+            addSetFocusRequest(Focusable.PROFILE, context.login),
+            addRequest("export_image", null)
+        )
+    }
+
+    fun addDeleteProfileImageRequest(): List<Int> {
+        ensureCapacity(2)
+        return listOf(
+            addSetFocusRequest(Focusable.PROFILE, context.login),
+            addRequest("delete_image", null)
+        )
+    }
+
+    fun addImportProfileImageRequest(id: String): List<Int> {
+        ensureCapacity(2)
+        val params = buildJsonObject {
+            put("id", id)
+        }
+        return listOf(
+            addSetFocusRequest(Focusable.PROFILE, context.login),
+            addRequest("import_image", params)
         )
     }
 

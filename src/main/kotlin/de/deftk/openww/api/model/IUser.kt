@@ -6,6 +6,7 @@ import de.deftk.openww.api.model.feature.filestorage.session.ISessionFile
 import de.deftk.openww.api.model.feature.mailbox.IMailbox
 import de.deftk.openww.api.model.feature.messenger.IMessenger
 import de.deftk.openww.api.model.feature.notes.INotebook
+import de.deftk.openww.api.model.feature.profile.IUserProfile
 import de.deftk.openww.api.model.feature.systemnotification.ISystemNotification
 import de.deftk.openww.api.model.feature.tasks.ITask
 import kotlinx.serialization.json.JsonElement
@@ -15,6 +16,11 @@ interface IUser: IOperatingScope, IMailbox, IMessenger, INotebook {
     val baseUser: RemoteScope
     val fullName: String
     val gtac: GTAC
+
+    suspend fun getProfile(exportImage: Boolean? = false, context: IRequestContext): IUserProfile
+    suspend fun exportProfileImage(context: IRequestContext): ISessionFile
+    suspend fun deleteProfileImage(context: IRequestContext)
+    suspend fun importProfileImage(sessionFile: ISessionFile, context: IRequestContext)
 
     suspend fun getSystemNotifications(context: IRequestContext): List<ISystemNotification>
     suspend fun addSessionFile(name: String, data: ByteArray, context: IRequestContext): ISessionFile
