@@ -9,13 +9,13 @@ enum class SystemNotificationType {
     // This isn't nice
 
     @SerialName("1")
-    UNKNOWN_1,
+    FOLDER_FILE_UPLOAD,
 
     @SerialName("2")
-    UNKNOWN_2,
+    NEW_FORUM_COMMENT,
 
     @SerialName("3")
-    UNKNOWN_3,
+    NEW_COURSE,
 
     @SerialName("4")
     UNKNOWN_4,
@@ -24,7 +24,7 @@ enum class SystemNotificationType {
     PASSWORD_CHANGED,
 
     @SerialName("6")
-    UNKNOWN_6,
+    NEW_FORUM_POST,
 
     @SerialName("7")
     FILE_UPLOAD,
@@ -42,13 +42,13 @@ enum class SystemNotificationType {
     UNKNOWN_11,
 
     @SerialName("12")
-    UNKNOWN_12,
+    CALENDAR_REMINDER,
 
     @SerialName("13")
-    UNKNOWN_13,
+    NEW_MAIL,
 
     @SerialName("14")
-    UNKNOWN_14,
+    NEW_GUESTBOOK_ENTRY,
 
     @SerialName("15")
     REQUEST_PASSWORD_RESET_CODE,
@@ -69,28 +69,28 @@ enum class SystemNotificationType {
     UNKNOWN_20,
 
     @SerialName("21")
-    UNKNOWN_21,
+    RESOURCE_FAULTY,
 
     @SerialName("22")
-    UNKNOWN_22,
+    RESOURCE_REPAIRED,
 
     @SerialName("23")
-    UNKNOWN_23,
+    NEW_BLOG_COMMENT,
 
     @SerialName("24")
-    UNKNOWN_24,
+    NEW_BLOG_ENTRY,
 
     @SerialName("25")
-    UNKNOWN_25,
+    NEW_LEARNING_LOG_ENTRY,
 
     @SerialName("26")
-    UNKNOWN_26,
+    NEW_LEARNING_LOG_ENTRY_COMMENT,
 
     @SerialName("27")
-    UNKNOWN_27,
+    NEW_LEARNING_LOG_COMMENT,
 
     @SerialName("28")
-    UNKNOWN_28,
+    NEW_LEARNING_LOG,
 
     @SerialName("29")
     NEW_NOTIFICATION,
@@ -114,47 +114,50 @@ enum class SystemNotificationType {
     UNAUTHORIZED_LOGIN_LOCATION,
 
     @SerialName("36")
-    UNKNOWN_36,
+    NEW_WALL_ENTRY,
 
     @SerialName("37")
-    UNKNOWN_37,
+    NEW_WALL_COMMENT,
 
     @SerialName("38")
-    UNKNOWN_38,
+    NEW_SUBSTITUTION_PLAN,
 
     @SerialName("39")
-    UNKNOWN_39,
+    NEW_TEACHER_NOTIFICATION,
 
     @SerialName("40")
-    UNKNOWN_40,
+    NEW_STUDENT_NOTIFICATION,
 
     @SerialName("41")
-    UNKNOWN_41,
+    PENDING_QUICK_MESSAGE,
 
     @SerialName("42")
-    UNKNOWN_42,
+    COURSELET_CORRECTED,
 
     @SerialName("43")
-    UNKNOWN_43,
+    NEW_BOOKMARK,
 
     @SerialName("44")
     UNKNOWN_44,
 
     @SerialName("45")
-    UNKNOWN_45,
+    RESOURCE_BOOKED,
 
     @SerialName("46")
     NEW_TASK,
 
     @SerialName("47")
-    UNKNOWN_47,
+    NEW_FORM_SUBMISSION,
 
     @SerialName("48")
     UNKNOWN_48,
 
     @SerialName("49")
-    UNKNOWN_49,
+    NEW_CONSULTATION_HOUR_BOOKED,
 
     @SerialName("50")
-    UNKNOWN_50;
+    NEW_COURSELET,
+
+    @SerialName("51")
+    NEW_LEARNING_PLAN;
 }

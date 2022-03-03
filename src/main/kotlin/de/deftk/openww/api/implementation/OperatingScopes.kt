@@ -15,6 +15,7 @@ import de.deftk.openww.api.implementation.feature.mailbox.EmailSignature
 import de.deftk.openww.api.implementation.feature.messenger.QuickMessage
 import de.deftk.openww.api.implementation.feature.notes.Note
 import de.deftk.openww.api.implementation.feature.profile.UserProfile
+import de.deftk.openww.api.implementation.feature.systemnotification.NotificationSetting
 import de.deftk.openww.api.implementation.feature.systemnotification.SystemNotification
 import de.deftk.openww.api.implementation.feature.tasks.Task
 import de.deftk.openww.api.implementation.feature.wiki.WikiPage
@@ -362,6 +363,14 @@ data class User(
         return subResponse["messages"]?.jsonArray?.map { WebWeaverClient.json.decodeFromJsonElement(it) } ?: emptyList()
     }
 
+    override suspend fun getSystemNotificationSettings(context: IRequestContext): List<NotificationSetting> {
+        val request = UserApiRequest(context)
+        val id = request.addGetSystemNotificationSettingsRequest()[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return subResponse["messages"]?.jsonArray?.map { WebWeaverClient.json.decodeFromJsonElement(it) } ?: emptyList()
+    }
+
     override suspend fun addSessionFile(name: String, data: ByteArray, context: IRequestContext): SessionFile {
         val request = UserApiRequest(context)
         val id = request.addAddSessionFileRequest(name, data)[1]
@@ -374,9 +383,9 @@ data class User(
 
     override fun passwordMustChange(): Boolean = userData.passwordMustChange
 
-    override suspend fun getAutoLoginUrl(disableLogout: Boolean?, disableReceptionOfQuickMessages: Boolean?, ensalveSession: Boolean?, locale: Locale?, pingMaster: Boolean?, sessionTimeout: Int?, targetData: JsonElement?, targetIframes: Boolean?, targetUrlPath: String?, context: IRequestContext): String {
+    override suspend fun getAutoLoginUrl(disableLogout: Boolean?, disableReceptionOfQuickMessages: Boolean?, enslaveSession: Boolean?, locale: Locale?, pingMaster: Boolean?, sessionTimeout: Int?, targetData: JsonElement?, targetIframes: Boolean?, targetUrlPath: String?, context: IRequestContext): String {
         val request = UserApiRequest(context)
-        val id = request.addGetAutoLoginUrlRequest(disableLogout, disableReceptionOfQuickMessages, ensalveSession, locale, pingMaster, sessionTimeout, targetData, targetIframes, targetUrlPath)[1]
+        val id = request.addGetAutoLoginUrlRequest(disableLogout, disableReceptionOfQuickMessages, enslaveSession, locale, pingMaster, sessionTimeout, targetData, targetIframes, targetUrlPath)[1]
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return subResponse["url"]!!.jsonPrimitive.content

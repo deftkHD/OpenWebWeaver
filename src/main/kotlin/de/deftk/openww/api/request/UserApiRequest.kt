@@ -142,6 +142,39 @@ class UserApiRequest(context: IRequestContext): OperatingScopeApiRequest(context
         )
     }
 
+    fun addGetSystemNotificationSettingsRequest(): List<Int> {
+        ensureCapacity(2)
+        return listOf(
+            addSetFocusRequest(Focusable.MESSAGES, context.login),
+            addRequest("get_settings", null)
+        )
+    }
+
+    fun addSetSystemNotificationFacilitiesRequest(type: Int, digest: Boolean?, digestWeekly: Boolean?, mail: Boolean?, normal: Boolean?, push: Boolean?, qm: Boolean?, sms: Boolean?): List<Int> {
+        ensureCapacity(2)
+        val requestParams = buildJsonObject {
+            put("type", type)
+            if (digest != null)
+                put("digest", asApiBoolean(digest))
+            if (digestWeekly != null)
+                put("digest_weekly", asApiBoolean(digestWeekly))
+            if (mail != null)
+                put("mail", asApiBoolean(mail))
+            if (normal != null)
+                put("normal", asApiBoolean(normal))
+            if (push != null)
+                put("push", asApiBoolean(push))
+            if (qm != null)
+                put("qm", asApiBoolean(qm))
+            if (sms != null)
+                put("sms", asApiBoolean(sms))
+        }
+        return listOf(
+            addSetFocusRequest(Focusable.MESSAGES, context.login),
+            addRequest("set_facilities", requestParams)
+        )
+    }
+
     fun addDeleteSystemNotificationRequest(id: Int): List<Int> {
         ensureCapacity(2)
         val requestParams = buildJsonObject {

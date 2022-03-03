@@ -7,6 +7,7 @@ import de.deftk.openww.api.model.feature.mailbox.IMailbox
 import de.deftk.openww.api.model.feature.messenger.IMessenger
 import de.deftk.openww.api.model.feature.notes.INotebook
 import de.deftk.openww.api.model.feature.profile.IUserProfile
+import de.deftk.openww.api.model.feature.systemnotification.INotificationSetting
 import de.deftk.openww.api.model.feature.systemnotification.ISystemNotification
 import de.deftk.openww.api.model.feature.tasks.ITask
 import kotlinx.serialization.json.JsonElement
@@ -23,12 +24,13 @@ interface IUser: IOperatingScope, IMailbox, IMessenger, INotebook {
     suspend fun importProfileImage(sessionFile: ISessionFile, context: IRequestContext)
 
     suspend fun getSystemNotifications(context: IRequestContext): List<ISystemNotification>
+    suspend fun getSystemNotificationSettings(context: IRequestContext): List<INotificationSetting>
     suspend fun addSessionFile(name: String, data: ByteArray, context: IRequestContext): ISessionFile
 
     fun getGroups(): List<IGroup>
     fun passwordMustChange(): Boolean
 
-    suspend fun getAutoLoginUrl(disableLogout: Boolean? = null, disableReceptionOfQuickMessages: Boolean? = null, ensalveSession: Boolean? = null, locale: Locale? = null, pingMaster: Boolean? = null, sessionTimeout: Int? = null, targetData: JsonElement? = null, targetIframes: Boolean? = null, targetUrlPath: String? = null, context: IRequestContext): String
+    suspend fun getAutoLoginUrl(disableLogout: Boolean? = null, disableReceptionOfQuickMessages: Boolean? = null, enslaveSession: Boolean? = null, locale: Locale? = null, pingMaster: Boolean? = null, sessionTimeout: Int? = null, targetData: JsonElement? = null, targetIframes: Boolean? = null, targetUrlPath: String? = null, context: IRequestContext): String
     suspend fun logout(context: IRequestContext)
     suspend fun logoutDestroyToken(token: String, context: IRequestContext)
     suspend fun checkSession(context: IRequestContext): Boolean
