@@ -36,6 +36,8 @@ import de.deftk.openww.api.model.feature.filestorage.session.ISessionFile
 import de.deftk.openww.api.model.feature.forum.ForumPostIcon
 import de.deftk.openww.api.model.feature.forum.ForumSettings
 import de.deftk.openww.api.model.feature.forum.IForumPost
+import de.deftk.openww.api.model.feature.mailbox.IEmail
+import de.deftk.openww.api.model.feature.mailbox.IEmailFolder
 import de.deftk.openww.api.model.feature.mailbox.ReferenceMode
 import de.deftk.openww.api.model.feature.messenger.IQuickMessage
 import de.deftk.openww.api.model.feature.notes.INote
@@ -50,6 +52,7 @@ import de.deftk.openww.api.utils.PlatformUtil
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.*
+import java.text.DateFormat
 import java.util.*
 
 @Serializable
@@ -475,6 +478,90 @@ data class User(
         request.addSendEmailRequest(to, subject, plainBody, text, bcc, cc, importSessionFiles, referenceFolderId, referenceMessageId, referenceMode)
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
+    }
+
+    override suspend fun answerEmail(
+        toAddress: String,
+        message: String,
+        cc: String?,
+        bcc: String?,
+        importSessionFiles: List<ISessionFile>?,
+        toFolder: IEmailFolder,
+        toEmail: IEmail,
+        context: IRequestContext
+    ) {
+        val dst = toEmail.from?.firstOrNull { it.address.equals(toAddress, true) } ?: toEmail.from?.firstOrNull()
+        if (toEmail.plainBody == null) {
+            toEmail.read(toFolder, true, context)
+        }
+        var oldMsg = ">" + (toEmail.plainBody?.replace("\n", "\n>") ?: toEmail.text?.replace("\n", "\n>") ?: "")
+        if (oldMsg.endsWith("\n>")) oldMsg = oldMsg.substring(0, oldMsg.length - 2)
+        val sb = StringBuilder()
+        if (dst != null) {
+            if (dst.name.isNotBlank()) {
+                sb.append(dst.name).append(" <").append(dst.address).append(">")
+            } else {
+                sb.append(dst.address)
+            }
+        } else {
+            sb.append(toAddress)
+        }
+        val msg = "$message\n\n${DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(toEmail.date)} $sb:\n\n${oldMsg}"
+        sendEmail(
+            toAddress,
+            "Re: ${toEmail.subject}",
+            msg,
+            true,
+            null,
+            null,
+            null,
+            toFolder.id,
+            toEmail.id,
+            ReferenceMode.ANSWERED,
+            null,
+            context
+        )
+    }
+
+    override suspend fun forwardEmail(
+        toAddress: String,
+        message: String,
+        cc: String?,
+        bcc: String?,
+        importSessionFiles: List<ISessionFile>?,
+        fwdFolder: IEmailFolder,
+        fwdEmail: IEmail,
+        context: IRequestContext
+    ) {
+        val fromAddr = fwdEmail.from?.firstOrNull { it.address.equals(toAddress, true) } ?: fwdEmail.from?.firstOrNull()
+        if (fwdEmail.plainBody == null) {
+            fwdEmail.read(fwdFolder, true, context)
+        }
+        var oldMsg = ">" + (fwdEmail.plainBody?.replace("\n", "\n>") ?: fwdEmail.text?.replace("\n", "\n>") ?: "")
+        if (oldMsg.endsWith("\n>")) oldMsg = oldMsg.substring(0, oldMsg.length - 2)
+        val sbFrom = StringBuilder()
+        if (fromAddr != null) {
+            if (fromAddr.name.isNotBlank()) {
+                sbFrom.append(fromAddr.name).append(" <").append(fromAddr.address).append(">")
+            } else {
+                sbFrom.append(fromAddr.address)
+            }
+        }
+        val msg = "$message\n\n${DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(fwdEmail.date)} $sbFrom:\n\n${oldMsg}"
+        sendEmail(
+            toAddress,
+            "Fwd: ${fwdEmail.subject}",
+            msg,
+            true,
+            null,
+            null,
+            null,
+            fwdFolder.id,
+            fwdEmail.id,
+            ReferenceMode.FORWARDED,
+            null,
+            context
+        )
     }
 
     override suspend fun getEmailSignature(context: IRequestContext): EmailSignature {

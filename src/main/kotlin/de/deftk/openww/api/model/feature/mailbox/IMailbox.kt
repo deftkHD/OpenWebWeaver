@@ -28,6 +28,28 @@ interface IMailbox {
         context: IRequestContext
     )
 
+    suspend fun answerEmail(
+        toAddress: String,
+        message: String,
+        cc: String? = null,
+        bcc: String? = null,
+        importSessionFiles: List<ISessionFile>? = null,
+        toFolder: IEmailFolder,
+        toEmail: IEmail,
+        context: IRequestContext
+    )
+
+    suspend fun forwardEmail(
+        toAddress: String,
+        message: String,
+        cc: String? = null,
+        bcc: String? = null,
+        importSessionFiles: List<ISessionFile>? = null,
+        fwdFolder: IEmailFolder,
+        fwdEmail: IEmail,
+        context: IRequestContext
+    )
+
     suspend fun getEmailSignature(context: IRequestContext): IEmailSignature
 
 }

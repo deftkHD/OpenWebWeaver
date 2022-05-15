@@ -59,6 +59,7 @@ user.logoutDestroyToken("<token>", requestContext)
 ---
 - [x] Messenger
 - [x] Receive quick messages
+- [ ] Block users
 ---
 - [x] Read emails
 - [x] Write emails
@@ -67,7 +68,8 @@ user.logoutDestroyToken("<token>", requestContext)
 - [x] Delete emails
 - [x] Move emails
 - [x] Email signature
-- [ ] Answer emails
+- [x] Answer emails
+- [x] Forward emails
 ---
 - [x] Get group members
 - [x] Send quick messages
@@ -130,6 +132,10 @@ user.logoutDestroyToken("<token>", requestContext)
 ---
 - [x] Read system notifications
 - [x] Delete system notifications
+---
+- [ ] Report users
+- [ ] License management
+- [ ] Member container join/leave
 
 ## Disclaimer
 This project is neither authorized nor endorsed by DigiOnline GmbH (WebWeaver®).
