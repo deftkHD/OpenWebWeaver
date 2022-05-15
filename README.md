@@ -21,7 +21,7 @@ val apiContext = WebWeaverClient.login(credentials)
 ```kotlin
 val (apiContext, token) = WebWeaverClient.loginCreateToken("<username>", "<password>", "<title>", "<identity>")
 ```
-Note: Title and identity are used in the web app to identify different tokens
+Note: Title and identity are used in the web app to identify different tokens.
 
 ### Obtain user object
 ```kotlin
@@ -37,9 +37,13 @@ val groups = user.getGroups()
 Each request made (except login) needs a request context. Classes implementing the IOperatingScope interface (IUser and IGroup) are able to create a request context from the IApiContext (obtained during login).
 ```kotlin
 val requestContext = user.getRequestContext(apiContext)
+// or
+val requestContext = apiContext.userContext()
 ```
 ```kotlin
 val requestContext = group.getRequestContext(apiContext)
+// or
+val requestContext = apiContext.requestContext(group)
 ```
 
 ### Revoke token (and logout)
