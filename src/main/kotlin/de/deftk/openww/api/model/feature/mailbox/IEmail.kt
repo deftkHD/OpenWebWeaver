@@ -8,10 +8,10 @@ interface IEmail {
     val id: Int
 
     val subject: String
-    val unread: Boolean
-    val flagged: Boolean
-    val answered: Boolean
-    val deleted: Boolean
+    val unread: Boolean?
+    val flagged: Boolean?
+    val answered: Boolean?
+    val deleted: Boolean?
     val date: Date
     val size: Int
     val from: List<EmailAddress>?

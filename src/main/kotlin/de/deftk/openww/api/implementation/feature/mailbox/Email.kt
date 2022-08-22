@@ -22,16 +22,16 @@ class Email(
     private var _subject: String,
     @SerialName("is_unread")
     @Serializable(with = BooleanFromIntSerializer::class)
-    private var _unread: Boolean,
+    private var _unread: Boolean?,
     @SerialName("is_flagged")
     @Serializable(with = BooleanFromIntSerializer::class)
-    private var _flagged: Boolean,
+    private var _flagged: Boolean?,
     @SerialName("is_answered")
     @Serializable(with = BooleanFromIntSerializer::class)
-    private var _answered: Boolean,
+    private var _answered: Boolean?,
     @SerialName("is_deleted")
     @Serializable(with = BooleanFromIntSerializer::class)
-    private var _deleted: Boolean,
+    private var _deleted: Boolean?,
     @SerialName("date")
     @Serializable(with = DateSerializer::class)
     private var _date: Date,
@@ -56,19 +56,19 @@ class Email(
         private set
 
     @SerialName("_is_unread")
-    override var unread: Boolean = _unread
+    override var unread: Boolean? = _unread
         private set
 
     @SerialName("_is_flagged")
-    override var flagged: Boolean = _flagged
+    override var flagged: Boolean? = _flagged
         private set
 
     @SerialName("_is_answered")
-    override var answered: Boolean = _answered
+    override var answered: Boolean? = _answered
             private set
 
     @SerialName("_is_deleted")
-    override var deleted: Boolean = _deleted
+    override var deleted: Boolean? = _deleted
         private set
 
     @SerialName("_date")
