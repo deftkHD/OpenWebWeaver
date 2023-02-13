@@ -10,7 +10,7 @@ interface IEmailFolder {
     val isTrash: Boolean
     val isDrafts: Boolean
     val isSent: Boolean
-    val date: Date
+    val date: Date?
 
     val name: String
 

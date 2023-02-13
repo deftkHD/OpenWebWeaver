@@ -31,7 +31,7 @@ class CourseletConnection(
     override val pages: List<CourseletPage>
 ) : ICourseletConnection {
 
-    override fun getCreationDate(): Date = created.date
-    override fun getModificationDate(): Date = modified.date
-    override fun getProgressed(): Date = progressed.date
+    override fun getCreationDate(): Date? = created.date
+    override fun getModificationDate(): Date? = modified.date
+    override fun getProgressed(): Date? = progressed.date
 }

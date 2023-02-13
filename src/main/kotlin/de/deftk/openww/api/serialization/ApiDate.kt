@@ -4,4 +4,4 @@ import kotlinx.serialization.Serializable
 import java.util.*
 
 @Serializable
-data class ApiDate(@Serializable(with = DateSerializer::class) val date: Date)
+data class ApiDate(@Serializable(with = DateSerializer::class) val date: Date?)

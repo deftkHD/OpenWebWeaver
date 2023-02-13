@@ -28,5 +28,5 @@ data class FileAggregationFilePreview(
 @Serializable
 data class WrappedDate(
     @Serializable(with = DateSerializer::class)
-    val date: Date
+    val date: Date?
 )

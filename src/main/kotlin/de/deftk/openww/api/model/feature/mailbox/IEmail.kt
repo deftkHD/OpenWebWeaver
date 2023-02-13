@@ -12,7 +12,7 @@ interface IEmail {
     val flagged: Boolean?
     val answered: Boolean?
     val deleted: Boolean?
-    val date: Date
+    val date: Date?
     val size: Int
     val from: List<EmailAddress>?
     val to: List<EmailAddress>?

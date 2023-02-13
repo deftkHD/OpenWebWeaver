@@ -15,8 +15,8 @@ interface ICourseletConnection {
     val isUnread: Boolean
     val pages: List<ICourseletPage>
 
-    fun getCreationDate(): Date
-    fun getModificationDate(): Date
-    fun getProgressed(): Date
+    fun getCreationDate(): Date?
+    fun getModificationDate(): Date?
+    fun getProgressed(): Date?
 
 }

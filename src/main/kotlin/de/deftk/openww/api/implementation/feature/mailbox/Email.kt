@@ -34,7 +34,7 @@ class Email(
     private var _deleted: Boolean?,
     @SerialName("date")
     @Serializable(with = DateSerializer::class)
-    private var _date: Date,
+    private var _date: Date?,
     @SerialName("size")
     private var _size: Int,
     @SerialName("from")
@@ -73,7 +73,7 @@ class Email(
 
     @SerialName("_date")
     @Serializable(with = DateSerializer::class)
-    override var date: Date = _date
+    override var date: Date? = _date
         private set
 
     @SerialName("_size")

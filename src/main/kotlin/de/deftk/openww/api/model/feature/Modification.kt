@@ -11,7 +11,7 @@ class Modification(
     @SerialName("user")
     val member: RemoteScope,
     @Serializable(with = DateSerializer::class)
-    val date: Date
+    val date: Date?
 ) {
 
     override fun equals(other: Any?): Boolean {

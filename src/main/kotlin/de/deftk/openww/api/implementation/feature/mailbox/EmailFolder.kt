@@ -27,7 +27,7 @@ class EmailFolder(
     override val isSent: Boolean,
     @SerialName("m_date")
     @Serializable(with = DateSerializer::class)
-    override val date: Date
+    override val date: Date?
 ): IEmailFolder {
 
     @SerialName("_name")

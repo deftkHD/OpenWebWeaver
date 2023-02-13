@@ -18,7 +18,7 @@ class SystemNotification(
     @SerialName("message")
     override val messageType: SystemNotificationType,
     @Serializable(with = DateSerializer::class)
-    override val date: Date,
+    override val date: Date?,
     @SerialName("message_hr")
     override val message: String,
     override val data: String?,
