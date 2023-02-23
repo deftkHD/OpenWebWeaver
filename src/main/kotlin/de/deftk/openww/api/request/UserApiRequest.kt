@@ -405,6 +405,36 @@ class UserApiRequest(context: IRequestContext): OperatingScopeApiRequest(context
         )
     }
 
+    fun addBlockMessengerUserRequest(login: String): List<Int> {
+        ensureCapacity(2)
+        val params = buildJsonObject {
+            put("login", login)
+        }
+        return listOf(
+            addSetFocusRequest(Focusable.MESSENGER, context.login),
+            addRequest("block_user", params)
+        )
+    }
+
+    fun addUnblockMessengerUserRequest(login: String): List<Int> {
+        ensureCapacity(2)
+        val params = buildJsonObject {
+            put("login", login)
+        }
+        return listOf(
+            addSetFocusRequest(Focusable.MESSENGER, context.login),
+            addRequest("unblock_user", params)
+        )
+    }
+
+    fun addGetMessengerBlocklistRequest(): List<Int> {
+        ensureCapacity(2)
+        return listOf(
+            addSetFocusRequest(Focusable.MESSENGER, context.login),
+            addRequest("get_blocklist", null)
+        )
+    }
+
     fun addGetNotesRequest(): List<Int> {
         ensureCapacity(2)
         return listOf(

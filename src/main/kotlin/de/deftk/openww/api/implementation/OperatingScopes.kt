@@ -692,6 +692,28 @@ data class User(
         return subResponse["messages"]?.jsonArray?.map { WebWeaverClient.json.decodeFromJsonElement(it) } ?: emptyList()
     }
 
+    override suspend fun blockUser(login: String, context: IRequestContext): RemoteScope {
+        val request = UserApiRequest(context)
+        val id = request.addBlockMessengerUserRequest(login)[1]
+        val response = request.fireRequest()
+        return WebWeaverClient.json.decodeFromJsonElement(ResponseUtil.getSubResponseResult(response.toJson(), id)["user"]!!)
+    }
+
+    override suspend fun unblockUser(login: String, context: IRequestContext): RemoteScope {
+        val request = UserApiRequest(context)
+        val id = request.addUnblockMessengerUserRequest(login)[1]
+        val response = request.fireRequest()
+        return WebWeaverClient.json.decodeFromJsonElement(ResponseUtil.getSubResponseResult(response.toJson(), id)["user"]!!)
+    }
+
+    override suspend fun getBlockList(context: IRequestContext): List<RemoteScope> {
+        val request = UserApiRequest(context)
+        val id = request.addGetMessengerBlocklistRequest()[1]
+        val response = request.fireRequest()
+        val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
+        return subResponse["users"]?.jsonArray?.map { WebWeaverClient.json.decodeFromJsonElement(it) } ?: emptyList()
+    }
+
     override suspend fun getNotes(context: IRequestContext): List<Note> {
         val request = UserApiRequest(context)
         val id = request.addGetNotesRequest()[1]

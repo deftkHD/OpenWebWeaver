@@ -11,5 +11,8 @@ interface IMessenger : IQuickMessageReceiver {
     suspend fun addChat(login: String, context: IRequestContext): RemoteScope
     suspend fun removeChat(login: String, context: IRequestContext): RemoteScope
     suspend fun getHistory(exportSessionFile: Boolean? = null, startId: Int? = null, context: IRequestContext): List<IQuickMessage>
+    suspend fun blockUser(login: String, context: IRequestContext): RemoteScope
+    suspend fun unblockUser(login: String, context: IRequestContext): RemoteScope
+    suspend fun getBlockList(context: IRequestContext): List<RemoteScope>
 
 }
