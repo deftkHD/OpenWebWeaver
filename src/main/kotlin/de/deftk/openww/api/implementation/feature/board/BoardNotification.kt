@@ -68,9 +68,9 @@ class BoardNotification(
     override suspend fun edit(title: String, text: String, color: BoardNotificationColor, killDate: Date?, boardType: BoardType, context: IRequestContext) {
         val request = GroupApiRequest(context)
         val id = when (boardType) {
-            BoardType.ALL -> request.addSetBoardNotificationRequest(id, title, text, color, killDate?.time)[1]
-            BoardType.TEACHER -> request.addSetTeacherBoardNotificationRequest(id, title, text, color, killDate?.time)[1]
-            BoardType.PUPIL -> request.addSetPupilBoardNotificationRequest(id, title, text, color, killDate?.time)[1]
+            BoardType.ALL -> request.addSetBoardNotificationRequest(id, title, text, color, killDate?.time)
+            BoardType.TEACHER -> request.addSetTeacherBoardNotificationRequest(id, title, text, color, killDate?.time)
+            BoardType.PUPIL -> request.addSetPupilBoardNotificationRequest(id, title, text, color, killDate?.time)
         }
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)

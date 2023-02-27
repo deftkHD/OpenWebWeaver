@@ -37,7 +37,7 @@ class SystemNotification(
 
     override suspend fun delete(context: IRequestContext) {
         val request = UserApiRequest(context)
-        request.addDeleteSystemNotificationRequest(this.id.toInt())[1] // response returns string, but request requires an int
+        request.addDeleteSystemNotificationRequest(this.id.toInt()) // response returns string, but request requires an int
         ResponseUtil.checkSuccess(request.fireRequest().toJson())
     }
 

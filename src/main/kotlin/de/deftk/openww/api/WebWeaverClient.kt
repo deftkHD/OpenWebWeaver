@@ -99,7 +99,7 @@ object WebWeaverClient {
                 getMiniature = true
             ))
         if (removeTrust) {
-            authRequest.addSetFocusRequest(Focusable.TRUSTS, null as? String?)
+            authRequest.ensureFocus(Focusable.TRUSTS, null)
             authRequest.addUnregisterMasterRequest()
         }
         authRequest.addGetInformationRequest()
@@ -139,9 +139,9 @@ object WebWeaverClient {
                 algorithm = AuthRequest.Algorithm.SHA256,
                 getMiniature = true
             ))
-        authRequest.addSetFocusRequest(Focusable.TRUSTS, null as? String?)
+        authRequest.ensureFocus(Focusable.TRUSTS, null)
         authRequest.addRegisterSubstituteRequest(service, substituteTimeout, substituteName)
-        authRequest.addSetFocusRequest(Focusable.TRUSTS, null as? String?)
+        authRequest.ensureFocus(Focusable.TRUSTS, null)
         authRequest.addGetInformationRequest()
         val response = authRequest.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
@@ -159,7 +159,7 @@ object WebWeaverClient {
         val requestUrl = getRequestUrl(username)
         val request = AuthRequest(requestUrl, DefaultRequestHandler())
         request.addLoginRequest(AuthRequest.LoginRequest(username, password = password, getMiniature = true))
-        request.addSetFocusRequest(Focusable.TRUSTS, null as? String?)
+        request.ensureFocus(Focusable.TRUSTS, null)
         request.addRegisterMasterRequest(AuthRequest.RegisterMasterRequest("wwa", remoteTitle = title, remoteIdentity = identity))
         request.addGetInformationRequest()
         val response = request.fireRequest()
@@ -167,6 +167,18 @@ object WebWeaverClient {
         val token = ResponseUtil.getSubResponseResultByMethod(response.toJson(), "register_master")["trust"]?.jsonObject?.get("token")?.jsonPrimitive?.content ?: throw ApiException("Failed to parse token")
         val factory = apiContextFactories[contextClass] ?: defaultApiContextFactory
         return Pair(factory.createApiContext(response, requestUrl) as T, token)
+    }
+
+    //TODO not tested
+    suspend fun <T: IApiContext> changePassword(currentCredentials: Credentials, newPassword: String, contextClass: Class<T>): T {
+        val requestUrl = getRequestUrl(currentCredentials.username)
+        val request = AuthRequest(requestUrl, DefaultRequestHandler())
+        request.addLoginRequest(AuthRequest.LoginRequest(currentCredentials.username, password = currentCredentials.password, getMiniature = true))
+        val newPasswordId = request.addChangePasswordRequest(newPassword)
+        val response = request.fireRequest()
+        ResponseUtil.checkSuccess(response.toJson())
+        val factory = apiContextFactories[contextClass] ?: defaultApiContextFactory
+        return factory.createApiContext(response, requestUrl) as T
     }
 
     @Throws(ApiException::class)

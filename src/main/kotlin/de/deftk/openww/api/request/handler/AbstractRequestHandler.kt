@@ -11,7 +11,8 @@ abstract class AbstractRequestHandler: IRequestHandler {
 
     protected suspend fun performApiRequestIntern(request: ApiRequest, context: IRequestContext): ApiResponse {
         val responses = mutableListOf<ApiResponse>()
-        request.requests.forEach { requestBlock ->
+        val bundle = request.packRequestsIntoBundle(context)
+        bundle.forEach { requestBlock ->
             val response = PlatformUtil.postRequest(
                 context.requestUrl,
                 15000,
@@ -20,7 +21,7 @@ abstract class AbstractRequestHandler: IRequestHandler {
             )
             responses.add(response)
         }
-        val remappedResponses = responses.withIndex().map { (index, response) ->
+        val remappedResponses = responses.map { response ->
             val responseJson = response.toJson()
             if (responseJson !is JsonArray) {
                 val errorObject = responseJson.jsonObject["error"]?.jsonObject
@@ -30,20 +31,7 @@ abstract class AbstractRequestHandler: IRequestHandler {
                     throw ApiException("Internal error: No error object, but failure")
                 }
             }
-            JsonArray(responseJson.jsonArray.map { json ->
-                // remap id
-                val obj = json.jsonObject
-                val newId = index * (ApiRequest.METHODS_PER_REQUEST + 1) + obj["id"]!!.jsonPrimitive.int
-                buildJsonObject {
-                    obj.forEach { (key, value) ->
-                        if (key != "id") {
-                            put(key, value)
-                        } else {
-                            put("id", newId)
-                        }
-                    }
-                }
-            })
+            responseJson
         }.flatten()
         val dstResponse = buildJsonArray {
             remappedResponses.forEach { response ->

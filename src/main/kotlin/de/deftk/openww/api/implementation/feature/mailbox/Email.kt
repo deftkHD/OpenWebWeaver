@@ -106,7 +106,7 @@ class Email(
 
     override suspend fun read(folder: IEmailFolder, peek: Boolean?, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
-        val id = request.addReadEmailRequest(folder.id, id, peek)[1]
+        val id = request.addReadEmailRequest(folder.id, id, peek)
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         readFrom(WebWeaverClient.json.decodeFromJsonElement(subResponse["message"]!!))

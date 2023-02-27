@@ -41,7 +41,7 @@ class NotificationSetting(
             getState(NotificationFacility.PUSH_NOTIFICATION),
             getState(NotificationFacility.QUICK_MESSAGE),
             getState(NotificationFacility.SMS)
-        )[1]
+        )
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         readFrom(WebWeaverClient.json.decodeFromJsonElement(subResponse["message"]!!))

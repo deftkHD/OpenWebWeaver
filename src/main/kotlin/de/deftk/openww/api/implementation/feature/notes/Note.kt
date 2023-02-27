@@ -45,7 +45,7 @@ class Note(
 
     override suspend fun edit(title: String, text: String, color: NoteColor, context: IRequestContext) {
         val request = UserApiRequest(context)
-        val id = request.addSetNoteRequest(id, text, title, color)[1]
+        val id = request.addSetNoteRequest(id, text, title, color)
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         readFrom(WebWeaverClient.json.decodeFromJsonElement(subResponse["entry"]!!))

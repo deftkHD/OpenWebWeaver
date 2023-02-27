@@ -21,7 +21,7 @@ class CourseletMapping(
 
     override suspend fun setName(name: String, context: IRequestContext) {
         val request = GroupApiRequest(context)
-        val id = request.addSetCourseletMappingRequest(id, name)[1]
+        val id = request.addSetCourseletMappingRequest(id, name)
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         readFrom(Json.decodeFromJsonElement(subResponse["mapping"]!!))

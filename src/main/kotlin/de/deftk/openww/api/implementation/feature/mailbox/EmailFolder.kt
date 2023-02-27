@@ -36,7 +36,7 @@ class EmailFolder(
 
     override suspend fun getEmails(limit: Int?, offset: Int?, context: IRequestContext): List<Email> {
         val request = OperatingScopeApiRequest(context)
-        val id = request.addGetEmailsRequest(id, limit, offset)[1]
+        val id = request.addGetEmailsRequest(id, limit, offset)
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return subResponse["messages"]!!.jsonArray.map { WebWeaverClient.json.decodeFromJsonElement(it) }

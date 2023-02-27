@@ -1,7 +1,10 @@
 package de.deftk.openww.api.request
 
+import de.deftk.openww.api.WebWeaverClient
 import de.deftk.openww.api.model.IRequestContext
 import de.deftk.openww.api.response.ApiResponse
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
@@ -11,22 +14,35 @@ open class ScopedApiRequest(protected val context: IRequestContext): ApiRequest(
         return fireRequest(context)
     }
 
-    override suspend fun fireRequest(context: IRequestContext): ApiResponse {
-        val requests = this.requests
-        this.requests = mutableListOf()
+    override fun packRequestsIntoBundle(context: IRequestContext): List<List<JsonObject>> {
+        val splitRequests = mutableListOf<MutableList<JsonObject>>(mutableListOf())
+        val length = addSetSessionRequest(splitRequests.last(), 998, context.sessionId)
+        var currentSize = length
         requests.forEach { request ->
-            this.requests.add(mutableListOf())
-            addSetSessionRequest(context.sessionId)
-            currentRequest().addAll(request)
+            val requestSize = WebWeaverClient.json.encodeToString(request).length
+            if (currentSize + requestSize > context.postMaxSize) {
+                splitRequests.add(mutableListOf())
+                val length = addSetSessionRequest(splitRequests.last(), 998, context.sessionId)
+                currentSize = length
+            }
+            currentSize += requestSize
+            splitRequests.last().add(request)
         }
-        return super.fireRequest(context)
+        return splitRequests
     }
 
-    private fun addSetSessionRequest(sessionId: String): Int {
+    private fun addSetSessionRequest(to: MutableList<JsonObject>, id: Int, sessionId: String): Int {
         val params = buildJsonObject {
             put("session_id", sessionId)
         }
-        return addRequest("set_session", currentRequest().size + 1, params)
+        val obj = buildJsonObject {
+            put("jsonrpc", "2.0")
+            put("method", "set_session")
+            put("id", id)
+            put("params", params)
+        }
+        to.add(obj)
+        return WebWeaverClient.json.encodeToString(obj).length
     }
 
 }

@@ -155,7 +155,7 @@ open class RemoteFile(
     override suspend fun download(limit: Int?, offset: Int?, context: IRequestContext): FileChunk {
         requireFile()
         val request = OperatingScopeApiRequest(context)
-        val id = request.addGetFileRequest(id, limit, offset)[1]
+        val id = request.addGetFileRequest(id, limit, offset)
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!.jsonObject)
@@ -164,7 +164,7 @@ open class RemoteFile(
     override suspend fun getPreviewUrl(context: IRequestContext): FilePreviewUrl {
         requireFile()
         val request = OperatingScopeApiRequest(context)
-        val id = request.addGetPreviewDownloadUrlRequest(id)[1]
+        val id = request.addGetPreviewDownloadUrlRequest(id)
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!)
@@ -173,7 +173,7 @@ open class RemoteFile(
     override suspend fun getDownloadUrl(context: IRequestContext): FileDownloadUrl {
         requireFile()
         val request = OperatingScopeApiRequest(context)
-        val id = request.addGetFileDownloadUrlRequest(id)[1]
+        val id = request.addGetFileDownloadUrlRequest(id)
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!)
@@ -182,7 +182,7 @@ open class RemoteFile(
     override suspend fun getProxyNonce(context: IRequestContext): ProxyNonce {
         requireFile()
         val request = OperatingScopeApiRequest(context)
-        val id = request.addGetFileProxyNonceRequest(id)[1]
+        val id = request.addGetFileProxyNonceRequest(id)
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!.jsonObject)
@@ -191,8 +191,8 @@ open class RemoteFile(
     override suspend fun delete(context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
         when (type) {
-            FileType.FILE -> request.addDeleteFileRequest(id)[1]
-            FileType.FOLDER -> request.addDeleteFolderRequest(id)[1]
+            FileType.FILE -> request.addDeleteFileRequest(id)
+            FileType.FOLDER -> request.addDeleteFolderRequest(id)
         }
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
@@ -201,8 +201,8 @@ open class RemoteFile(
     override suspend fun setName(name: String, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
         val id = when (type) {
-            FileType.FILE -> request.addSetFileRequest(id, description, null, null, downloadNotification?.me, name, parentId!!)[1]
-            FileType.FOLDER -> request.addSetFolderRequest(id, description, name, readable, null, null, null, writable)[1]
+            FileType.FILE -> request.addSetFileRequest(id, description, null, null, downloadNotification?.me, name, parentId!!)
+            FileType.FOLDER -> request.addSetFolderRequest(id, description, name, readable, null, null, null, writable)
         }
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
@@ -216,8 +216,8 @@ open class RemoteFile(
     override suspend fun setDescription(description: String, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
         val id = when (type) {
-            FileType.FILE -> request.addSetFileRequest(id, description, null, null, downloadNotification?.me, name, parentId!!)[1]
-            FileType.FOLDER -> request.addSetFolderRequest(id, description, name, readable, null, null, null, writable)[1]
+            FileType.FILE -> request.addSetFileRequest(id, description, null, null, downloadNotification?.me, name, parentId!!)
+            FileType.FOLDER -> request.addSetFolderRequest(id, description, name, readable, null, null, null, writable)
         }
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
@@ -232,7 +232,7 @@ open class RemoteFile(
         requireFile()
         val request = OperatingScopeApiRequest(context)
         val id = when (type) {
-            FileType.FILE -> request.addSetFileRequest(id, description, login, null, downloadNotification?.me, name, parentId!!)[1]
+            FileType.FILE -> request.addSetFileRequest(id, description, login, null, downloadNotification?.me, name, parentId!!)
             else -> error("Can't add download logins")
         }
         val response = request.fireRequest()
@@ -244,7 +244,7 @@ open class RemoteFile(
         requireFile()
         val request = OperatingScopeApiRequest(context)
         val id = when (type) {
-            FileType.FILE -> request.addSetFileRequest(id, description, null, login, downloadNotification?.me, name, parentId!!)[1]
+            FileType.FILE -> request.addSetFileRequest(id, description, null, login, downloadNotification?.me, name, parentId!!)
             else -> error("Can't delete download logins")
         }
         val response = request.fireRequest()
@@ -256,7 +256,7 @@ open class RemoteFile(
         requireFile()
         val request = OperatingScopeApiRequest(context)
         val id = when (type) {
-            FileType.FILE -> request.addSetFileRequest(id, description, null, null, receive, name, parentId!!)[1]
+            FileType.FILE -> request.addSetFileRequest(id, description, null, null, receive, name, parentId!!)
             else -> error("Can't update receive update notification state")
         }
         val response = request.fireRequest()
@@ -268,7 +268,7 @@ open class RemoteFile(
         requireFolder()
         val request = OperatingScopeApiRequest(context)
         val id = when (type) {
-            FileType.FILE -> request.addSetFolderRequest(id, description, name, readable, login, null, null, writable)[1]
+            FileType.FILE -> request.addSetFolderRequest(id, description, name, readable, login, null, null, writable)
             else -> error("Can't delete add logins")
         }
         val response = request.fireRequest()
@@ -280,7 +280,7 @@ open class RemoteFile(
         requireFolder()
         val request = OperatingScopeApiRequest(context)
         val id = when (type) {
-            FileType.FILE -> request.addSetFolderRequest(id, description, name, readable, null, login, null, writable)[1]
+            FileType.FILE -> request.addSetFolderRequest(id, description, name, readable, null, login, null, writable)
             else -> error("Can't delete upload logins")
         }
         val response = request.fireRequest()
@@ -292,7 +292,7 @@ open class RemoteFile(
         requireFolder()
         val request = OperatingScopeApiRequest(context)
         val id = when (type) {
-            FileType.FILE -> request.addSetFolderRequest(id, description, name, readable, null, null, receive, writable)[1]
+            FileType.FILE -> request.addSetFolderRequest(id, description, name, readable, null, null, receive, writable)
             else -> error("Can't update receive update notification state")
         }
         val response = request.fireRequest()
@@ -303,7 +303,7 @@ open class RemoteFile(
     override suspend fun exportSessionFile(user: IUser, context: IRequestContext): SessionFile {
         requireFile()
         val request = OperatingScopeApiRequest(context)
-        val id = request.addExportSessionFileRequest(id)[1]
+        val id = request.addExportSessionFileRequest(id)
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!)
@@ -318,7 +318,7 @@ open class RemoteFile(
             getFiles = false,
             getFolders = false,
             recursive = false
-        )[1]
+        )
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return subResponse["entries"]!!.jsonArray.map { WebWeaverClient.json.decodeFromJsonElement<RemoteFile>(it) }[0]
@@ -334,7 +334,7 @@ open class RemoteFile(
             getFolders = true,
             searchString = filter?.searchTerm,
             searchMode = filter?.searchMode
-        )[1]
+        )
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return subResponse["entries"]?.jsonArray?.map { WebWeaverClient.json.decodeFromJsonElement(it) } ?: emptyList()
@@ -343,7 +343,7 @@ open class RemoteFile(
     override suspend fun addFile(name: String, data: ByteArray, description: String?, context: IRequestContext): RemoteFile {
         requireFolder()
         val request = OperatingScopeApiRequest(context)
-        val id = request.addAddFileRequest(PlatformUtil.base64EncodeToString(data), id, name, description)[1]
+        val id = request.addAddFileRequest(PlatformUtil.base64EncodeToString(data), id, name, description)
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!)
@@ -352,7 +352,7 @@ open class RemoteFile(
     override suspend fun addSparseFile(name: String, size: Int, description: String?, context: IRequestContext): RemoteFile {
         requireFolder()
         val request = OperatingScopeApiRequest(context)
-        val id = request.addAddSparseFileRequest(id, name, size, description)[1]
+        val id = request.addAddSparseFileRequest(id, name, size, description)
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!)
@@ -361,7 +361,7 @@ open class RemoteFile(
     override suspend fun importSessionFile(sessionFile: ISessionFile, createCopy: Boolean?, description: String?, context: IRequestContext): RemoteFile {
         requireFolder()
         val request = OperatingScopeApiRequest(context)
-        val id = request.addImportSessionFileRequest(sessionFile.id, createCopy, description, folderId = id)[1]
+        val id = request.addImportSessionFileRequest(sessionFile.id, createCopy, description, folderId = id)
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!)
@@ -370,7 +370,7 @@ open class RemoteFile(
     override suspend fun addFolder(name: String, description: String?, context: IRequestContext): RemoteFile {
         requireFolder()
         val request = OperatingScopeApiRequest(context)
-        val id = request.addAddFolderRequest(id, name, description)[1]
+        val id = request.addAddFolderRequest(id, name, description)
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["folder"]!!)
@@ -380,7 +380,7 @@ open class RemoteFile(
         requireFolder()
         val request = OperatingScopeApiRequest(context)
         val id = when (type) {
-            FileType.FOLDER -> request.addSetFolderRequest(id, description, name, readable, null, null, null, writable)[1]
+            FileType.FOLDER -> request.addSetFolderRequest(id, description, name, readable, null, null, null, writable)
             else -> error("Can't update readable state")
         }
         val response = request.fireRequest()
@@ -392,7 +392,7 @@ open class RemoteFile(
         requireFolder()
         val request = OperatingScopeApiRequest(context)
         val id = when (type) {
-            FileType.FOLDER -> request.addSetFolderRequest(id, description, name, readable, null, null, null, writable)[1]
+            FileType.FOLDER -> request.addSetFolderRequest(id, description, name, readable, null, null, null, writable)
             else -> error("Can't update writable state")
         }
         val response = request.fireRequest()
@@ -403,7 +403,7 @@ open class RemoteFile(
     override suspend fun setFile(name: String, description: String?, downloadNotificationAddLogin: String?, downloadNotificationDeleteLogin: String?, downloadNotificationMe: Boolean?, context: IRequestContext) {
         requireFile()
         val request = OperatingScopeApiRequest(context)
-        val id = request.addSetFileRequest(id, description, downloadNotificationAddLogin, downloadNotificationDeleteLogin, downloadNotificationMe, name, parentId!!)[1]
+        val id = request.addSetFileRequest(id, description, downloadNotificationAddLogin, downloadNotificationDeleteLogin, downloadNotificationMe, name, parentId!!)
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         readFrom(WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!))
@@ -412,7 +412,7 @@ open class RemoteFile(
     override suspend fun setFolder(name: String, description: String?, readable: Boolean?, writable: Boolean?, uploadNotificationAddLogin: String?, uploadNotificationDeleteLogin: String?, uploadNotificationMe: Boolean?, context: IRequestContext) {
         requireFolder()
         val request = OperatingScopeApiRequest(context)
-        val id = request.addSetFolderRequest(id, description, name, readable, uploadNotificationAddLogin, uploadNotificationDeleteLogin, uploadNotificationMe, writable)[1]
+        val id = request.addSetFolderRequest(id, description, name, readable, uploadNotificationAddLogin, uploadNotificationDeleteLogin, uploadNotificationMe, writable)
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         readFrom(WebWeaverClient.json.decodeFromJsonElement(subResponse["folder"]!!))

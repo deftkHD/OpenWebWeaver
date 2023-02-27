@@ -36,7 +36,7 @@ class SessionFile(
 
     override suspend fun append(data: ByteArray, context: IRequestContext) {
         val request = UserApiRequest(context)
-        val id = request.addAppendSessionFileRequest(id, data)[1]
+        val id = request.addAppendSessionFileRequest(id, data)
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         readFrom(WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!))
@@ -44,7 +44,7 @@ class SessionFile(
 
     override suspend fun download(limit: Int?, offset: Int?, context: IRequestContext): FileChunk {
         val request = UserApiRequest(context)
-        val id = request.addGetSessionFileRequest(id, limit, offset)[1]
+        val id = request.addGetSessionFileRequest(id, limit, offset)
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!)
@@ -52,7 +52,7 @@ class SessionFile(
 
     override suspend fun queryDownloadUrl(context: IRequestContext): FileDownloadUrl {
         val request = UserApiRequest(context)
-        val id = request.addGetSessionFileDownloadUrlRequest(id)[1]
+        val id = request.addGetSessionFileDownloadUrlRequest(id)
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!)
@@ -60,7 +60,7 @@ class SessionFile(
 
     override suspend fun queryUploadUrl(context: IRequestContext): FileUploadUrl {
         val request = UserApiRequest(context)
-        val id = request.addGetSessionFileUploadUrlRequest(id)[1]
+        val id = request.addGetSessionFileUploadUrlRequest(id)
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!.jsonObject)

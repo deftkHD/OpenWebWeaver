@@ -4,29 +4,47 @@ import de.deftk.openww.api.WebWeaverClient
 import de.deftk.openww.api.model.IOperatingScope
 import de.deftk.openww.api.model.IRequestContext
 import de.deftk.openww.api.response.ApiResponse
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.*
 
 open class ApiRequest {
 
-    companion object {
-        const val METHODS_PER_REQUEST = 30
-    }
+    private var currentFocusable: Focusable? = null
+    private var currentScope: String? = null
 
-    var requests = mutableListOf(mutableListOf<JsonObject>())
+    var requests = mutableListOf<JsonObject>()
 
-    open suspend fun fireRequest(context: IRequestContext): ApiResponse {
+    suspend fun fireRequest(context: IRequestContext): ApiResponse {
         return context.requestHandler.performRequest(this, context)
     }
 
-    fun addSetFocusRequest(focusable: Focusable, scope: IOperatingScope?): Int {
+    open fun packRequestsIntoBundle(context: IRequestContext): List<List<JsonObject>> {
+        val splitRequests = mutableListOf<MutableList<JsonObject>>(mutableListOf())
+        var currentSize = 0
+        requests.forEach { request ->
+            val requestSize = WebWeaverClient.json.encodeToString(request).length
+            if (currentSize + requestSize > context.postMaxSize) {
+                splitRequests.add(mutableListOf())
+                currentSize = 0
+            }
+            currentSize += requestSize
+            splitRequests.last().add(request)
+        }
+        return splitRequests
+    }
+
+    private fun addSetFocusRequest(focusable: Focusable, scope: IOperatingScope?): Int {
         return addSetFocusRequest(focusable, scope?.login)
     }
 
-    fun addSetFocusRequest(focusable: Focusable, scope: String?): Int {
+    private fun addSetFocusRequest(focusable: Focusable, scope: String?): Int {
         val params = buildJsonObject {
             put("object", WebWeaverClient.json.encodeToJsonElement(Focusable.serializer(), focusable))
-            if (scope != null)
+            currentFocusable = focusable
+            currentScope = scope
+            if (scope != null) {
                 put("login", scope)
+            }
         }
         return addRequest("set_focus", params)
     }
@@ -43,12 +61,13 @@ open class ApiRequest {
     }
 
     fun addRequest(method: String, params: JsonObject?): Int {
-        return addRequest(method, currentRequest().size + 2, params)
+        return addRequest(method, requests.size + 1, params)
     }
 
-    protected fun ensureCapacity(size: Int) {
-        if (currentRequest().size + size > METHODS_PER_REQUEST)
-            requests.add(mutableListOf())
+    fun ensureFocus(focusable: Focusable, scope: String?) {
+        if (currentFocusable != focusable || currentScope != scope) {
+            addSetFocusRequest(focusable, scope)
+        }
     }
 
     protected fun addRequest(method: String, id: Int, params: JsonObject?): Int {
@@ -58,11 +77,9 @@ open class ApiRequest {
             put("id", id)
             put("params", params ?: JsonObject(emptyMap()))
         }
-        currentRequest().add(obj)
-        return (requests.size - 1) * (METHODS_PER_REQUEST + 1) + id
+        requests.add(obj)
+        return id
     }
-
-    protected fun currentRequest() = requests.last()
 
     protected fun asApiBoolean(boolean: Boolean?): JsonElement {
         return if (boolean ?: return JsonNull) JsonPrimitive(1) else JsonPrimitive(0)

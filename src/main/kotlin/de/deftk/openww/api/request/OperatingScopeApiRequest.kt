@@ -12,39 +12,29 @@ import kotlinx.serialization.json.*
 
 open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(context) {
 
-    fun addGetFileStorageStateRequest(login: String = context.login): List<Int> {
-        ensureCapacity(2)
-        return listOf(
-            addSetFocusRequest(Focusable.FILES, login),
-            addRequest("get_state", null)
-        )
+    fun addGetFileStorageStateRequest(login: String = context.login): Int {
+        ensureFocus(Focusable.FILES, login)
+        return addRequest("get_state", null)
     }
 
     //TODO implement
-    fun addGetFileStorageSettingsRequest(login: String = context.login): List<Int> {
-        ensureCapacity(2)
-        return listOf(
-            addSetFocusRequest(Focusable.FILES, login),
-            addRequest("get_settings", null)
-        )
+    fun addGetFileStorageSettingsRequest(login: String = context.login): Int {
+        ensureFocus(Focusable.FILES, login)
+        return addRequest("get_settings", null)
     }
 
     //TODO implement
-    fun addSetFileStorageSettingsRequest(uploadNotificationAddLogin: String?, uploadNotificationDeleteLogin: String?, selfUploadNotification: Boolean? = null, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addSetFileStorageSettingsRequest(uploadNotificationAddLogin: String?, uploadNotificationDeleteLogin: String?, selfUploadNotification: Boolean? = null, login: String = context.login): Int {
         val requestProperties = buildJsonObject {
             put("upload_notification_add_login", uploadNotificationAddLogin)
             put("upload_notification_delete_login", uploadNotificationDeleteLogin)
             put("upload_notification_me", asApiBoolean(selfUploadNotification))
         }
-        return listOf(
-            addSetFocusRequest(Focusable.FILES, login),
-            addRequest("set_settings", requestProperties)
-        )
+        ensureFocus(Focusable.FILES, login)
+        return addRequest("set_settings", requestProperties)
     }
 
-    fun addGetFileStorageFilesRequest(folderId: String? = null, getFiles: Boolean? = null, getFolder: Boolean? = null, getFolders: Boolean? = null, getRoot: Boolean? = null, limit: Int? = null, offset: Int? = null, recursive: Boolean? = null, searchMode: SearchMode? = null, searchString: String? = null, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addGetFileStorageFilesRequest(folderId: String? = null, getFiles: Boolean? = null, getFolder: Boolean? = null, getFolders: Boolean? = null, getRoot: Boolean? = null, limit: Int? = null, offset: Int? = null, recursive: Boolean? = null, searchMode: SearchMode? = null, searchString: String? = null, login: String = context.login): Int {
         val requestParams = buildJsonObject {
             if (folderId != null)
                 put("folder_id", folderId)
@@ -67,14 +57,11 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
             if (searchString != null)
                 put("search_string", searchString)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.FILES, login),
-            addRequest("get_entries", requestParams)
-        )
+        ensureFocus(Focusable.FILES, login)
+        return addRequest("get_entries", requestParams)
     }
 
-    fun addGetFileRequest(id: String, limit: Int? = null, offset: Int? = null, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addGetFileRequest(id: String, limit: Int? = null, offset: Int? = null, login: String = context.login): Int {
         val requestParams = buildJsonObject {
             put("id", id)
             if (limit != null)
@@ -82,47 +69,35 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
             if (offset != null)
                 put("offset", offset)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.FILES, login),
-            addRequest("get_file", requestParams)
-        )
+        ensureFocus(Focusable.FILES, login)
+        return addRequest("get_file", requestParams)
     }
 
-    fun addGetPreviewDownloadUrlRequest(id: String, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addGetPreviewDownloadUrlRequest(id: String, login: String = context.login): Int {
         val requestProperties = buildJsonObject {
             put("id", id)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.FILES, login),
-            addRequest("get_preview_download_url", requestProperties)
-        )
+        ensureFocus(Focusable.FILES, login)
+        return addRequest("get_preview_download_url", requestProperties)
     }
 
-    fun addGetFileDownloadUrlRequest(id: String, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addGetFileDownloadUrlRequest(id: String, login: String = context.login): Int {
         val requestProperties = buildJsonObject {
             put("id", id)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.FILES, login),
-            addRequest("get_file_download_url", requestProperties)
-        )
+        ensureFocus(Focusable.FILES, login)
+        return addRequest("get_file_download_url", requestProperties)
     }
 
-    fun addGetFileProxyNonceRequest(id: String, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addGetFileProxyNonceRequest(id: String, login: String = context.login): Int {
         val requestProperties = buildJsonObject {
             put("id", id)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.FILES, login),
-            addRequest("get_file_proxy_nonce", requestProperties)
-        )
+        ensureFocus(Focusable.FILES, login)
+        return addRequest("get_file_proxy_nonce", requestProperties)
     }
 
-    fun addAddFileRequest(data: String, folderId: String, name: String, description: String? = null, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addAddFileRequest(data: String, folderId: String, name: String, description: String? = null, login: String = context.login): Int {
         val requestParams = buildJsonObject {
             put("data", data)
             put("folder_id", folderId)
@@ -130,14 +105,11 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
             if (description != null)
                 put("description", description)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.FILES, login),
-            addRequest("add_file", requestParams)
-        )
+        ensureFocus(Focusable.FILES, login)
+        return addRequest("add_file", requestParams)
     }
 
-    fun addAddSparseFileRequest(folderId: String, name: String, size: Int, description: String? = null, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addAddSparseFileRequest(folderId: String, name: String, size: Int, description: String? = null, login: String = context.login): Int {
         val requestProperties = buildJsonObject {
             put("folder_id", folderId)
             put("name", name)
@@ -145,14 +117,11 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
             if (description != null)
                 put("description", description)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.FILES, login),
-            addRequest("add_sparse_file", requestProperties)
-        )
+        ensureFocus(Focusable.FILES, login)
+        return addRequest("add_sparse_file", requestProperties)
     }
 
-    fun addImportSessionFileRequest(id: String, createCopy: Boolean? = null, description: String? = null, fileId: String? = null, folderId: String? = null, sparseKey: String? = null, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addImportSessionFileRequest(id: String, createCopy: Boolean? = null, description: String? = null, fileId: String? = null, folderId: String? = null, sparseKey: String? = null, login: String = context.login): Int {
         val requestProperties = buildJsonObject {
             put("id", id)
             if (createCopy != null)
@@ -166,61 +135,45 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
             if (sparseKey != null)
                 put("sparse_key", sparseKey)
         }
-
-        return listOf(
-            addSetFocusRequest(Focusable.FILES, login),
-            addRequest("import_session_file", requestProperties)
-        )
+        ensureFocus(Focusable.FILES, login)
+        return addRequest("import_session_file", requestProperties)
     }
 
-    fun addExportSessionFileRequest(id: String, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addExportSessionFileRequest(id: String, login: String = context.login): Int {
         val requestProperties = buildJsonObject {
             put("id", id)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.FILES, login),
-            addRequest("export_session_file", requestProperties)
-        )
+        ensureFocus(Focusable.FILES, login)
+        return addRequest("export_session_file", requestProperties)
     }
 
-    fun addDeleteFileRequest(fileId: String, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addDeleteFileRequest(fileId: String, login: String = context.login): Int {
         val requestProperties = buildJsonObject {
             put("id", fileId)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.FILES, login),
-            addRequest("delete_file", requestProperties)
-        )
+        ensureFocus(Focusable.FILES, login)
+        return addRequest("delete_file", requestProperties)
     }
 
-    fun addAddFolderRequest(folderId: String, name: String, description: String? = null, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addAddFolderRequest(folderId: String, name: String, description: String? = null, login: String = context.login): Int {
         val requestProperties = buildJsonObject {
             put("folder_id", folderId)
             put("name", name)
             if (description != null) put("description", description)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.FILES, login),
-            addRequest("add_folder", requestProperties)
-        )
+        ensureFocus(Focusable.FILES, login)
+        return addRequest("add_folder", requestProperties)
     }
 
-    fun addDeleteFolderRequest(folderId: String, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addDeleteFolderRequest(folderId: String, login: String = context.login): Int {
         val requestProperties = buildJsonObject {
             put("id", folderId)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.FILES, login),
-            addRequest("delete_folder", requestProperties)
-        )
+        ensureFocus(Focusable.FILES, login)
+        return addRequest("delete_folder", requestProperties)
     }
 
-    fun addSetFileRequest(fileId: String, description: String? = null, downloadNotificationAddLogin: String? = null, downloadNotificationDeleteLogin: String? = null, downloadNotificationMe: Boolean? = null, name: String, folderId: String, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addSetFileRequest(fileId: String, description: String? = null, downloadNotificationAddLogin: String? = null, downloadNotificationDeleteLogin: String? = null, downloadNotificationMe: Boolean? = null, name: String, folderId: String, login: String = context.login): Int {
         val requestProperties = buildJsonObject {
             put("id", fileId)
             put("description", description)
@@ -231,14 +184,11 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
             put("name", name)
             put("folder_id", folderId)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.FILES, login),
-            addRequest("set_file", requestProperties)
-        )
+        ensureFocus(Focusable.FILES, login)
+        return addRequest("set_file", requestProperties)
     }
 
-    fun addSetFolderRequest(folderId: String, description: String? = null, name: String, readable: Boolean? = null, uploadNotificationAddLogin: String? = null, uploadNotificationDeleteLogin: String? = null, uploadNotificationMe: Boolean? = null, writable: Boolean? = null, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addSetFolderRequest(folderId: String, description: String? = null, name: String, readable: Boolean? = null, uploadNotificationAddLogin: String? = null, uploadNotificationDeleteLogin: String? = null, uploadNotificationMe: Boolean? = null, writable: Boolean? = null, login: String = context.login): Int {
         val requestProperties = buildJsonObject {
             put("id", folderId)
             put("description", description)
@@ -250,34 +200,25 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
                 put("upload_notification_me", asApiBoolean(uploadNotificationMe))
             put("writable", asApiBoolean(writable))
         }
-        return listOf(
-            addSetFocusRequest(Focusable.FILES, login),
-            addRequest("set_folder", requestProperties)
-        )
+        ensureFocus(Focusable.FILES, login)
+        return addRequest("set_folder", requestProperties)
     }
 
-    fun addGetTrashRequest(limit: Int? = null, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addGetTrashRequest(limit: Int? = null, login: String = context.login): Int {
         val requestParams = buildJsonObject {
             if (limit != null)
                 put("limit", limit)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.FILES, login),
-            addRequest("get_trash", requestParams)
-        )
+        ensureFocus(Focusable.FILES, login)
+        return addRequest("get_trash", requestParams)
     }
 
-    fun addGetEmailStateRequest(login: String = context.login): List<Int> {
-        ensureCapacity(2)
-        return listOf(
-            addSetFocusRequest(Focusable.MAILBOX, login),
-            addRequest("get_state", null)
-        )
+    fun addGetEmailStateRequest(login: String = context.login): Int {
+        ensureFocus(Focusable.MAILBOX, login)
+        return addRequest("get_state", null)
     }
 
-    fun addSendEmailRequest(to: String, subject: String, plainBody: String?, text: String?, bcc: String?, cc: String?, attachments: List<ISessionFile>?, referenceFolderId: String?, referenceMessageId: Int?, referenceMode: ReferenceMode?, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addSendEmailRequest(to: String, subject: String, plainBody: String?, text: String?, bcc: String?, cc: String?, attachments: List<ISessionFile>?, referenceFolderId: String?, referenceMessageId: Int?, referenceMode: ReferenceMode?, login: String = context.login): Int {
         val requestParams = buildJsonObject {
             put("to", to)
             put("subject", subject)
@@ -298,56 +239,41 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
             if (referenceMode != null)
                 put("reference_mode", WebWeaverClient.json.encodeToJsonElement(referenceMode))
         }
-        return listOf(
-            addSetFocusRequest(Focusable.MAILBOX, login),
-            addRequest("send_mail", requestParams)
-        )
+        ensureFocus(Focusable.MAILBOX, login)
+        return addRequest("send_mail", requestParams)
     }
 
-    fun addAddEmailFolderRequest(name: String, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addAddEmailFolderRequest(name: String, login: String = context.login): Int {
         val requestParams = buildJsonObject {
             put("name", name)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.MAILBOX, login),
-            addRequest("add_folder", requestParams)
-        )
+        ensureFocus(Focusable.MAILBOX, login)
+        return addRequest("add_folder", requestParams)
     }
 
-    fun addSetEmailFolderRequest(folderId: String, name: String, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addSetEmailFolderRequest(folderId: String, name: String, login: String = context.login): Int {
         val requestParams = buildJsonObject {
             put("folder_id", folderId)
             put("name", name)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.MAILBOX, login),
-            addRequest("set_folder", requestParams)
-        )
+        ensureFocus(Focusable.MAILBOX, login)
+        return addRequest("set_folder", requestParams)
     }
 
-    fun addDeleteEmailFolderRequest(folderId: String, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addDeleteEmailFolderRequest(folderId: String, login: String = context.login): Int {
         val requestParams = buildJsonObject {
             put("folder_id", folderId)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.MAILBOX, login),
-            addRequest("delete_folder", requestParams)
-        )
+        ensureFocus(Focusable.MAILBOX, login)
+        return addRequest("delete_folder", requestParams)
     }
 
-    fun addGetEmailFoldersRequest(login: String = context.login): List<Int> {
-        ensureCapacity(2)
-        return listOf(
-            addSetFocusRequest(Focusable.MAILBOX, login),
-            addRequest("get_folders", null)
-        )
+    fun addGetEmailFoldersRequest(login: String = context.login): Int {
+        ensureFocus(Focusable.MAILBOX, login)
+        return addRequest("get_folders", null)
     }
 
-    fun addGetEmailsRequest(folderId: String, limit: Int?, offset: Int?, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addGetEmailsRequest(folderId: String, limit: Int?, offset: Int?, login: String = context.login): Int {
         val requestParams = buildJsonObject {
             put("folder_id", folderId)
             if (limit != null)
@@ -355,109 +281,82 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
             if (offset != null)
                 put("offset", offset)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.MAILBOX, login),
-            addRequest("get_messages", requestParams)
-        )
+        ensureFocus(Focusable.MAILBOX, login)
+        return addRequest("get_messages", requestParams)
     }
 
-    fun addReadEmailRequest(folderId: String, messageId: Int, peek: Boolean?, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addReadEmailRequest(folderId: String, messageId: Int, peek: Boolean?, login: String = context.login): Int {
         val requestParams = buildJsonObject {
             put("folder_id", folderId)
             put("message_id", messageId)
             if (peek != null)
                 put("peek", asApiBoolean(peek))
         }
-        return listOf(
-            addSetFocusRequest(Focusable.MAILBOX, login),
-            addRequest("read_message", requestParams)
-        )
+        ensureFocus(Focusable.MAILBOX, login)
+        return addRequest("read_message", requestParams)
     }
 
-    fun addSetEmailRequest(folderId: String, messageId: Int, isFlagged: Boolean, isUnread: Boolean, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addSetEmailRequest(folderId: String, messageId: Int, isFlagged: Boolean, isUnread: Boolean, login: String = context.login): Int {
         val requestParams = buildJsonObject {
             put("folder_id", folderId)
             put("message_id", messageId)
             put("is_flagged", asApiBoolean(isFlagged))
             put("is_unread", asApiBoolean(isUnread))
         }
-        return listOf(
-            addSetFocusRequest(Focusable.MAILBOX, login),
-            addRequest("set_message", requestParams)
-        )
+        ensureFocus(Focusable.MAILBOX, login)
+        return addRequest("set_message", requestParams)
     }
 
-    fun addMoveEmailRequest(folderId: String, messageId: Int, destinationFolderId: String, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addMoveEmailRequest(folderId: String, messageId: Int, destinationFolderId: String, login: String = context.login): Int {
         val requestParams = buildJsonObject {
             put("folder_id", folderId)
             put("message_id", messageId)
             put("target_folder_id", destinationFolderId)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.MAILBOX, login),
-            addRequest("move_message", requestParams)
-        )
+        ensureFocus(Focusable.MAILBOX, login)
+        return addRequest("move_message", requestParams)
     }
 
-    fun addDeleteEmailRequest(folderId: String, messageId: Int, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addDeleteEmailRequest(folderId: String, messageId: Int, login: String = context.login): Int {
         val requestParams = buildJsonObject {
             put("folder_id", folderId)
             put("message_id", messageId)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.MAILBOX, login),
-            addRequest("delete_message", requestParams)
-        )
+        ensureFocus(Focusable.MAILBOX, login)
+        return addRequest("delete_message", requestParams)
     }
 
-    fun addExportEmailSessionFileRequest(fileId: String, folderId: String, messageId: Int, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addExportEmailSessionFileRequest(fileId: String, folderId: String, messageId: Int, login: String = context.login): Int {
         val params = buildJsonObject {
             put("file_id", fileId)
             put("folder_id", folderId)
             put("message_id", messageId)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.MAILBOX, login),
-            addRequest("export_session_file", params)
-        )
+        ensureFocus(Focusable.MAILBOX, login)
+        return addRequest("export_session_file", params)
     }
 
-    fun addGetEmailSignatureRequest(login: String = context.login): List<Int> {
-        ensureCapacity(2)
-        return listOf(
-            addSetFocusRequest(Focusable.MAILBOX, login),
-            addRequest("get_signature", null)
-        )
+    fun addGetEmailSignatureRequest(login: String = context.login): Int {
+        ensureFocus(Focusable.MAILBOX, login)
+        return addRequest("get_signature", null)
     }
 
-    fun addSetEmailSignatureRequest(text: String, positionAnswer: SignaturePosition, positionForward: SignaturePosition, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addSetEmailSignatureRequest(text: String, positionAnswer: SignaturePosition, positionForward: SignaturePosition, login: String = context.login): Int {
         val requestParams = buildJsonObject {
             put("text", text)
             put("position_answer", WebWeaverClient.json.encodeToJsonElement(positionAnswer))
             put("position_forward", WebWeaverClient.json.encodeToJsonElement(positionForward))
         }
-        return listOf(
-            addSetFocusRequest(Focusable.MAILBOX, login),
-            addRequest("set_signature", requestParams)
-        )
+        ensureFocus(Focusable.MAILBOX, login)
+        return addRequest("set_signature", requestParams)
     }
 
-    fun addGetTasksRequest(login: String = context.login): List<Int> {
-        ensureCapacity(2)
-        return listOf(
-            addSetFocusRequest(Focusable.TASKS, login),
-            addRequest("get_entries", null)
-        )
+    fun addGetTasksRequest(login: String = context.login): Int {
+        ensureFocus(Focusable.TASKS, login)
+        return addRequest("get_entries", null)
     }
 
-    fun addAddTaskRequest(title: String, completed: Boolean? = null, description: String? = null, dueDate: Long? = null, startDate: Long? = null, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addAddTaskRequest(title: String, completed: Boolean? = null, description: String? = null, dueDate: Long? = null, startDate: Long? = null, login: String = context.login): Int {
         val requestParams = buildJsonObject {
             put("title", title)
             if (completed != null)
@@ -469,14 +368,11 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
             if (startDate != null)
                 put("start_date", startDate / 1000)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.TASKS, login),
-            addRequest("add_entry", requestParams)
-        )
+        ensureFocus(Focusable.TASKS, login)
+        return addRequest("add_entry", requestParams)
     }
 
-    fun addSetTaskRequest(id: String, completed: Boolean? = null, description: String? = null, dueDate: Long? = null, startDate: Long? = null, title: String, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addSetTaskRequest(id: String, completed: Boolean? = null, description: String? = null, dueDate: Long? = null, startDate: Long? = null, title: String, login: String = context.login): Int {
         val requestParams = buildJsonObject {
             put("id", id)
             put("completed", asApiBoolean(completed))
@@ -485,33 +381,24 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
             put("start_date", if (startDate != null) JsonPrimitive(startDate / 1000) else JsonPrimitive(0))
             put("title", title)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.TASKS, login),
-            addRequest("set_entry", requestParams)
-        )
+        ensureFocus(Focusable.TASKS, login)
+        return addRequest("set_entry", requestParams)
     }
 
-    fun addDeleteTaskRequest(id: String, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addDeleteTaskRequest(id: String, login: String = context.login): Int {
         val requestParams = buildJsonObject {
             put("id", id)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.TASKS, login),
-            addRequest("delete_entry", requestParams)
-        )
+        ensureFocus(Focusable.TASKS, login)
+        return addRequest("delete_entry", requestParams)
     }
 
-    fun addGetContactsRequest(login: String = context.login): List<Int> {
-        ensureCapacity(2)
-        return listOf(
-            addSetFocusRequest(Focusable.ADDRESSES, login),
-            addRequest("get_entries", null)
-        )
+    fun addGetContactsRequest(login: String = context.login): Int {
+        ensureFocus(Focusable.ADDRESSES, login)
+        return addRequest("get_entries", null)
     }
 
-    fun addAddContactRequest(birthday: String? = null, businessCity: String? = null, businessCoords: String? = null, businessCountry: String? = null, businessFax: String? = null, businessPhone: String? = null, businessPostalCode: String? = null, businessState: String? = null, businessStreet: String? = null, businessStreet2: String? = null, businessStreet3: String? = null, categories: String? = null, company: String? = null, companyType: String? = null, email2Address: String? = null, email3Address: String? = null, emailAddress: String? = null, firstName: String? = null, fullName: String? = null, gender: Gender? = null, hobby: String? = null, homeCity: String? = null, homeCoords: String? = null, homeCountry: String? = null, homeFax: String? = null, homePhone: String? = null, homePostalCode: String? = null, homeState: String? = null, homeStreet: String? = null, homeStreet2: String? = null, homeStreet3: String? = null, jobTitle: String? = null, jobTitle2: String? = null, lastName: String? = null, middleName: String? = null, mobilePhone: String? = null, nickName: String? = null, notes: String? = null, subjects: String? = null, suffix: String? = null, title: String? = null, uid: String? = null, webPage: String? = null, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addAddContactRequest(birthday: String? = null, businessCity: String? = null, businessCoords: String? = null, businessCountry: String? = null, businessFax: String? = null, businessPhone: String? = null, businessPostalCode: String? = null, businessState: String? = null, businessStreet: String? = null, businessStreet2: String? = null, businessStreet3: String? = null, categories: String? = null, company: String? = null, companyType: String? = null, email2Address: String? = null, email3Address: String? = null, emailAddress: String? = null, firstName: String? = null, fullName: String? = null, gender: Gender? = null, hobby: String? = null, homeCity: String? = null, homeCoords: String? = null, homeCountry: String? = null, homeFax: String? = null, homePhone: String? = null, homePostalCode: String? = null, homeState: String? = null, homeStreet: String? = null, homeStreet2: String? = null, homeStreet3: String? = null, jobTitle: String? = null, jobTitle2: String? = null, lastName: String? = null, middleName: String? = null, mobilePhone: String? = null, nickName: String? = null, notes: String? = null, subjects: String? = null, suffix: String? = null, title: String? = null, uid: String? = null, webPage: String? = null, login: String = context.login): Int {
         val requestProperties = buildJsonObject {
             if (birthday != null) put("birthday", birthday)
             if (businessCity != null) put("businesscity", businessCity)
@@ -557,14 +444,11 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
             if (uid != null) put("uid", uid)
             if (webPage != null) put("webpage", webPage)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.ADDRESSES, login),
-            addRequest("add_entry", requestProperties)
-        )
+        ensureFocus(Focusable.ADDRESSES, login)
+        return addRequest("add_entry", requestProperties)
     }
 
-    fun addSetContactRequest(id: String, birthday: String? = null, businessCity: String? = null, businessCoords: String? = null, businessCountry: String? = null, businessFax: String? = null, businessPhone: String? = null, businessPostalCode: String? = null, businessState: String? = null, businessStreet: String? = null, businessStreet2: String? = null, businessStreet3: String? = null, categories: String? = null, company: String? = null, companyType: String? = null, email2Address: String? = null, email3Address: String? = null, emailAddress: String? = null, firstName: String? = null, fullName: String? = null, gender: Gender? = null, hobby: String? = null, homeCity: String? = null, homeCoords: String? = null, homeCountry: String? = null, homeFax: String? = null, homePhone: String? = null, homePostalCode: String? = null, homeState: String? = null, homeStreet: String? = null, homeStreet2: String? = null, homeStreet3: String? = null, jobTitle: String? = null, jobTitle2: String? = null, lastName: String? = null, middleName: String? = null, mobilePhone: String? = null, nickName: String? = null, notes: String? = null, subjects: String? = null, suffix: String? = null, title: String? = null, uid: String? = null, webPage: String? = null, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addSetContactRequest(id: String, birthday: String? = null, businessCity: String? = null, businessCoords: String? = null, businessCountry: String? = null, businessFax: String? = null, businessPhone: String? = null, businessPostalCode: String? = null, businessState: String? = null, businessStreet: String? = null, businessStreet2: String? = null, businessStreet3: String? = null, categories: String? = null, company: String? = null, companyType: String? = null, email2Address: String? = null, email3Address: String? = null, emailAddress: String? = null, firstName: String? = null, fullName: String? = null, gender: Gender? = null, hobby: String? = null, homeCity: String? = null, homeCoords: String? = null, homeCountry: String? = null, homeFax: String? = null, homePhone: String? = null, homePostalCode: String? = null, homeState: String? = null, homeStreet: String? = null, homeStreet2: String? = null, homeStreet3: String? = null, jobTitle: String? = null, jobTitle2: String? = null, lastName: String? = null, middleName: String? = null, mobilePhone: String? = null, nickName: String? = null, notes: String? = null, subjects: String? = null, suffix: String? = null, title: String? = null, uid: String? = null, webPage: String? = null, login: String = context.login): Int {
         val requestProperties = buildJsonObject {
             put("id", id)
             put("birthday", birthday)
@@ -611,33 +495,24 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
             put("uid", uid)
             put("webpage", webPage)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.ADDRESSES, login),
-            addRequest("set_entry", requestProperties)
-        )
+        ensureFocus(Focusable.ADDRESSES, login)
+        return addRequest("set_entry", requestProperties)
     }
 
-    fun addDeleteContactRequest(id: String, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addDeleteContactRequest(id: String, login: String = context.login): Int {
         val requestProperties = buildJsonObject {
             put("id", id)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.ADDRESSES, login),
-            addRequest("delete_entry", requestProperties)
-        )
+        ensureFocus(Focusable.ADDRESSES, login)
+        return addRequest("delete_entry", requestProperties)
     }
 
-    fun addGetAppointmentsRequest(login: String = context.login): List<Int> {
-        ensureCapacity(2)
-        return listOf(
-            addSetFocusRequest(Focusable.CALENDAR, login),
-            addRequest("get_entries", null)
-        )
+    fun addGetAppointmentsRequest(login: String = context.login): Int {
+        ensureFocus(Focusable.CALENDAR, login)
+        return addRequest("get_entries", null)
     }
 
-    fun addAddAppointmentRequest(title: String, description: String? = null, endDate: Long? = null, endDateIso: String? = null, location: String? = null, rrule: String? = null, startDate: Long? = null, startDateIso: String? = null, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addAddAppointmentRequest(title: String, description: String? = null, endDate: Long? = null, endDateIso: String? = null, location: String? = null, rrule: String? = null, startDate: Long? = null, startDateIso: String? = null, login: String = context.login): Int {
         val requestProperties = buildJsonObject {
             put("title", title)
             if (description != null) put("description", description)
@@ -648,14 +523,11 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
             if (startDate != null) put("start_date", startDate / 1000)
             if (startDateIso != null) put("start_date_iso", startDateIso)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.CALENDAR, login),
-            addRequest("add_entry", requestProperties)
-        )
+        ensureFocus(Focusable.CALENDAR, login)
+        return addRequest("add_entry", requestProperties)
     }
 
-    fun addSetAppointmentRequest(id: String, title: String, description: String? = null, endDate: Long? = null, endDateIso: String? = null, location: String? = null, rrule: String? = null, startDate: Long? = null, startDateIso: String? = null, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addSetAppointmentRequest(id: String, title: String, description: String? = null, endDate: Long? = null, endDateIso: String? = null, location: String? = null, rrule: String? = null, startDate: Long? = null, startDateIso: String? = null, login: String = context.login): Int {
         val requestProperties = buildJsonObject {
             put("id", id)
             put("title", title)
@@ -667,57 +539,40 @@ open class OperatingScopeApiRequest(context: IRequestContext): ScopedApiRequest(
             put("start_date", if (startDate != null) JsonPrimitive(startDate / 1000) else JsonNull)
             put("start_date_iso", startDateIso)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.CALENDAR, login),
-            addRequest("set_entry", requestProperties)
-        )
+        ensureFocus(Focusable.CALENDAR, login)
+        return addRequest("set_entry", requestProperties)
     }
 
-    fun addDeleteAppointmentRequest(id: String, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addDeleteAppointmentRequest(id: String, login: String = context.login): Int {
         val requestProperties = buildJsonObject {
             put("id", id)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.CALENDAR, login),
-            addRequest("delete_entry", requestProperties)
-        )
+        ensureFocus(Focusable.CALENDAR, login)
+        return addRequest("delete_entry", requestProperties)
     }
 
-    fun addGetTeacherBoardNotificationsRequest(login: String = context.login): List<Int> {
-        ensureCapacity(2)
-        return listOf(
-            addSetFocusRequest(Focusable.BOARD_TEACHER, login),
-            addRequest("get_entries", null)
-        )
+    fun addGetTeacherBoardNotificationsRequest(login: String = context.login): Int {
+        ensureFocus(Focusable.BOARD_TEACHER, login)
+        return addRequest("get_entries", null)
     }
 
-    fun addGetPupilBoardNotificationsRequest(login: String = context.login): List<Int> {
-        ensureCapacity(2)
-        return listOf(
-            addSetFocusRequest(Focusable.BOARD_PUPIL, login),
-            addRequest("get_entries", null)
-        )
+    fun addGetPupilBoardNotificationsRequest(login: String = context.login): Int {
+        ensureFocus(Focusable.BOARD_PUPIL, login)
+        return addRequest("get_entries", null)
     }
 
-    fun addGetBoardNotificationsRequest(login: String = context.login): List<Int> {
-        ensureCapacity(2)
-        return listOf(
-            addSetFocusRequest(Focusable.BOARD, login),
-            addRequest("get_entries", null)
-        )
+    fun addGetBoardNotificationsRequest(login: String = context.login): Int {
+        ensureFocus(Focusable.BOARD, login)
+        return addRequest("get_entries", null)
     }
 
-    fun addReadQuickMessagesRequest(exportSessionFile: Boolean? = null, login: String = context.login): List<Int> {
-        ensureCapacity(2)
+    fun addReadQuickMessagesRequest(exportSessionFile: Boolean? = null, login: String = context.login): Int {
         val requestParams = buildJsonObject {
             if (exportSessionFile != null)
                 put("export_session_file", exportSessionFile)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.MESSENGER, login),
-            addRequest("read_quick_messages", requestParams)
-        )
+        ensureFocus(Focusable.MESSENGER, login)
+        return addRequest("read_quick_messages", requestParams)
     }
 
 }

@@ -6,6 +6,7 @@ import de.deftk.openww.api.request.handler.IRequestHandler
 class RequestContext(
     override val login: String,
     override var sessionId: String,
+    override val postMaxSize: Int,
     override val requestUrl: String,
     override val requestHandler: IRequestHandler
 ) : IRequestContext

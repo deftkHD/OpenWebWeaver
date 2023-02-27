@@ -17,8 +17,7 @@ import kotlinx.serialization.json.put
 
 class UserApiRequest(context: IRequestContext): OperatingScopeApiRequest(context) {
 
-    fun addGetAutoLoginUrlRequest(disableLogout: Boolean? = null, disableReceptionOfQuickMessages: Boolean? = null, enslaveSession: Boolean? = null, locale: Locale? = null, pingMaster: Boolean? = null, sessionTimeout: Int? = null, targetData: JsonElement? = null, targetIframes: Boolean? = null, targetUrlPath: String? = null): List<Int> {
-        ensureCapacity(2)
+    fun addGetAutoLoginUrlRequest(disableLogout: Boolean? = null, disableReceptionOfQuickMessages: Boolean? = null, enslaveSession: Boolean? = null, locale: Locale? = null, pingMaster: Boolean? = null, sessionTimeout: Int? = null, targetData: JsonElement? = null, targetIframes: Boolean? = null, targetUrlPath: String? = null): Int {
         val requestParams = buildJsonObject {
             if (disableLogout != null) put("disable_logout", disableLogout)
             if (disableReceptionOfQuickMessages != null) put("disable_reception_of_quick_messages", disableReceptionOfQuickMessages)
@@ -30,26 +29,20 @@ class UserApiRequest(context: IRequestContext): OperatingScopeApiRequest(context
             if (targetIframes != null) put("target_iframes", targetIframes)
             if (targetUrlPath != null) put("target_url_path", targetUrlPath)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.TRUSTS, context.login),
-            addRequest("get_url_for_autologin", requestParams)
-        )
+        ensureFocus(Focusable.TRUSTS, context.login)
+        return addRequest("get_url_for_autologin", requestParams)
     }
 
-    fun addGetProfileRequest(exportImage: Boolean?): List<Int> {
-        ensureCapacity(2)
+    fun addGetProfileRequest(exportImage: Boolean?): Int {
         val params = buildJsonObject {
             if (exportImage != null)
                 put("export_image", asApiBoolean(exportImage))
         }
-        return listOf(
-            addSetFocusRequest(Focusable.PROFILE, context.login),
-            addRequest("get_profile", params)
-        )
+        ensureFocus(Focusable.PROFILE, context.login)
+        return addRequest("get_profile", params)
     }
 
-    fun addSetProfileRequest(fullName: String?, firstName: String?, lastName: String?, homePostalCode: String?, homeCity: String?, homeState: String?, birthday: String?, emailAddress: String?, gender: Gender?, hobbies: String?, notes: String?, website: String?, company: String?, companyType: String?, subjects: String?, jobTitle: String?, visible: Boolean?, jobTitle2: String?, homePhone: String?, homeFax: String?, mobilePhone: String?, title: String?, image: ISessionFile?): List<Int> {
-        ensureCapacity(2)
+    fun addSetProfileRequest(fullName: String?, firstName: String?, lastName: String?, homePostalCode: String?, homeCity: String?, homeState: String?, birthday: String?, emailAddress: String?, gender: Gender?, hobbies: String?, notes: String?, website: String?, company: String?, companyType: String?, subjects: String?, jobTitle: String?, visible: Boolean?, jobTitle2: String?, homePhone: String?, homeFax: String?, mobilePhone: String?, title: String?, image: ISessionFile?): Int {
         val params = buildJsonObject {
             if (fullName != null)
                 put("fullname", fullName)
@@ -98,60 +91,42 @@ class UserApiRequest(context: IRequestContext): OperatingScopeApiRequest(context
             if (image != null)
                 put("image", image.id)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.PROFILE, context.login),
-            addRequest("set_profile", params)
-        )
+        ensureFocus(Focusable.PROFILE, context.login)
+        return addRequest("set_profile", params)
     }
 
-    fun addExportProfileImageRequest(): List<Int> {
-        ensureCapacity(2)
-        return listOf(
-            addSetFocusRequest(Focusable.PROFILE, context.login),
-            addRequest("export_image", null)
-        )
+    fun addExportProfileImageRequest(): Int {
+        ensureFocus(Focusable.PROFILE, context.login)
+        return addRequest("export_image", null)
     }
 
-    fun addDeleteProfileImageRequest(): List<Int> {
-        ensureCapacity(2)
-        return listOf(
-            addSetFocusRequest(Focusable.PROFILE, context.login),
-            addRequest("delete_image", null)
-        )
+    fun addDeleteProfileImageRequest(): Int {
+        ensureFocus(Focusable.PROFILE, context.login)
+        return addRequest("delete_image", null)
     }
 
-    fun addImportProfileImageRequest(id: String): List<Int> {
-        ensureCapacity(2)
+    fun addImportProfileImageRequest(id: String): Int {
         val params = buildJsonObject {
             put("id", id)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.PROFILE, context.login),
-            addRequest("import_image", params)
-        )
+        ensureFocus(Focusable.PROFILE, context.login)
+        return addRequest("import_image", params)
     }
 
-    fun addGetSystemNotificationsRequest(startId: Int? = null): List<Int> {
-        ensureCapacity(2)
+    fun addGetSystemNotificationsRequest(startId: Int? = null): Int {
         val requestParams = buildJsonObject {
             if (startId != null) put("start_id", startId)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.MESSAGES, context.login),
-            addRequest("get_messages", requestParams)
-        )
+        ensureFocus(Focusable.MESSAGES, context.login)
+        return addRequest("get_messages", requestParams)
     }
 
-    fun addGetSystemNotificationSettingsRequest(): List<Int> {
-        ensureCapacity(2)
-        return listOf(
-            addSetFocusRequest(Focusable.MESSAGES, context.login),
-            addRequest("get_settings", null)
-        )
+    fun addGetSystemNotificationSettingsRequest(): Int {
+        ensureFocus(Focusable.MESSAGES, context.login)
+        return addRequest("get_settings", null)
     }
 
-    fun addSetSystemNotificationFacilitiesRequest(type: Int, digest: Boolean?, digestWeekly: Boolean?, mail: Boolean?, normal: Boolean?, push: Boolean?, qm: Boolean?, sms: Boolean?): List<Int> {
-        ensureCapacity(2)
+    fun addSetSystemNotificationFacilitiesRequest(type: Int, digest: Boolean?, digestWeekly: Boolean?, mail: Boolean?, normal: Boolean?, push: Boolean?, qm: Boolean?, sms: Boolean?): Int {
         val requestParams = buildJsonObject {
             put("type", type)
             if (digest != null)
@@ -169,60 +144,45 @@ class UserApiRequest(context: IRequestContext): OperatingScopeApiRequest(context
             if (sms != null)
                 put("sms", asApiBoolean(sms))
         }
-        return listOf(
-            addSetFocusRequest(Focusable.MESSAGES, context.login),
-            addRequest("set_facilities", requestParams)
-        )
+        ensureFocus(Focusable.MESSAGES, context.login)
+        return addRequest("set_facilities", requestParams)
     }
 
-    fun addDeleteSystemNotificationRequest(id: Int): List<Int> {
-        ensureCapacity(2)
+    fun addDeleteSystemNotificationRequest(id: Int): Int {
         val requestParams = buildJsonObject {
             put("id", id)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.MESSAGES, context.login),
-            addRequest("delete_message", requestParams)
-        )
+        ensureFocus(Focusable.MESSAGES, context.login)
+        return addRequest("delete_message", requestParams)
     }
 
-    fun addAddSessionFileRequest(name: String, data: ByteArray): List<Int> {
-        ensureCapacity(2)
+    fun addAddSessionFileRequest(name: String, data: ByteArray): Int {
         val requestParams = buildJsonObject {
             put("name", name)
             put("data", PlatformUtil.base64EncodeToString(data))
         }
-        return listOf(
-            addSetFocusRequest(Focusable.SESSION_FILES, context.login),
-            addRequest("add_file", requestParams)
-        )
+        ensureFocus(Focusable.SESSION_FILES, context.login)
+        return addRequest("add_file", requestParams)
     }
 
-    fun addAppendSessionFileRequest(id: String, data: ByteArray): List<Int> {
-        ensureCapacity(2)
+    fun addAppendSessionFileRequest(id: String, data: ByteArray): Int {
         val requestParams = buildJsonObject {
             put("id", id)
             put("data", PlatformUtil.base64EncodeToString(data))
         }
-        return listOf(
-            addSetFocusRequest(Focusable.SESSION_FILES, context.login),
-            addRequest("append_file", requestParams)
-        )
+        ensureFocus(Focusable.SESSION_FILES, context.login)
+        return addRequest("append_file", requestParams)
     }
 
-    fun addDeleteSessionFileRequest(id: String): List<Int> {
-        ensureCapacity(2)
+    fun addDeleteSessionFileRequest(id: String): Int {
         val requestParams = buildJsonObject {
             put("id", id)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.SESSION_FILES, context.login),
-            addRequest("delete_file", requestParams)
-        )
+        ensureFocus(Focusable.SESSION_FILES, context.login)
+        return addRequest("delete_file", requestParams)
     }
 
-    fun addGetSessionFileRequest(id: String, limit: Int? = null, offset: Int? = null): List<Int> {
-        ensureCapacity(2)
+    fun addGetSessionFileRequest(id: String, limit: Int? = null, offset: Int? = null): Int {
         val requestParams = buildJsonObject {
             put("id", id)
             if (limit != null)
@@ -230,36 +190,27 @@ class UserApiRequest(context: IRequestContext): OperatingScopeApiRequest(context
             if (offset != null)
                 put("offset", offset)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.SESSION_FILES, context.login),
-            addRequest("get_file", requestParams)
-        )
+        ensureFocus(Focusable.SESSION_FILES, context.login)
+        return addRequest("get_file", requestParams)
     }
 
-    fun addGetSessionFileDownloadUrlRequest(id: String): List<Int> {
-        ensureCapacity(2)
+    fun addGetSessionFileDownloadUrlRequest(id: String): Int {
         val requestParams = buildJsonObject {
             put("id", id)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.SESSION_FILES, context.login),
-            addRequest("get_file_download_url", requestParams)
-        )
+        ensureFocus(Focusable.SESSION_FILES, context.login)
+        return addRequest("get_file_download_url", requestParams)
     }
 
-    fun addGetSessionFileUploadUrlRequest(name: String): List<Int> {
-        ensureCapacity(2)
+    fun addGetSessionFileUploadUrlRequest(name: String): Int {
         val requestParams = buildJsonObject {
             put("name", name)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.SESSION_FILES, context.login),
-            addRequest("get_file_upload_url", requestParams)
-        )
+        ensureFocus(Focusable.SESSION_FILES, context.login)
+        return addRequest("get_file_upload_url", requestParams)
     }
 
-    fun addRegisterServiceRequest(type: ServiceType, token: String, application: String? = null, generateSecret: String? = null, isOnline: Boolean? = null, managedObjects: String? = null, unmanagedPriority: Int? = null): List<Int> {
-        ensureCapacity(2)
+    fun addRegisterServiceRequest(type: ServiceType, token: String, application: String? = null, generateSecret: String? = null, isOnline: Boolean? = null, managedObjects: String? = null, unmanagedPriority: Int? = null): Int {
         val requestParams = buildJsonObject {
             put("service", WebWeaverClient.json.encodeToJsonElement(type))
             put("token", token)
@@ -274,31 +225,26 @@ class UserApiRequest(context: IRequestContext): OperatingScopeApiRequest(context
             if (unmanagedPriority != null)
                 put("unmanaged_priority", unmanagedPriority)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.SETTINGS, context.login),
-            addRequest("register_service", requestParams)
-        )
+        ensureFocus(Focusable.SETTINGS, context.login)
+        return addRequest("register_service", requestParams)
     }
 
-    fun addUnregisterServiceRequest(type: ServiceType, token: String): List<Int> {
-        ensureCapacity(2)
+    fun addUnregisterServiceRequest(type: ServiceType, token: String): Int {
         val requestParams = buildJsonObject {
             put("service", WebWeaverClient.json.encodeToJsonElement(type))
             put("token", token)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.SETTINGS, context.login),
-            addRequest("unregister_service", requestParams)
-        )
+        ensureFocus(Focusable.SETTINGS, context.login)
+        return addRequest("unregister_service", requestParams)
     }
 
     fun addGetAllTasksRequest(user: IUser): List<Int> {
         val ids = mutableListOf<Int>()
         if (Feature.TASKS.isAvailable(user.effectiveRights)) {
-            ids.addAll(addGetTasksRequest())
+            ids.add(addGetTasksRequest())
         }
         user.getGroups().filter { Feature.TASKS.isAvailable(it.effectiveRights) }.forEach { group ->
-            ids.addAll(addGetTasksRequest(group.login))
+            ids.add(addGetTasksRequest(group.login))
         }
 
         return ids
@@ -307,10 +253,10 @@ class UserApiRequest(context: IRequestContext): OperatingScopeApiRequest(context
     fun addGetAllBoardNotificationsRequest(user: IUser): List<Int> {
         val ids = mutableListOf<Int>()
         if (Feature.BOARD.isAvailable(user.effectiveRights)) {
-            ids.addAll(addGetBoardNotificationsRequest())
+            ids.add(addGetBoardNotificationsRequest())
         }
         user.getGroups().filter { Feature.BOARD.isAvailable(it.effectiveRights) }.forEach { group ->
-            ids.addAll(addGetBoardNotificationsRequest(group.login))
+            ids.add(addGetBoardNotificationsRequest(group.login))
         }
 
         return ids
@@ -319,10 +265,10 @@ class UserApiRequest(context: IRequestContext): OperatingScopeApiRequest(context
     fun addGetAllPupilBoardNotificationsRequest(user: IUser): List<Int> {
         val ids = mutableListOf<Int>()
         if (Feature.BOARD_PUPIL.isAvailable(user.effectiveRights)) {
-            ids.addAll(addGetPupilBoardNotificationsRequest())
+            ids.add(addGetPupilBoardNotificationsRequest())
         }
         user.getGroups().filter { Feature.BOARD_PUPIL.isAvailable(it.effectiveRights) }.forEach { group ->
-            ids.addAll(addGetPupilBoardNotificationsRequest(group.login))
+            ids.add(addGetPupilBoardNotificationsRequest(group.login))
         }
 
         return ids
@@ -331,31 +277,27 @@ class UserApiRequest(context: IRequestContext): OperatingScopeApiRequest(context
     fun addGetAllTeacherBoardNotificationsRequest(user: IUser): List<Int> {
         val ids = mutableListOf<Int>()
         if (Feature.BOARD_TEACHER.isAvailable(user.effectiveRights)) {
-            ids.addAll(addGetTeacherBoardNotificationsRequest())
+            ids.add(addGetTeacherBoardNotificationsRequest())
         }
         user.getGroups().filter { Feature.BOARD_TEACHER.isAvailable(it.effectiveRights) }.forEach { group ->
-            ids.addAll(addGetTeacherBoardNotificationsRequest(group.login))
+            ids.add(addGetTeacherBoardNotificationsRequest(group.login))
         }
 
         return ids
     }
 
-    fun addGetMessengerUsersRequest(getMiniatures: Boolean? = null, onlineOnly: Boolean? = null): List<Int> {
-        ensureCapacity(2)
+    fun addGetMessengerUsersRequest(getMiniatures: Boolean? = null, onlineOnly: Boolean? = null): Int {
         val params = buildJsonObject {
             if (getMiniatures != null)
                 put("get_miniatures", asApiBoolean(getMiniatures))
             if (onlineOnly != null)
                 put("only_online", asApiBoolean(onlineOnly))
         }
-        return listOf(
-            addSetFocusRequest(Focusable.MESSENGER, context.login),
-            addRequest("get_users", params)
-        )
+        ensureFocus(Focusable.MESSENGER, context.login)
+        return addRequest("get_users", params)
     }
 
-    fun addSendQuickMessageRequest(login: String, importSessionFile: ISessionFile? = null, text: String? = null): List<Int> {
-        ensureCapacity(2)
+    fun addSendQuickMessageRequest(login: String, importSessionFile: ISessionFile? = null, text: String? = null): Int {
         val params = buildJsonObject {
             put("login", login)
             if (importSessionFile != null)
@@ -363,123 +305,91 @@ class UserApiRequest(context: IRequestContext): OperatingScopeApiRequest(context
             if (text != null)
                 put("text", text)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.MESSENGER, context.login),
-            addRequest("send_quick_message", params)
-        )
+        ensureFocus(Focusable.MESSENGER, context.login)
+        return addRequest("send_quick_message", params)
     }
 
-    fun addAddChatRequest(login: String): List<Int> {
-        ensureCapacity(2)
+    fun addAddChatRequest(login: String): Int {
         val params = buildJsonObject {
             put("login", login)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.MESSENGER, context.login),
-            addRequest("join_user", params)
-        )
+        ensureFocus(Focusable.MESSENGER, context.login)
+        return addRequest("join_user", params)
     }
 
-    fun addRemoveChatRequest(login: String): List<Int> {
-        ensureCapacity(2)
+    fun addRemoveChatRequest(login: String): Int {
         val params = buildJsonObject {
             put("login", login)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.MESSENGER, context.login),
-            addRequest("leave_user", params)
-        )
+        ensureFocus(Focusable.MESSENGER, context.login)
+        return addRequest("leave_user", params)
     }
 
-    fun addGetHistoryRequest(exportSessionFile: Boolean? = null, startId: Int? = null): List<Int> {
-        ensureCapacity(2)
+    fun addGetHistoryRequest(exportSessionFile: Boolean? = null, startId: Int? = null): Int {
         val params = buildJsonObject {
             if (exportSessionFile != null)
                 put("export_session_file", asApiBoolean(exportSessionFile))
             if (startId != null)
                 put("start_id", startId)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.MESSENGER, context.login),
-            addRequest("get_history", params)
-        )
+        ensureFocus(Focusable.MESSENGER, context.login)
+        return addRequest("get_history", params)
     }
 
-    fun addBlockMessengerUserRequest(login: String): List<Int> {
-        ensureCapacity(2)
+    fun addBlockMessengerUserRequest(login: String): Int {
         val params = buildJsonObject {
             put("login", login)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.MESSENGER, context.login),
-            addRequest("block_user", params)
-        )
+        ensureFocus(Focusable.MESSENGER, context.login)
+        return addRequest("block_user", params)
     }
 
-    fun addUnblockMessengerUserRequest(login: String): List<Int> {
-        ensureCapacity(2)
+    fun addUnblockMessengerUserRequest(login: String): Int {
         val params = buildJsonObject {
             put("login", login)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.MESSENGER, context.login),
-            addRequest("unblock_user", params)
-        )
+        ensureFocus(Focusable.MESSENGER, context.login)
+        return addRequest("unblock_user", params)
     }
 
-    fun addGetMessengerBlocklistRequest(): List<Int> {
-        ensureCapacity(2)
-        return listOf(
-            addSetFocusRequest(Focusable.MESSENGER, context.login),
-            addRequest("get_blocklist", null)
-        )
+    fun addGetMessengerBlocklistRequest(): Int {
+        ensureFocus(Focusable.MESSENGER, context.login)
+        return addRequest("get_blocklist", null)
     }
 
-    fun addGetNotesRequest(): List<Int> {
-        ensureCapacity(2)
-        return listOf(
-            addSetFocusRequest(Focusable.NOTES, context.login),
-            addRequest("get_entries", null)
-        )
+    fun addGetNotesRequest(): Int {
+        ensureFocus(Focusable.NOTES, context.login)
+        return addRequest("get_entries", null)
     }
 
-    fun addAddNoteRequest(text: String, title: String, color: NoteColor? = null): List<Int> {
-        ensureCapacity(2)
+    fun addAddNoteRequest(text: String, title: String, color: NoteColor? = null): Int {
         val params = buildJsonObject {
             put("text", text)
             put("title", title)
             if (color != null)
                 put("color", WebWeaverClient.json.encodeToJsonElement(color))
         }
-        return listOf(
-            addSetFocusRequest(Focusable.NOTES, context.login),
-            addRequest("add_entry", params)
-        )
+        ensureFocus(Focusable.NOTES, context.login)
+        return addRequest("add_entry", params)
     }
 
-    fun addSetNoteRequest(id: String, text: String, title: String, color: NoteColor): List<Int> {
-        ensureCapacity(2)
+    fun addSetNoteRequest(id: String, text: String, title: String, color: NoteColor): Int {
         val params = buildJsonObject {
             put("id", id)
             put("text", text)
             put("title", title)
             put("color", WebWeaverClient.json.encodeToJsonElement(color))
         }
-        return listOf(
-            addSetFocusRequest(Focusable.NOTES, context.login),
-            addRequest("set_entry", params)
-        )
+        ensureFocus(Focusable.NOTES, context.login)
+        return addRequest("set_entry", params)
     }
 
-    fun addDeleteNoteRequest(id: String): List<Int> {
-        ensureCapacity(2)
+    fun addDeleteNoteRequest(id: String): Int {
         val params = buildJsonObject {
             put("id", id)
         }
-        return listOf(
-            addSetFocusRequest(Focusable.NOTES, context.login),
-            addRequest("delete_entry", params)
-        )
+        ensureFocus(Focusable.NOTES, context.login)
+        return addRequest("delete_entry", params)
     }
 
 }

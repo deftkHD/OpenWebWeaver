@@ -9,5 +9,6 @@ class AuthContext(override val requestUrl: String, override val requestHandler: 
         get() = error("Operation not supported!")
     override var sessionId: String = ""
         get() = error("Operation not supported!")
+    override val postMaxSize: Int = 5000
 
 }

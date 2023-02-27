@@ -20,7 +20,7 @@ class Attachment(
 
     override suspend fun exportSessionFile(email: IEmail, folder: IEmailFolder, context: IRequestContext): FileDownloadUrl {
         val request = OperatingScopeApiRequest(context)
-        val id = request.addExportEmailSessionFileRequest(id, folder.id, email.id)[1]
+        val id = request.addExportEmailSessionFileRequest(id, folder.id, email.id)
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!)

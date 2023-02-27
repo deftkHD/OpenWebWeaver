@@ -5,6 +5,17 @@ import de.deftk.openww.api.request.handler.IRequestHandler
 
 class ApiContext(
     override val sessionId: String,
+    override val serverVersion: String,
+    override val clientVersion: String,
+    override val clientUrl: String,
+    override val postMaxSize: Int,
+    override val timezone: String,
+    override val locale: String,
+    override val info: String,
+    override val customTranslationsUrl: String,
+    override val customSkinningUrl: String,
+    override val adminTypes: List<Int>,
+    override val customOptions: String,
     override val user: User,
     private val groups: List<Group>,
     override val requestUrl: String,

@@ -34,7 +34,7 @@ class EmailSignature(
 
     override suspend fun edit(text: String, answerPosition: SignaturePosition, forwardPosition: SignaturePosition, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
-        val id = request.addSetEmailSignatureRequest(text, answerPosition, forwardPosition)[1]
+        val id = request.addSetEmailSignatureRequest(text, answerPosition, forwardPosition)
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         readFrom(WebWeaverClient.json.decodeFromJsonElement(subResponse["signature"]!!))

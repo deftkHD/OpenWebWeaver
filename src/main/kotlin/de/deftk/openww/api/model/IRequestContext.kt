@@ -6,6 +6,7 @@ interface IRequestContext {
 
     val login: String
     var sessionId: String
+    val postMaxSize: Int
     val requestUrl: String
     val requestHandler: IRequestHandler
 

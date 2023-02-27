@@ -334,7 +334,7 @@ class Contact(
             title,
             uid,
             webPage
-        )[1]
+        )
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         readFrom(WebWeaverClient.json.decodeFromJsonElement(subResponse["entry"]!!))

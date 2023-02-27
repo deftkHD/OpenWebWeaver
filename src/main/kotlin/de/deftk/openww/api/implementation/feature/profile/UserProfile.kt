@@ -107,7 +107,7 @@ class UserProfile(
         context: IRequestContext
     ) {
         val request = UserApiRequest(context)
-        val id = request.addSetProfileRequest(fullName, firstName, lastName, homePostalCode, homeCity, homeState, birthday, emailAddress, gender, hobbies, notes, website, company, companyType, subjects, jobTitle, visible, jobTitle2, homePhone, homeFax, mobilePhone, title, image)[1]
+        val id = request.addSetProfileRequest(fullName, firstName, lastName, homePostalCode, homeCity, homeState, birthday, emailAddress, gender, hobbies, notes, website, company, companyType, subjects, jobTitle, visible, jobTitle2, homePhone, homeFax, mobilePhone, title, image)
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         readFrom(WebWeaverClient.json.decodeFromJsonElement(subResponse["profile"]!!))

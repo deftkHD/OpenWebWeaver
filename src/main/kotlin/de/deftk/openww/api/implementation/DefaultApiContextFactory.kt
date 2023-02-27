@@ -4,9 +4,7 @@ import de.deftk.openww.api.factory.IApiContextFactory
 import de.deftk.openww.api.request.handler.DefaultRequestHandler
 import de.deftk.openww.api.response.ApiResponse
 import de.deftk.openww.api.response.ResponseUtil
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromJsonElement
-import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.*
 
 class DefaultApiContextFactory : IApiContextFactory {
 
@@ -21,6 +19,17 @@ class DefaultApiContextFactory : IApiContextFactory {
 
         return ApiContext(
             informationResult["session_id"]!!.jsonPrimitive.content,
+            informationResult["server_version"]!!.jsonPrimitive.content,
+            informationResult["client_version"]!!.jsonPrimitive.content,
+            informationResult["client_url"]!!.jsonPrimitive.content,
+            informationResult["post_max_size"]!!.jsonPrimitive.int,
+            informationResult["timezone"]!!.jsonPrimitive.content,
+            informationResult["locale"]!!.jsonPrimitive.content,
+            informationResult["info"]!!.jsonPrimitive.content,
+            informationResult["custom_translations_url"]!!.jsonPrimitive.content,
+            informationResult["custom_skinning_url"]!!.jsonPrimitive.content,
+            informationResult["admin_types"]!!.jsonArray.toList().map { it.jsonPrimitive.int },
+            informationResult["custom_options"]!!.jsonPrimitive.content,
             user,
             user.getGroups(),
             requestUrl,

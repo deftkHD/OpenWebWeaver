@@ -71,7 +71,7 @@ class Task(
 
     override suspend fun edit(title: String, description: String?, completed: Boolean?, startDate: Date?, dueDate: Date?, context: IRequestContext) {
         val request = OperatingScopeApiRequest(context)
-        val id = request.addSetTaskRequest(id, completed, description, dueDate?.time, startDate?.time, title)[1]
+        val id = request.addSetTaskRequest(id, completed, description, dueDate?.time, startDate?.time, title)
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         readFrom(WebWeaverClient.json.decodeFromJsonElement(subResponse["entry"]!!))

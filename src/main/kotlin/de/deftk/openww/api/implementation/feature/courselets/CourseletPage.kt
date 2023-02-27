@@ -23,14 +23,14 @@ class CourseletPage(
 
     override suspend fun addResult(courselet: ICourselet, score: Int?, time: Long?, context: IRequestContext) {
         val request = GroupApiRequest(context)
-        request.addAddCourseletResultRequest(courselet.id, pageId, score, time)[1]
+        request.addAddCourseletResultRequest(courselet.id, pageId, score, time)
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
     }
 
     override suspend fun deleteResults(courselet: ICourselet, context: IRequestContext) {
         val request = GroupApiRequest(context)
-        request.addDeleteCourseletResultsRequest(courselet.id, pageId)[1]
+        request.addDeleteCourseletResultsRequest(courselet.id, pageId)
         val response = request.fireRequest()
         ResponseUtil.checkSuccess(response.toJson())
     }
