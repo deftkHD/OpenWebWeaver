@@ -12,6 +12,12 @@ open class ApiRequest {
     private var currentFocusable: Focusable? = null
     private var currentScope: String? = null
 
+    /**
+     * null: uncertain
+     * true: request was chunked into multiple subrequests
+     * false: request was sent as a whole to the server
+     */
+    var isChunked: Boolean? = null
     var requests = mutableListOf<JsonObject>()
 
     suspend fun fireRequest(context: IRequestContext): ApiResponse {
@@ -30,6 +36,7 @@ open class ApiRequest {
             currentSize += requestSize
             splitRequests.last().add(request)
         }
+        isChunked = splitRequests.size > 1
         return splitRequests
     }
 
