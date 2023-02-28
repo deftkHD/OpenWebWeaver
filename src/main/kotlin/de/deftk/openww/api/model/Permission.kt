@@ -125,9 +125,9 @@ enum class Permission(val id: String) {
     @SerialName("meta_write") META_WRITE("meta_write"),
     @SerialName("meta_admin") META_ADMIN("meta_admin"),
 
-    @SerialName("learning_log") LEARNING_LOG_READ("leaning_log"),
-    @SerialName("learning_log_write") LEARNING_LOG_WRITE("leaning_log_write"),
-    @SerialName("learning_log_admin") LEARNING_LOG_ADMIN("leaning_log_admin"),
+    @SerialName("learning_log") LEARNING_LOG_READ("learning_log"),
+    @SerialName("learning_log_write") LEARNING_LOG_WRITE("learning_log_write"),
+    @SerialName("learning_log_admin") LEARNING_LOG_ADMIN("learning_log_admin"),
 
     @SerialName("wall") WALL_READ("wall"),
     @SerialName("wall_write") WALL_WRITE("wall_write"),
@@ -152,6 +152,10 @@ enum class Permission(val id: String) {
     @SerialName("forms") FORMS_READ("forms"),
     @SerialName("forms_write") FORMS_WRITE("forms_write"),
     @SerialName("forms_admin") FORMS_ADMIN("forms_admin"),
+
+    @SerialName("conference") CONFERENCE_READ("conference"),
+    @SerialName("conference_write") CONFERENCE_WRITE("conference_write"),
+    @SerialName("conference_admin") CONFERENCE_ADMIN("conference_admin"),
 
     @SerialName("client") CLIENT("client"),
 
