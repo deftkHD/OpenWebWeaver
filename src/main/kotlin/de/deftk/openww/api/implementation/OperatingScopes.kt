@@ -575,17 +575,23 @@ data class User(
         check(context is ApiContext)
         val request = UserApiRequest(getRequestContext(context))
         val taskIds = request.addGetAllTasksRequest(this)
-        val response = request.fireRequest().toJson().jsonArray
+        val response = request.fireRequest().toJson()
+        ResponseUtil.checkSuccess(response)
+        val responses = response.jsonArray.map { it.jsonObject }
         val tasks = mutableListOf<Pair<ITask, IOperatingScope>>()
-        val responses = response.filter { taskIds.contains(it.jsonObject["id"]!!.jsonPrimitive.int) }.map { it.jsonObject }
-        responses.withIndex().forEach { (index, subResponse) ->
-            if (index % 2 == 1) {
-                val focus = responses[index - 1]["result"]!!.jsonObject
-                assert(focus["method"]?.jsonPrimitive?.content == "set_focus")
-                val memberLogin = focus["user"]!!.jsonObject["login"]!!.jsonPrimitive.content
-                val member = context.findOperatingScope(memberLogin)!!
-                subResponse["result"]!!.jsonObject["entries"]!!.jsonArray.forEach { taskResponse ->
-                    tasks.add(Pair(Json.decodeFromJsonElement<Task>(taskResponse.jsonObject), member))
+
+        var scopeName: String? = null
+        responses.forEach { subResponse ->
+            val result = subResponse["result"]?.jsonObject ?: error("Response has no result")
+            val method = result["method"]?.jsonPrimitive?.content
+            val id = subResponse["id"]?.jsonPrimitive?.int
+            if (method == "set_focus") {
+                scopeName = result["user"]!!.jsonObject["login"]!!.jsonPrimitive.content
+            } else if (taskIds.contains(id)) {
+                assert(scopeName != null) { "Task request can't be performed outside a scope" }
+                val scope = context.findOperatingScope(scopeName!!) ?: error("Invalid scope: \"$scopeName\"")
+                result["entries"]!!.jsonArray.forEach { taskResponse ->
+                    tasks.add(Pair(WebWeaverClient.json.decodeFromJsonElement<Task>(taskResponse.jsonObject), scope))
                 }
             }
         }
@@ -595,18 +601,25 @@ data class User(
     override suspend fun getAllBoardNotifications(context: IApiContext): List<Pair<IBoardNotification, IGroup>> {
         check(context is ApiContext)
         val request = UserApiRequest(getRequestContext(context))
-        val taskIds = request.addGetAllBoardNotificationsRequest(this)
-        val response = request.fireRequest().toJson().jsonArray
+        val notificationIds = request.addGetAllBoardNotificationsRequest(this)
+        val response = request.fireRequest().toJson()
+        ResponseUtil.checkSuccess(response)
+        val responses = response.jsonArray.map { it.jsonObject }
         val notifications = mutableListOf<Pair<IBoardNotification, IGroup>>()
-        val responses = response.filter { taskIds.contains(it.jsonObject["id"]!!.jsonPrimitive.int) }.map { it.jsonObject }
-        responses.withIndex().forEach { (index, subResponse) ->
-            if (index % 2 == 1) {
-                val focus = responses[index - 1]["result"]!!.jsonObject
-                assert(focus["method"]?.jsonPrimitive?.content == "set_focus")
-                val memberLogin = focus["user"]!!.jsonObject["login"]!!.jsonPrimitive.content
-                val member = context.findOperatingScope(memberLogin)!! as Group
-                subResponse["result"]!!.jsonObject["entries"]!!.jsonArray.forEach { notificationResponse ->
-                    notifications.add(Pair(Json.decodeFromJsonElement<BoardNotification>(notificationResponse.jsonObject), member))
+
+        var scopeName: String? = null
+        responses.forEach { subResponse ->
+            val result = subResponse["result"]?.jsonObject ?: error("Response has no result")
+            val method = result["method"]?.jsonPrimitive?.content
+            val id = subResponse["id"]?.jsonPrimitive?.int
+            if (method == "set_focus") {
+                scopeName = result["user"]!!.jsonObject["login"]!!.jsonPrimitive.content
+            } else if (notificationIds.contains(id)) {
+                assert(scopeName != null) { "BoardNotification request can't be performed outside a scope" }
+                val scope = context.findOperatingScope(scopeName!!) ?: error("Invalid scope: \"$scopeName\"")
+                check(scope is IGroup) { "User can't have any board notifications" }
+                result["entries"]!!.jsonArray.forEach { taskResponse ->
+                    notifications.add(Pair(WebWeaverClient.json.decodeFromJsonElement<BoardNotification>(taskResponse.jsonObject), scope))
                 }
             }
         }
@@ -616,18 +629,25 @@ data class User(
     override suspend fun getAllPupilBoardNotifications(context: IApiContext): List<Pair<IBoardNotification, IGroup>> {
         check(context is ApiContext)
         val request = UserApiRequest(getRequestContext(context))
-        val taskIds = request.addGetAllPupilBoardNotificationsRequest(this)
-        val response = request.fireRequest().toJson().jsonArray
+        val notificationIds = request.addGetAllPupilBoardNotificationsRequest(this)
+        val response = request.fireRequest().toJson()
+        ResponseUtil.checkSuccess(response)
+        val responses = response.jsonArray.map { it.jsonObject }
         val notifications = mutableListOf<Pair<IBoardNotification, IGroup>>()
-        val responses = response.filter { taskIds.contains(it.jsonObject["id"]!!.jsonPrimitive.int) }.map { it.jsonObject }
-        responses.withIndex().forEach { (index, subResponse) ->
-            if (index % 2 == 1) {
-                val focus = responses[index - 1]["result"]!!.jsonObject
-                assert(focus["method"]?.jsonPrimitive?.content == "set_focus")
-                val memberLogin = focus["user"]!!.jsonObject["login"]!!.jsonPrimitive.content
-                val member = context.findOperatingScope(memberLogin)!! as Group
-                subResponse["result"]!!.jsonObject["entries"]!!.jsonArray.forEach { taskResponse ->
-                    notifications.add(Pair(Json.decodeFromJsonElement<BoardNotification>(taskResponse.jsonObject), member))
+
+        var scopeName: String? = null
+        responses.forEach { subResponse ->
+            val result = subResponse["result"]?.jsonObject ?: error("Response has no result")
+            val method = result["method"]?.jsonPrimitive?.content
+            val id = subResponse["id"]?.jsonPrimitive?.int
+            if (method == "set_focus") {
+                scopeName = result["user"]!!.jsonObject["login"]!!.jsonPrimitive.content
+            } else if (notificationIds.contains(id)) {
+                assert(scopeName != null) { "BoardNotification request can't be performed outside a scope" }
+                val scope = context.findOperatingScope(scopeName!!) ?: error("Invalid scope: \"$scopeName\"")
+                check(scope is IGroup) { "User can't have any board notifications" }
+                result["entries"]!!.jsonArray.forEach { taskResponse ->
+                    notifications.add(Pair(WebWeaverClient.json.decodeFromJsonElement<BoardNotification>(taskResponse.jsonObject), scope))
                 }
             }
         }
@@ -637,18 +657,25 @@ data class User(
     override suspend fun getAllTeacherBoardNotifications(context: IApiContext): List<Pair<IBoardNotification, IGroup>> {
         check(context is ApiContext)
         val request = UserApiRequest(getRequestContext(context))
-        val taskIds = request.addGetAllTeacherBoardNotificationsRequest(this)
-        val response = request.fireRequest().toJson().jsonArray
+        val notificationIds = request.addGetAllTeacherBoardNotificationsRequest(this)
+        val response = request.fireRequest().toJson()
+        ResponseUtil.checkSuccess(response)
+        val responses = response.jsonArray.map { it.jsonObject }
         val notifications = mutableListOf<Pair<IBoardNotification, IGroup>>()
-        val responses = response.filter { taskIds.contains(it.jsonObject["id"]!!.jsonPrimitive.int) }.map { it.jsonObject }
-        responses.withIndex().forEach { (index, subResponse) ->
-            if (index % 2 == 1) {
-                val focus = responses[index - 1]["result"]!!.jsonObject
-                assert(focus["method"]?.jsonPrimitive?.content == "set_focus")
-                val memberLogin = focus["user"]!!.jsonObject["login"]!!.jsonPrimitive.content
-                val member = context.findOperatingScope(memberLogin)!! as Group
-                subResponse["result"]!!.jsonObject["entries"]!!.jsonArray.forEach { taskResponse ->
-                    notifications.add(Pair(Json.decodeFromJsonElement<BoardNotification>(taskResponse.jsonObject), member))
+
+        var scopeName: String? = null
+        responses.forEach { subResponse ->
+            val result = subResponse["result"]?.jsonObject ?: error("Response has no result")
+            val method = result["method"]?.jsonPrimitive?.content
+            val id = subResponse["id"]?.jsonPrimitive?.int
+            if (method == "set_focus") {
+                scopeName = result["user"]!!.jsonObject["login"]!!.jsonPrimitive.content
+            } else if (notificationIds.contains(id)) {
+                assert(scopeName != null) { "BoardNotification request can't be performed outside a scope" }
+                val scope = context.findOperatingScope(scopeName!!) ?: error("Invalid scope: \"$scopeName\"")
+                check(scope is IGroup) { "User can't have any board notifications" }
+                result["entries"]!!.jsonArray.forEach { taskResponse ->
+                    notifications.add(Pair(WebWeaverClient.json.decodeFromJsonElement<BoardNotification>(taskResponse.jsonObject), scope))
                 }
             }
         }
