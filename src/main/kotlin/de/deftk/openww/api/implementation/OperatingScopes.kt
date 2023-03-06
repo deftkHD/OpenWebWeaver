@@ -838,7 +838,7 @@ class Group(
         return subResponse["users"]?.jsonArray?.map { WebWeaverClient.json.decodeFromJsonElement(it) } ?: emptyList()
     }
 
-    override suspend fun sendGlobalQuickMessage(sessionFile: ISessionFile?, text: String?, context: IRequestContext): IQuickMessage {
+    override suspend fun sendGlobalQuickMessage(sessionFile: ISessionFile?, text: String?, context: IRequestContext): QuickMessage {
         val request = GroupApiRequest(context)
         val id = request.addSendQuickMessageRequest(sessionFile?.id, text)
         val response = request.fireRequest()
