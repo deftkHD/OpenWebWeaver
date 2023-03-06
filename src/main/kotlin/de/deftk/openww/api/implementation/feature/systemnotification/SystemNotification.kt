@@ -45,4 +45,36 @@ class SystemNotification(
         return "SystemNotification(messageType=$messageType, message='$message')"
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is SystemNotification) return false
+
+        if (id != other.id) return false
+        if (messageType != other.messageType) return false
+        if (date != other.date) return false
+        if (message != other.message) return false
+        if (data != other.data) return false
+        if (member != other.member) return false
+        if (group != other.group) return false
+        if (fromId != other.fromId) return false
+        if (isUnread != other.isUnread) return false
+        if (obj != other.obj) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + messageType.hashCode()
+        result = 31 * result + (date?.hashCode() ?: 0)
+        result = 31 * result + message.hashCode()
+        result = 31 * result + (data?.hashCode() ?: 0)
+        result = 31 * result + member.hashCode()
+        result = 31 * result + group.hashCode()
+        result = 31 * result + (fromId ?: 0)
+        result = 31 * result + isUnread.hashCode()
+        result = 31 * result + (obj?.hashCode() ?: 0)
+        return result
+    }
+
 }

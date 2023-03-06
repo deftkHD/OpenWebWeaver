@@ -156,4 +156,70 @@ class Email(
         return "Email(subject='$subject')"
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Email) return false
+
+        if (id != other.id) return false
+        if (_subject != other._subject) return false
+        if (_unread != other._unread) return false
+        if (_flagged != other._flagged) return false
+        if (_answered != other._answered) return false
+        if (_deleted != other._deleted) return false
+        if (_date != other._date) return false
+        if (_size != other._size) return false
+        if (_from != other._from) return false
+        if (_to != other._to) return false
+        if (_cc != other._cc) return false
+        if (_plainBody != other._plainBody) return false
+        if (_text != other._text) return false
+        if (_files != other._files) return false
+        if (subject != other.subject) return false
+        if (unread != other.unread) return false
+        if (flagged != other.flagged) return false
+        if (answered != other.answered) return false
+        if (deleted != other.deleted) return false
+        if (date != other.date) return false
+        if (size != other.size) return false
+        if (from != other.from) return false
+        if (to != other.to) return false
+        if (cc != other.cc) return false
+        if (plainBody != other.plainBody) return false
+        if (text != other.text) return false
+        if (attachments != other.attachments) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id
+        result = 31 * result + _subject.hashCode()
+        result = 31 * result + (_unread?.hashCode() ?: 0)
+        result = 31 * result + (_flagged?.hashCode() ?: 0)
+        result = 31 * result + (_answered?.hashCode() ?: 0)
+        result = 31 * result + (_deleted?.hashCode() ?: 0)
+        result = 31 * result + (_date?.hashCode() ?: 0)
+        result = 31 * result + _size
+        result = 31 * result + (_from?.hashCode() ?: 0)
+        result = 31 * result + (_to?.hashCode() ?: 0)
+        result = 31 * result + (_cc?.hashCode() ?: 0)
+        result = 31 * result + (_plainBody?.hashCode() ?: 0)
+        result = 31 * result + (_text?.hashCode() ?: 0)
+        result = 31 * result + (_files?.hashCode() ?: 0)
+        result = 31 * result + subject.hashCode()
+        result = 31 * result + (unread?.hashCode() ?: 0)
+        result = 31 * result + (flagged?.hashCode() ?: 0)
+        result = 31 * result + (answered?.hashCode() ?: 0)
+        result = 31 * result + (deleted?.hashCode() ?: 0)
+        result = 31 * result + (date?.hashCode() ?: 0)
+        result = 31 * result + size
+        result = 31 * result + (from?.hashCode() ?: 0)
+        result = 31 * result + (to?.hashCode() ?: 0)
+        result = 31 * result + (cc?.hashCode() ?: 0)
+        result = 31 * result + (plainBody?.hashCode() ?: 0)
+        result = 31 * result + (text?.hashCode() ?: 0)
+        result = 31 * result + (attachments?.hashCode() ?: 0)
+        return result
+    }
+
 }

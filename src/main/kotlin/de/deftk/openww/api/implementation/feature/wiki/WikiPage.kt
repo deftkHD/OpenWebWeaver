@@ -14,4 +14,22 @@ data class WikiPage(
         return "WikiPage(name='$name')"
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is WikiPage) return false
+
+        if (name != other.name) return false
+        if (exists != other.exists) return false
+        if (source != other.source) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = name.hashCode()
+        result = 31 * result + exists.hashCode()
+        result = 31 * result + source.hashCode()
+        return result
+    }
+
 }

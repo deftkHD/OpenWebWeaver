@@ -88,4 +88,36 @@ class Courselet(
         return "Courselet(title='$title')"
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Courselet) return false
+
+        if (id != other.id) return false
+        if (title != other.title) return false
+        if (mapping != other.mapping) return false
+        if (isLink != other.isLink) return false
+        if (isVisible != other.isVisible) return false
+        if (isTemplate != other.isTemplate) return false
+        if (size != other.size) return false
+        if (created != other.created) return false
+        if (_modified != other._modified) return false
+        if (modified != other.modified) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id
+        result = 31 * result + title.hashCode()
+        result = 31 * result + mapping.hashCode()
+        result = 31 * result + isLink.hashCode()
+        result = 31 * result + isVisible.hashCode()
+        result = 31 * result + isTemplate.hashCode()
+        result = 31 * result + size
+        result = 31 * result + created.hashCode()
+        result = 31 * result + _modified.hashCode()
+        result = 31 * result + modified.hashCode()
+        return result
+    }
+
 }

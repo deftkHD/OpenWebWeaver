@@ -156,19 +156,19 @@ class UserApiRequest(context: IRequestContext): OperatingScopeApiRequest(context
         return addRequest("delete_message", requestParams)
     }
 
-    fun addAddSessionFileRequest(name: String, data: ByteArray): Int {
+    fun addAddSessionFileRequest(name: String, dataBase64: String): Int {
         val requestParams = buildJsonObject {
             put("name", name)
-            put("data", PlatformUtil.base64EncodeToString(data))
+            put("data", dataBase64)
         }
         ensureFocus(Focusable.SESSION_FILES, context.login)
         return addRequest("add_file", requestParams)
     }
 
-    fun addAppendSessionFileRequest(id: String, data: ByteArray): Int {
+    fun addAppendSessionFileRequest(id: String, dataBase64: String): Int {
         val requestParams = buildJsonObject {
             put("id", id)
-            put("data", PlatformUtil.base64EncodeToString(data))
+            put("data", dataBase64)
         }
         ensureFocus(Focusable.SESSION_FILES, context.login)
         return addRequest("append_file", requestParams)

@@ -448,6 +448,97 @@ open class RemoteFile(
         return "RemoteFile(name='$name')"
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is RemoteFile) return false
+
+        if (id != other.id) return false
+        if (_parentId != other._parentId) return false
+        if (_ordinal != other._ordinal) return false
+        if (_name != other._name) return false
+        if (_description != other._description) return false
+        if (type != other.type) return false
+        if (_size != other._size) return false
+        if (_readable != other._readable) return false
+        if (_writable != other._writable) return false
+        if (_sparse != other._sparse) return false
+        if (_mine != other._mine) return false
+        if (_shared != other._shared) return false
+        if (created != other.created) return false
+        if (_modified != other._modified) return false
+        if (effective != other.effective) return false
+        if (_preview != other._preview) return false
+        if (_empty != other._empty) return false
+        if (_sparseKey != other._sparseKey) return false
+        if (_downloadNotification != other._downloadNotification) return false
+        if (_aggregation != other._aggregation) return false
+        if (modified != other.modified) return false
+        if (parentId != other.parentId) return false
+        if (ordinal != other.ordinal) return false
+        if (description != other.description) return false
+        if (size != other.size) return false
+        if (readable != other.readable) return false
+        if (writable != other.writable) return false
+        if (sparse != other.sparse) return false
+        if (empty != other.empty) return false
+        if (sparseKey != other.sparseKey) return false
+        if (preview != other.preview) return false
+        if (mine != other.mine) return false
+        if (shared != other.shared) return false
+        if (effectiveRead != other.effectiveRead) return false
+        if (effectiveCreate != other.effectiveCreate) return false
+        if (effectiveModify != other.effectiveModify) return false
+        if (effectiveDelete != other.effectiveDelete) return false
+        if (downloadNotification != other.downloadNotification) return false
+        if (name != other.name) return false
+        if (aggregation != other.aggregation) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + (_parentId?.hashCode() ?: 0)
+        result = 31 * result + (_ordinal ?: 0)
+        result = 31 * result + _name.hashCode()
+        result = 31 * result + (_description?.hashCode() ?: 0)
+        result = 31 * result + type.hashCode()
+        result = 31 * result + _size.hashCode()
+        result = 31 * result + (_readable?.hashCode() ?: 0)
+        result = 31 * result + (_writable?.hashCode() ?: 0)
+        result = 31 * result + (_sparse?.hashCode() ?: 0)
+        result = 31 * result + (_mine?.hashCode() ?: 0)
+        result = 31 * result + (_shared?.hashCode() ?: 0)
+        result = 31 * result + created.hashCode()
+        result = 31 * result + _modified.hashCode()
+        result = 31 * result + effective.hashCode()
+        result = 31 * result + (_preview?.hashCode() ?: 0)
+        result = 31 * result + (_empty?.hashCode() ?: 0)
+        result = 31 * result + (_sparseKey?.hashCode() ?: 0)
+        result = 31 * result + (_downloadNotification?.hashCode() ?: 0)
+        result = 31 * result + (_aggregation?.hashCode() ?: 0)
+        result = 31 * result + modified.hashCode()
+        result = 31 * result + (parentId?.hashCode() ?: 0)
+        result = 31 * result + (ordinal ?: 0)
+        result = 31 * result + (description?.hashCode() ?: 0)
+        result = 31 * result + size.hashCode()
+        result = 31 * result + (readable?.hashCode() ?: 0)
+        result = 31 * result + (writable?.hashCode() ?: 0)
+        result = 31 * result + (sparse?.hashCode() ?: 0)
+        result = 31 * result + (empty?.hashCode() ?: 0)
+        result = 31 * result + (sparseKey?.hashCode() ?: 0)
+        result = 31 * result + (preview?.hashCode() ?: 0)
+        result = 31 * result + (mine?.hashCode() ?: 0)
+        result = 31 * result + (shared?.hashCode() ?: 0)
+        result = 31 * result + (effectiveRead?.hashCode() ?: 0)
+        result = 31 * result + (effectiveCreate?.hashCode() ?: 0)
+        result = 31 * result + (effectiveModify?.hashCode() ?: 0)
+        result = 31 * result + (effectiveDelete?.hashCode() ?: 0)
+        result = 31 * result + (downloadNotification?.hashCode() ?: 0)
+        result = 31 * result + name.hashCode()
+        result = 31 * result + (aggregation?.hashCode() ?: 0)
+        return result
+    }
 
     @Serializable
     data class Effectiveness(

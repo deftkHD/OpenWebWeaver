@@ -98,4 +98,46 @@ class Task(
         return "Task(title='$title')"
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Task) return false
+
+        if (id != other.id) return false
+        if (_title != other._title) return false
+        if (_description != other._description) return false
+        if (_startDate != other._startDate) return false
+        if (_dueDate != other._dueDate) return false
+        if (_completed != other._completed) return false
+        if (created != other.created) return false
+        if (_modified != other._modified) return false
+        if (deleted != other.deleted) return false
+        if (modified != other.modified) return false
+        if (title != other.title) return false
+        if (description != other.description) return false
+        if (startDate != other.startDate) return false
+        if (dueDate != other.dueDate) return false
+        if (completed != other.completed) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + _title.hashCode()
+        result = 31 * result + (_description?.hashCode() ?: 0)
+        result = 31 * result + (_startDate?.hashCode() ?: 0)
+        result = 31 * result + (_dueDate?.hashCode() ?: 0)
+        result = 31 * result + _completed.hashCode()
+        result = 31 * result + created.hashCode()
+        result = 31 * result + _modified.hashCode()
+        result = 31 * result + deleted.hashCode()
+        result = 31 * result + modified.hashCode()
+        result = 31 * result + title.hashCode()
+        result = 31 * result + (description?.hashCode() ?: 0)
+        result = 31 * result + (startDate?.hashCode() ?: 0)
+        result = 31 * result + (dueDate?.hashCode() ?: 0)
+        result = 31 * result + completed.hashCode()
+        return result
+    }
+
 }

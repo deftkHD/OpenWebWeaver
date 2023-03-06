@@ -61,6 +61,48 @@ class ForumPost(
         return "ForumPost(title='$title')"
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is ForumPost) return false
+
+        if (id != other.id) return false
+        if (parentId != other.parentId) return false
+        if (title != other.title) return false
+        if (text != other.text) return false
+        if (icon != other.icon) return false
+        if (level != other.level) return false
+        if (isPinned != other.isPinned) return false
+        if (isLocked != other.isLocked) return false
+        if (children != other.children) return false
+        if (files != other.files) return false
+        if (created != other.created) return false
+        if (_modified != other._modified) return false
+        if (comments != other.comments) return false
+        if (deleted != other.deleted) return false
+        if (modified != other.modified) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + parentId.hashCode()
+        result = 31 * result + title.hashCode()
+        result = 31 * result + text.hashCode()
+        result = 31 * result + (icon?.hashCode() ?: 0)
+        result = 31 * result + level
+        result = 31 * result + (isPinned?.hashCode() ?: 0)
+        result = 31 * result + (isLocked?.hashCode() ?: 0)
+        result = 31 * result + (children?.hashCode() ?: 0)
+        result = 31 * result + files.hashCode()
+        result = 31 * result + created.hashCode()
+        result = 31 * result + _modified.hashCode()
+        result = 31 * result + comments.hashCode()
+        result = 31 * result + deleted.hashCode()
+        result = 31 * result + modified.hashCode()
+        return result
+    }
+
     @Serializable
     data class ChildrenData(val count: Int, val recent: Modification? = null)
 

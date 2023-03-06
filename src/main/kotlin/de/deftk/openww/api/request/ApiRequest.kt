@@ -25,6 +25,7 @@ open class ApiRequest {
     }
 
     open fun packRequestsIntoBundle(context: IRequestContext): List<List<JsonObject>> {
+        //FIXME also consider scope when splitting
         val splitRequests = mutableListOf<MutableList<JsonObject>>(mutableListOf())
         var currentSize = 0
         requests.forEach { request ->

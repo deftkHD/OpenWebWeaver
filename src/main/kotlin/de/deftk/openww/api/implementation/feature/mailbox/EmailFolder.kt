@@ -61,4 +61,32 @@ class EmailFolder(
         return "EmailFolder(name='$name')"
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is EmailFolder) return false
+
+        if (id != other.id) return false
+        if (_name != other._name) return false
+        if (isInbox != other.isInbox) return false
+        if (isTrash != other.isTrash) return false
+        if (isDrafts != other.isDrafts) return false
+        if (isSent != other.isSent) return false
+        if (date != other.date) return false
+        if (name != other.name) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + _name.hashCode()
+        result = 31 * result + isInbox.hashCode()
+        result = 31 * result + isTrash.hashCode()
+        result = 31 * result + isDrafts.hashCode()
+        result = 31 * result + isSent.hashCode()
+        result = 31 * result + (date?.hashCode() ?: 0)
+        result = 31 * result + name.hashCode()
+        return result
+    }
+
 }

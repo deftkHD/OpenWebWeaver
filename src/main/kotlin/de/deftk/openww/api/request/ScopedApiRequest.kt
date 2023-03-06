@@ -15,6 +15,7 @@ open class ScopedApiRequest(protected val context: IRequestContext): ApiRequest(
     }
 
     override fun packRequestsIntoBundle(context: IRequestContext): List<List<JsonObject>> {
+        //FIXME also consider scope when splitting
         val splitRequests = mutableListOf<MutableList<JsonObject>>(mutableListOf())
         val length = addSetSessionRequest(splitRequests.last(), 998, context.sessionId)
         var currentSize = length

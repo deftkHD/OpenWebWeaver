@@ -8,6 +8,7 @@ import de.deftk.openww.api.model.feature.filestorage.io.FileChunk
 import de.deftk.openww.api.model.feature.filestorage.session.ISessionFile
 import de.deftk.openww.api.request.UserApiRequest
 import de.deftk.openww.api.response.ResponseUtil
+import de.deftk.openww.api.utils.PlatformUtil
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.decodeFromJsonElement
@@ -36,7 +37,8 @@ class SessionFile(
 
     override suspend fun append(data: ByteArray, context: IRequestContext) {
         val request = UserApiRequest(context)
-        val id = request.addAppendSessionFileRequest(id, data)
+        val base64 = PlatformUtil.base64EncodeToString(data)
+        val id = request.addAppendSessionFileRequest(id, base64)
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         readFrom(WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!))
@@ -81,6 +83,32 @@ class SessionFile(
 
     override fun toString(): String {
         return "SessionFile(name='$name')"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is SessionFile) return false
+
+        if (id != other.id) return false
+        if (name != other.name) return false
+        if (_size != other._size) return false
+        if (_downloadUrl != other._downloadUrl) return false
+        if (deleted != other.deleted) return false
+        if (size != other.size) return false
+        if (downloadUrl != other.downloadUrl) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + _size
+        result = 31 * result + _downloadUrl.hashCode()
+        result = 31 * result + deleted.hashCode()
+        result = 31 * result + size
+        result = 31 * result + downloadUrl.hashCode()
+        return result
     }
 
 }

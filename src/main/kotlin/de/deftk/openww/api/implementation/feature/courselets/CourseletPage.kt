@@ -38,4 +38,27 @@ class CourseletPage(
     override fun toString(): String {
         return "CourseletPage(title='$title')"
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is CourseletPage) return false
+
+        if (pageId != other.pageId) return false
+        if (title != other.title) return false
+        if (exists != other.exists) return false
+        if (maxScore != other.maxScore) return false
+        if (result != other.result) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result1 = pageId.hashCode()
+        result1 = 31 * result1 + title.hashCode()
+        result1 = 31 * result1 + (exists?.hashCode() ?: 0)
+        result1 = 31 * result1 + (maxScore ?: 0)
+        result1 = 31 * result1 + (result?.hashCode() ?: 0)
+        return result1
+    }
+
 }

@@ -50,4 +50,28 @@ class EmailSignature(
         return "EmailSignature(text='$text')"
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is EmailSignature) return false
+
+        if (_text != other._text) return false
+        if (_answerPosition != other._answerPosition) return false
+        if (_forwardPosition != other._forwardPosition) return false
+        if (text != other.text) return false
+        if (answerPosition != other.answerPosition) return false
+        if (forwardPosition != other.forwardPosition) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = _text.hashCode()
+        result = 31 * result + (_answerPosition?.hashCode() ?: 0)
+        result = 31 * result + (_forwardPosition?.hashCode() ?: 0)
+        result = 31 * result + text.hashCode()
+        result = 31 * result + (answerPosition?.hashCode() ?: 0)
+        result = 31 * result + (forwardPosition?.hashCode() ?: 0)
+        return result
+    }
+
 }

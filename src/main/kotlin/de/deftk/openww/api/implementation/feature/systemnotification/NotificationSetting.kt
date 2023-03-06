@@ -65,5 +65,26 @@ class NotificationSetting(
         return "NotificationSetting(type=$type, obj='$obj', name='$name', facilities=$facilities)"
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is NotificationSetting) return false
+
+        if (type != other.type) return false
+        if (obj != other.obj) return false
+        if (name != other.name) return false
+        if (_facilities != other._facilities) return false
+        if (facilities != other.facilities) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = type
+        result = 31 * result + obj.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + _facilities.hashCode()
+        result = 31 * result + facilities.hashCode()
+        return result
+    }
 
 }

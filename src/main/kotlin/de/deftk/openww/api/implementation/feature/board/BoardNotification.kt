@@ -100,4 +100,38 @@ class BoardNotification(
         return "BoardNotification(title='$title')"
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is BoardNotification) return false
+
+        if (id != other.id) return false
+        if (_title != other._title) return false
+        if (_text != other._text) return false
+        if (_color != other._color) return false
+        if (created != other.created) return false
+        if (_modified != other._modified) return false
+        if (deleted != other.deleted) return false
+        if (title != other.title) return false
+        if (text != other.text) return false
+        if (color != other.color) return false
+        if (modified != other.modified) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + _title.hashCode()
+        result = 31 * result + _text.hashCode()
+        result = 31 * result + (_color?.hashCode() ?: 0)
+        result = 31 * result + created.hashCode()
+        result = 31 * result + _modified.hashCode()
+        result = 31 * result + deleted.hashCode()
+        result = 31 * result + title.hashCode()
+        result = 31 * result + text.hashCode()
+        result = 31 * result + (color?.hashCode() ?: 0)
+        result = 31 * result + modified.hashCode()
+        return result
+    }
+
 }

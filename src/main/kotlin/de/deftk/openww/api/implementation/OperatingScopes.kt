@@ -287,19 +287,25 @@ sealed class OperatingScope : IOperatingScope {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as OperatingScope
+        if (other !is OperatingScope) return false
 
         if (login != other.login) return false
+        if (name != other.name) return false
+        if (type != other.type) return false
+        if (baseRights != other.baseRights) return false
+        if (effectiveRights != other.effectiveRights) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return login.hashCode()
+        var result = login.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + type
+        result = 31 * result + baseRights.hashCode()
+        result = 31 * result + effectiveRights.hashCode()
+        return result
     }
-
 
 }
 
@@ -376,7 +382,8 @@ data class User(
 
     override suspend fun addSessionFile(name: String, data: ByteArray, context: IRequestContext): SessionFile {
         val request = UserApiRequest(context)
-        val id = request.addAddSessionFileRequest(name, data)
+        val base64 = PlatformUtil.base64EncodeToString(data)
+        val id = request.addAddSessionFileRequest(name, base64)
         val response = request.fireRequest()
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!)
@@ -618,8 +625,8 @@ data class User(
                 assert(scopeName != null) { "BoardNotification request can't be performed outside a scope" }
                 val scope = context.findOperatingScope(scopeName!!) ?: error("Invalid scope: \"$scopeName\"")
                 check(scope is IGroup) { "User can't have any board notifications" }
-                result["entries"]!!.jsonArray.forEach { taskResponse ->
-                    notifications.add(Pair(WebWeaverClient.json.decodeFromJsonElement<BoardNotification>(taskResponse.jsonObject), scope))
+                result["entries"]!!.jsonArray.forEach { notificationResponse ->
+                    notifications.add(Pair(WebWeaverClient.json.decodeFromJsonElement<BoardNotification>(notificationResponse.jsonObject), scope))
                 }
             }
         }
@@ -646,8 +653,8 @@ data class User(
                 assert(scopeName != null) { "BoardNotification request can't be performed outside a scope" }
                 val scope = context.findOperatingScope(scopeName!!) ?: error("Invalid scope: \"$scopeName\"")
                 check(scope is IGroup) { "User can't have any board notifications" }
-                result["entries"]!!.jsonArray.forEach { taskResponse ->
-                    notifications.add(Pair(WebWeaverClient.json.decodeFromJsonElement<BoardNotification>(taskResponse.jsonObject), scope))
+                result["entries"]!!.jsonArray.forEach { notificationResponse ->
+                    notifications.add(Pair(WebWeaverClient.json.decodeFromJsonElement<BoardNotification>(notificationResponse.jsonObject), scope))
                 }
             }
         }
@@ -674,8 +681,8 @@ data class User(
                 assert(scopeName != null) { "BoardNotification request can't be performed outside a scope" }
                 val scope = context.findOperatingScope(scopeName!!) ?: error("Invalid scope: \"$scopeName\"")
                 check(scope is IGroup) { "User can't have any board notifications" }
-                result["entries"]!!.jsonArray.forEach { taskResponse ->
-                    notifications.add(Pair(WebWeaverClient.json.decodeFromJsonElement<BoardNotification>(taskResponse.jsonObject), scope))
+                result["entries"]!!.jsonArray.forEach { notificationResponse ->
+                    notifications.add(Pair(WebWeaverClient.json.decodeFromJsonElement<BoardNotification>(notificationResponse.jsonObject), scope))
                 }
             }
         }
@@ -759,6 +766,25 @@ data class User(
         val response = request.fireRequest()
         return WebWeaverClient.json.decodeFromJsonElement(ResponseUtil.getSubResponseResult(response.toJson(), id)["entry"]!!)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is User) return false
+        if (!super.equals(other)) return false
+
+        if (userData != other.userData) return false
+        if (groups != other.groups) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + userData.hashCode()
+        result = 31 * result + groups.hashCode()
+        return result
+    }
+
 
     @Serializable
     data class UserData(
@@ -982,4 +1008,37 @@ class Group(
         val subResponse = ResponseUtil.getSubResponseResult(response.toJson(), id)
         return WebWeaverClient.json.decodeFromJsonElement(subResponse["file"]!!.jsonObject)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Group) return false
+        if (!super.equals(other)) return false
+
+        if (login != other.login) return false
+        if (name != other.name) return false
+        if (type != other.type) return false
+        if (baseRights != other.baseRights) return false
+        if (effectiveRights != other.effectiveRights) return false
+        if (_reducedRights != other._reducedRights) return false
+        if (_memberRights != other._memberRights) return false
+        if (reducedRights != other.reducedRights) return false
+        if (memberRights != other.memberRights) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + login.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + type
+        result = 31 * result + baseRights.hashCode()
+        result = 31 * result + effectiveRights.hashCode()
+        result = 31 * result + _reducedRights.hashCode()
+        result = 31 * result + _memberRights.hashCode()
+        result = 31 * result + reducedRights.hashCode()
+        result = 31 * result + memberRights.hashCode()
+        return result
+    }
+
 }

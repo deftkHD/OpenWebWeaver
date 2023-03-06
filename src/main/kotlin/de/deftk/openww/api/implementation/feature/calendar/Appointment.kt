@@ -135,4 +135,66 @@ class Appointment(
         return "Appointment(title='$title')"
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Appointment) return false
+
+        if (id != other.id) return false
+        if (_uid != other._uid) return false
+        if (_title != other._title) return false
+        if (_description != other._description) return false
+        if (_startDate != other._startDate) return false
+        if (_startDateIso != other._startDateIso) return false
+        if (_endDate != other._endDate) return false
+        if (_endDateIso != other._endDateIso) return false
+        if (_tzid != other._tzid) return false
+        if (_location != other._location) return false
+        if (_rrule != other._rrule) return false
+        if (created != other.created) return false
+        if (_modified != other._modified) return false
+        if (deleted != other.deleted) return false
+        if (modified != other.modified) return false
+        if (title != other.title) return false
+        if (description != other.description) return false
+        if (endDate != other.endDate) return false
+        if (endDateIso != other.endDateIso) return false
+        if (tzid != other.tzid) return false
+        if (location != other.location) return false
+        if (rrule != other.rrule) return false
+        if (startDate != other.startDate) return false
+        if (startDateIso != other.startDateIso) return false
+        if (uid != other.uid) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + (_uid?.hashCode() ?: 0)
+        result = 31 * result + _title.hashCode()
+        result = 31 * result + (_description?.hashCode() ?: 0)
+        result = 31 * result + (_startDate?.hashCode() ?: 0)
+        result = 31 * result + (_startDateIso?.hashCode() ?: 0)
+        result = 31 * result + (_endDate?.hashCode() ?: 0)
+        result = 31 * result + (_endDateIso?.hashCode() ?: 0)
+        result = 31 * result + (_tzid?.hashCode() ?: 0)
+        result = 31 * result + (_location?.hashCode() ?: 0)
+        result = 31 * result + (_rrule?.hashCode() ?: 0)
+        result = 31 * result + created.hashCode()
+        result = 31 * result + _modified.hashCode()
+        result = 31 * result + deleted.hashCode()
+        result = 31 * result + modified.hashCode()
+        result = 31 * result + title.hashCode()
+        result = 31 * result + (description?.hashCode() ?: 0)
+        result = 31 * result + (endDate?.hashCode() ?: 0)
+        result = 31 * result + (endDateIso?.hashCode() ?: 0)
+        result = 31 * result + (tzid?.hashCode() ?: 0)
+        result = 31 * result + (location?.hashCode() ?: 0)
+        result = 31 * result + (rrule?.hashCode() ?: 0)
+        result = 31 * result + (startDate?.hashCode() ?: 0)
+        result = 31 * result + (startDateIso?.hashCode() ?: 0)
+        result = 31 * result + (uid?.hashCode() ?: 0)
+        return result
+    }
+
 }
